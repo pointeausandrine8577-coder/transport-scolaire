@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transport Scolaire — ETS85-AIZ-C05</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#21262d; --border:#30363d;
+    --accent:#f0a500; --accent2:#3fb950; --text:#e6edf3; --muted:#8b949e;
+    --danger:#f85149; --blue:#58a6ff; --morning:#f0a500; --evening:#58a6ff;
+    --occasional:#c084fc;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;}
+
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+  .bus-icon{font-size:24px;background:var(--accent);width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .header-info{flex:1;}
+  header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+  header p{font-size:12px;color:var(--muted);margin-top:1px;}
+  .date-badge{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;text-align:right;flex-shrink:0;}
+  .date-day{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--accent);}
+  .date-full{font-size:11px;color:var(--muted);margin-top:1px;}
+  .save-indicator{font-size:11px;color:var(--accent2);margin-top:2px;}
+
+  .container{max-width:960px;margin:0 auto;padding:20px 14px;}
+  .stats-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 16px;flex:1;min-width:100px;}
+  .stat-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+  .section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
+  .btn-group{display:flex;gap:7px;flex-wrap:wrap;}
+
+  .btn{border:none;border-radius:9px;padding:9px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;white-space:nowrap;}
+  .btn-primary{background:var(--accent);color:#000;}
+  .btn-primary:hover{background:#ffc107;}
+  .btn-blue{background:rgba(88,166,255,0.12);color:var(--blue);border:1px solid rgba(88,166,255,0.3);}
+  .btn-blue:hover{background:rgba(88,166,255,0.22);}
+  .btn-purple{background:rgba(192,132,252,0.12);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
+  .btn-purple:hover{background:rgba(192,132,252,0.22);}
+  .btn-green{background:rgba(63,185,80,0.12);color:var(--accent2);border:1px solid rgba(63,185,80,0.3);}
+  .btn-green:hover{background:rgba(63,185,80,0.22);}
+
+  .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.4px;}
+  .badge-morning{background:rgba(240,165,0,0.15);color:var(--morning);border:1px solid rgba(240,165,0,0.3);}
+  .badge-evening{background:rgba(88,166,255,0.15);color:var(--evening);border:1px solid rgba(88,166,255,0.3);}
+
+  .route-block{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden;margin-bottom:24px;}
+  .route-meta{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:16px;font-size:12px;color:var(--muted);background:var(--surface2);flex-wrap:wrap;align-items:center;}
+  .route-meta span{display:flex;align-items:center;gap:5px;}
+  .route-meta strong{color:var(--text);}
+  .arrival-edit{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 8px;color:var(--text);font-size:13px;font-family:'Syne',sans-serif;font-weight:700;width:80px;cursor:pointer;}
+  .arrival-edit:focus{outline:none;border-color:var(--accent);}
+
+  table{width:100%;border-collapse:collapse;}
+  th{padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);}
+  td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr.passenger-row:hover td{background:rgba(255,255,255,0.025);}
+  tr.depot-row td{background:rgba(88,166,255,0.03);}
+  tr.depot-row:hover td{background:rgba(88,166,255,0.07);}
+  tr.occasional-row td{background:rgba(192,132,252,0.04);}
+  tr.occasional-row:hover td{background:rgba(192,132,252,0.08);}
+
+  .time-cell{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;}
+  .time-morning{color:var(--morning);}
+  .time-evening{color:var(--evening);}
+
+  .type-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:500;}
+  .type-montee{background:rgba(63,185,80,0.1);color:var(--accent2);}
+  .type-descente{background:rgba(248,81,73,0.12);color:#ff7b72;}
+  .type-depot{background:rgba(88,166,255,0.1);color:var(--blue);}
+  .type-occa{background:rgba(192,132,252,0.12);color:var(--occasional);}
+
+  .name-cell{font-weight:500;}
+  .address-cell{font-size:12px;color:var(--muted);}
+  .note-cell{font-size:11px;color:#6e7681;font-style:italic;margin-top:2px;}
+  .contact-cell{font-size:11px;color:var(--muted);font-family:monospace;}
+  .action-cell{display:flex;gap:4px;justify-content:flex-end;}
+  .icon-btn{background:none;border:1px solid transparent;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .edit-btn:hover{background:rgba(240,165,0,0.12);border-color:rgba(240,165,0,0.3);}
+  .delete-btn:hover{background:rgba(248,81,73,0.1);border-color:rgba(248,81,73,0.3);}
+
+  .duration-info{font-size:12px;color:var(--muted);padding:9px 16px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+  .empty-state{text-align:center;padding:32px;color:var(--muted);font-size:13px;}
+
+  /* ROUTING STATUS */
+  .routing-banner{background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--accent2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .routing-banner.loading{background:rgba(240,165,0,0.08);border-color:rgba(240,165,0,0.2);color:var(--accent);}
+  .routing-banner.error{background:rgba(248,81,73,0.08);border-color:rgba(248,81,73,0.2);color:var(--danger);}
+
+  /* MODALS */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;padding:14px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;width:100%;max-width:480px;animation:slideUp .2s ease;max-height:92vh;overflow-y:auto;}
+  @keyframes slideUp{from{transform:translateY(18px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal h2{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;}
+  .form-group{margin-bottom:12px;}
+  label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
+  input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+  textarea{resize:vertical;min-height:54px;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  select option{background:var(--surface2);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .form-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;}
+  .modal-actions{display:flex;gap:8px;margin-top:18px;}
+  .btn-cancel{flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-cancel:hover{background:var(--border);}
+  .btn-save{flex:2;padding:10px;background:var(--accent);border:none;border-radius:9px;color:#000;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
+  .btn-save:hover{background:#ffc107;}
+  .btn-save-purple{background:var(--occasional);color:#000;}
+  .btn-save-purple:hover{background:#d8b4fe;}
+
+  .occasional-banner{background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.25);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--occasional);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+  .depot-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .depot-item:last-child{border-bottom:none;}
+  .depot-checkbox{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+  .depot-item-label{flex:1;font-size:13px;}
+  .depot-time-input{width:82px!important;padding:5px 7px!important;font-size:12px!important;flex-shrink:0;}
+  .section-divider{margin:16px 0 12px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+
+  /* Spinner */
+  .spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,165,0,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bus-icon">🚌</div>
+  <div class="header-info">
+    <h1>Transport Scolaire</h1>
+    <p>Circuit ETS85-AIZ-C05</p>
+  </div>
+  <div class="date-badge">
+    <div class="date-day" id="dateDay"></div>
+    <div class="date-full" id="dateFull"></div>
+    <div class="save-indicator" id="saveIndicator">✓ Sauvegardé</div>
+  </div>
+</header>
+
+<div class="container">
+  <div id="routingStatus"></div>
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- MATIN -->
+  <div class="section-header">
+    <div class="section-title"><span class="badge badge-morning">☀️ MATIN</span> Tournée du matin</div>
+    <div class="btn-group">
+      <button class="btn btn-green" onclick="recalcWithRouting('morning')">🗺 Recalculer</button>
+      <button class="btn btn-blue" onclick="openDepotModal('morning')">📍 Dépôts</button>
+      <button class="btn btn-purple" onclick="openOccasionalModal('morning')">⚡ Occasionnel</button>
+      <button class="btn btn-primary" onclick="openPassengerModal('morning')">+ Passager</button>
+    </div>
+  </div>
+  <div class="route-block">
+    <div class="route-meta" id="morningMeta"></div>
+    <table>
+      <thead><tr><th>Heure</th><th>Type</th><th>Nom</th><th>Adresse / Note</th><th>Contact</th><th></th></tr></thead>
+      <tbody id="morningBody"></tbody>
+    </table>
+    <div class="duration-info" id="morningDuration"></div>
+  </div>
+
+  <!-- SOIR -->
+  <div class="section-header">
+    <div class="section-title"><span class="badge badge-evening">🌙 SOIR</span> Tournée du soir</div>
+    <div class="btn-group">
+      <button class="btn btn-green" onclick="recalcWithRouting('evening')">🗺 Recalculer</button>
+      <button class="btn btn-blue" onclick="openDepotModal('evening')">📍 Dépôts</button>
+      <button class="btn btn-purple" onclick="openOccasionalModal('evening')">⚡ Occasionnel</button>
+      <button class="btn btn-primary" onclick="openPassengerModal('evening')">+ Passager</button>
+    </div>
+  </div>
+  <div class="route-block">
+    <div class="route-meta" id="eveningMeta"></div>
+    <table>
+      <thead><tr><th>Heure</th><th>Type</th><th>Nom</th><th>Adresse / Note</th><th>Contact</th><th></th></tr></thead>
+      <tbody id="eveningBody"></tbody>
+    </table>
+    <div class="duration-info" id="eveningDuration"></div>
+  </div>
+</div>
+
+<!-- ── MODAL PASSAGER ── -->
+<div class="modal-overlay" id="modalPassager">
+  <div class="modal">
+    <h2 id="modalPassagerTitle">➕ Nouveau passager</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Nom</label><input type="text" id="pNom" placeholder="DUPONT"></div>
+      <div class="form-group"><label>Prénom</label><input type="text" id="pPrenom" placeholder="Lucas"></div>
+    </div>
+    <div class="form-group"><label>Adresse (rue)</label><input type="text" id="pAdresse" placeholder="12 rue des Lilas"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Code postal</label><input type="text" id="pCodePostal" placeholder="85190" maxlength="10"></div>
+      <div class="form-group"><label>Ville</label><input type="text" id="pVille" placeholder="Aizenay"></div>
+    </div>
+    <div class="form-group"><label>Note / Point de repère</label><textarea id="pNote" placeholder="Portail bleu, 2ème maison après le carrefour..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Lien contact</label>
+        <select id="pLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
+      <div class="form-group"><label>Téléphone</label><input type="tel" id="pTel" placeholder="06-XX-XX-XX-XX"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Type</label>
+        <select id="pType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
+      <div class="form-group"><label>Heure souhaitée</label><input type="text" id="pHeure" placeholder="07:00" maxlength="5"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePassengerModal()">Annuler</button>
+      <button class="btn-save" onclick="savePassenger()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL OCCASIONNEL ── -->
+<div class="modal-overlay" id="modalOccasional">
+  <div class="modal">
+    <h2>⚡ Transport occasionnel</h2>
+    <div class="occasional-banner">🗓 Ce passager sera affiché aujourd'hui uniquement et retiré automatiquement demain.</div>
+    <div class="form-row">
+      <div class="form-group"><label>Nom</label><input type="text" id="oNom" placeholder="DUPONT"></div>
+      <div class="form-group"><label>Prénom</label><input type="text" id="oPrenom" placeholder="Lucas"></div>
+    </div>
+    <div class="form-group"><label>Adresse (rue)</label><input type="text" id="oAdresse" placeholder="12 rue des Lilas"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Code postal</label><input type="text" id="oCodePostal" placeholder="85190" maxlength="10"></div>
+      <div class="form-group"><label>Ville</label><input type="text" id="oVille" placeholder="Aizenay"></div>
+    </div>
+    <div class="form-group"><label>Note / Point de repère</label><textarea id="oNote" placeholder="Remarque, point de repère..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Lien contact</label>
+        <select id="oLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
+      <div class="form-group"><label>Téléphone</label><input type="tel" id="oTel" placeholder="06-XX-XX-XX-XX"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Type</label>
+        <select id="oType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
+      <div class="form-group"><label>Heure souhaitée</label><input type="text" id="oHeure" placeholder="07:00" maxlength="5"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeOccasionalModal()">Annuler</button>
+      <button class="btn-save btn-save-purple" onclick="saveOccasional()">Ajouter pour aujourd'hui</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL DÉPÔTS ── -->
+<div class="modal-overlay" id="modalDepots">
+  <div class="modal">
+    <h2 id="depotsTitle">📍 Gérer les dépôts</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Cochez les dépôts actifs aujourd'hui. Modifiez l'heure si besoin.</p>
+    <div id="depotsList"></div>
+    <div class="section-divider">Ajouter un établissement</div>
+    <div class="form-row">
+      <div class="form-group"><label>Nom</label><input type="text" id="dNom" placeholder="Lycée Colette"></div>
+      <div class="form-group"><label>Heure</label><input type="text" id="dHeure" placeholder="08:35" maxlength="5"></div>
+    </div>
+    <div class="form-group"><label>Adresse (optionnel)</label><input type="text" id="dAdresse" placeholder="Aizenay"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="addDepot()">+ Ajouter</button>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn-cancel" onclick="closeDepotModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════════════════
+const ORS_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImI4MWRkNjZhYzMxODRjZDI5NjVlNmUwMTcwZmY2NzVmIiwiaCI6Im11cm11cjY0In0=';
+
+// ══════════════════════════════════════════════════════════
+//  DATE
+// ══════════════════════════════════════════════════════════
+const TODAY = new Date();
+const todayStr = TODAY.toISOString().split('T')[0];
+const JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+document.getElementById('dateDay').textContent  = JOURS[TODAY.getDay()];
+document.getElementById('dateFull').textContent = `${TODAY.getDate()} ${MOIS[TODAY.getMonth()]} ${TODAY.getFullYear()}`;
+
+// ══════════════════════════════════════════════════════════
+//  DONNÉES PAR DÉFAUT
+// ══════════════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  morning:{
+    depart:"06:38", arrivee:"09:03",
+    passengers:[
+      {id:1, time:"06:55",type:"Montée", nom:"TOGBA Kimi Sun",    adresse:"Route de la Forêt", codePostal:"85190", ville:"Aizenay",     note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
+      {id:2, time:"07:13",type:"Montée", nom:"BURGAUD Jimmy",     adresse:"Les Brosses",        codePostal:"85190", ville:"Aizenay",     note:"",lien:"Mère",  tel:"06-07-21-XX-XX"},
+      {id:3, time:"07:33",type:"Montée", nom:"ANDIVEAU Etan",     adresse:"14 Chemin des Vignes",codePostal:"85190",ville:"Aizenay",     note:"",lien:"Mobile",tel:"06-09-18-XX-XX"},
+      {id:4, time:"07:38",type:"Montée", nom:"KIRKWOOD Mathilda", adresse:"Le Bourg",            codePostal:"85190", ville:"Saint-Christophe-du-Ligneron", note:"",lien:"Mère",tel:"06-72-XX-XX-XX"},
+      {id:5, time:"07:47",type:"Montée", nom:"CHAPRON Ethan",     adresse:"5 Impasse des Chênes",codePostal:"85190",ville:"Aizenay",    note:"",lien:"Mère",  tel:"06-04-48-XX-XX"},
+      {id:6, time:"08:01",type:"Montée", nom:"MINGUET Alexandre", adresse:"La Guérinière",       codePostal:"85190", ville:"Aizenay",   note:"",lien:"Mère",  tel:"06-75-XX-XX-XX"},
+      {id:7, time:"08:12",type:"Montée", nom:"DEBOMY Maelyne",    adresse:"Rue de la Plaine",    codePostal:"85190", ville:"Aizenay",   note:"",lien:"Mère",  tel:"06-19-18-XX-XX"},
+    ],
+    depots:[
+      {id:101,time:"08:35",nom:"Lycée Colette",        adresse:"Aizenay",active:true},
+      {id:102,time:"08:40",nom:"Collège Soljenitsyne", adresse:"Aizenay",active:true},
+      {id:103,time:"08:45",nom:"IME La Penière",       adresse:"Aizenay",active:true},
+    ],
+    occasional:[]
+  },
+  evening:{
+    depart:"16:03", arrivee:null,
+    passengers:[
+      {id:8, time:"16:38",type:"Descente",nom:"DEBOMY Maelyne",    adresse:"Rue de la Plaine",     codePostal:"85190",ville:"Aizenay",    note:"",lien:"Mère",  tel:"06-19-18-XX-XX"},
+      {id:9, time:"16:49",type:"Descente",nom:"MINGUET Alexandre", adresse:"La Guérinière",         codePostal:"85190",ville:"Aizenay",   note:"",lien:"Mère",  tel:"06-75-XX-XX-XX"},
+      {id:10,time:"17:03",type:"Descente",nom:"CHAPRON Ethan",     adresse:"5 Impasse des Chênes",  codePostal:"85190",ville:"Aizenay",   note:"",lien:"Mère",  tel:"06-04-48-XX-XX"},
+      {id:11,time:"17:13",type:"Descente",nom:"KIRKWOOD Mathilda", adresse:"Le Bourg",               codePostal:"85190",ville:"Saint-Christophe-du-Ligneron",note:"",lien:"Mère",tel:"06-72-XX-XX-XX"},
+      {id:12,time:"17:18",type:"Descente",nom:"ANDIVEAU Etan",     adresse:"14 Chemin des Vignes",   codePostal:"85190",ville:"Aizenay",  note:"",lien:"Mobile",tel:"06-09-18-XX-XX"},
+      {id:13,time:"17:40",type:"Descente",nom:"BURGAUD Jimmy",     adresse:"Les Brosses",            codePostal:"85190",ville:"Aizenay",  note:"",lien:"Mère",  tel:"06-07-21-XX-XX"},
+      {id:14,time:"17:59",type:"Descente",nom:"TOGBA Kimi Sun",    adresse:"Route de la Forêt",      codePostal:"85190",ville:"Aizenay",  note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
+    ],
+    depots:[
+      {id:201,time:"16:20",nom:"IME La Penière",adresse:"Aizenay",active:true},
+    ],
+    occasional:[]
+  }
+};
+
+// ══════════════════════════════════════════════════════════
+//  SAUVEGARDE / CHARGEMENT
+// ══════════════════════════════════════════════════════════
+let data, nextId=300, currentTournee='morning', editingPassengerId=null, editingDepotTournee=null;
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('transport_data_v2');
+    const savedDate = localStorage.getItem('transport_date');
+    if (saved) {
+      data = JSON.parse(saved);
+      if (savedDate !== todayStr) {
+        data.morning.occasional = [];
+        data.evening.occasional = [];
+      }
+      if (!data.morning.occasional) data.morning.occasional = [];
+      if (!data.evening.occasional) data.evening.occasional = [];
+      // Migration : ajouter codePostal/ville si absent
+      ['morning','evening'].forEach(t => {
+        data[t].passengers.forEach(p => {
+          if (!p.codePostal) p.codePostal = '';
+          if (!p.ville) p.ville = '';
+        });
+      });
+    } else {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+    localStorage.setItem('transport_date', todayStr);
+  } catch(e) {
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function saveData() {
+  try {
+    localStorage.setItem('transport_data_v2', JSON.stringify(data));
+    localStorage.setItem('transport_date', todayStr);
+    const ind = document.getElementById('saveIndicator');
+    ind.textContent = '✓ Sauvegardé';
+    ind.style.color = 'var(--accent2)';
+  } catch(e) {
+    document.getElementById('saveIndicator').textContent = '⚠ Erreur sauvegarde';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  UTILS HORAIRES
+// ══════════════════════════════════════════════════════════
+const timeToMin = t => {
+  if (!t || !t.includes(':')) return 0;
+  const [h,m] = t.split(':').map(Number);
+  return h*60 + (isNaN(m)?0:m);
+};
+const minToTime = m => `${String(Math.floor(m/60)%24).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+
+// Valider format HH:MM
+function validateTime(val) {
+  const clean = val.trim();
+  const match = clean.match(/^(\d{1,2})[h:](\d{2})$/);
+  if (!match) return null;
+  const h = parseInt(match[1]), m = parseInt(match[2]);
+  if (h<0||h>23||m<0||m>59) return null;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+// Recalcul simple (fallback sans API)
+function recalcTimesSimple(tournee) {
+  const t = data[tournee];
+  if (!t.passengers.length) return;
+  if (tournee === 'morning') {
+    const activeDepots = t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+    const depotTarget = activeDepots.length ? timeToMin(activeDepots[0].time) : timeToMin("08:35");
+    const n = t.passengers.length;
+    const gap = 10;
+    const lastPickup = depotTarget - 20;
+    const firstPickup = lastPickup - (n-1)*gap;
+    t.passengers.forEach((p,i) => p.time = minToTime(firstPickup + i*gap));
+    const lastDepot = activeDepots.length ? timeToMin(activeDepots[activeDepots.length-1].time) : depotTarget+10;
+    t.arrivee = minToTime(lastDepot + 15);
+  } else {
+    const activeDepots = t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+    const startDrop = activeDepots.length ? timeToMin(activeDepots[activeDepots.length-1].time) + 15 : timeToMin("16:35");
+    const gap = 12;
+    t.passengers.forEach((p,i) => p.time = minToTime(startDrop + i*gap));
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  OPENROUTESERVICE — GEOCODING + ROUTING
+// ══════════════════════════════════════════════════════════
+function getFullAddress(p) {
+  return `${p.adresse||''} ${p.codePostal||''} ${p.ville||''}`.trim();
+}
+
+async function geocodeAddress(address) {
+  try {
+    const url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_KEY}&text=${encodeURIComponent(address)}&boundary.country=FR&size=1`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.features && json.features.length > 0) {
+      return json.features[0].geometry.coordinates; // [lng, lat]
+    }
+  } catch(e) { console.warn('Geocode error:', address, e); }
+  return null;
+}
+
+async function getRouteDuration(coordFrom, coordTo) {
+  // Retourne les secondes de trajet entre deux points [lng,lat]
+  try {
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${coordFrom[0]},${coordFrom[1]}&end=${coordTo[0]},${coordTo[1]}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.features && json.features[0]) {
+      return json.features[0].properties.segments[0].duration; // secondes
+    }
+  } catch(e) { console.warn('Route error:', e); }
+  return null;
+}
+
+function showRoutingStatus(msg, type='') {
+  const el = document.getElementById('routingStatus');
+  if (!msg) { el.innerHTML=''; return; }
+  el.innerHTML = `<div class="routing-banner ${type}">${msg}</div>`;
+}
+
+async function recalcWithRouting(tournee) {
+  const t = data[tournee];
+  if (!t.passengers.length) { alert('Aucun passager à calculer.'); return; }
+
+  showRoutingStatus(`<span class="spinner"></span> Calcul des horaires en cours via OpenRouteService…`, 'loading');
+
+  try {
+    // 1. Géocoder toutes les adresses
+    const passengers = [...t.passengers].sort((a,b) => timeToMin(a.time)-timeToMin(b.time));
+    const coords = [];
+    for (const p of passengers) {
+      const addr = getFullAddress(p);
+      const c = addr.length > 3 ? await geocodeAddress(addr) : null;
+      coords.push(c);
+      await sleep(150); // respecter le rate limit ORS
+    }
+
+    // 2. Calculer les durées entre arrêts consécutifs
+    const durations = []; // durée entre arrêt i et i+1 en minutes
+    for (let i = 0; i < coords.length - 1; i++) {
+      if (coords[i] && coords[i+1]) {
+        const secs = await getRouteDuration(coords[i], coords[i+1]);
+        durations.push(secs !== null ? Math.ceil(secs/60) + 2 : 8); // +2 min arrêt
+        await sleep(150);
+      } else {
+        durations.push(8); // fallback
+      }
+    }
+
+    // 3. Calculer les horaires
+    if (tournee === 'morning') {
+      const activeDepots = t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+      const depotTarget = activeDepots.length ? timeToMin(activeDepots[0].time) : timeToMin("08:35");
+      // Calculer durée totale du dernier passager au 1er dépôt (estimée ~20 min)
+      const totalDuration = durations.reduce((a,b)=>a+b, 0);
+      const firstTime = depotTarget - 20 - totalDuration;
+      let current = firstTime;
+      passengers.forEach((p, i) => {
+        p.time = minToTime(current);
+        if (i < durations.length) current += durations[i];
+      });
+      const lastDepot = activeDepots.length ? timeToMin(activeDepots[activeDepots.length-1].time) : depotTarget+10;
+      t.arrivee = minToTime(lastDepot + 15);
+    } else {
+      const activeDepots = t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+      let current = activeDepots.length ? timeToMin(activeDepots[activeDepots.length-1].time) + 15 : timeToMin("16:35");
+      passengers.forEach((p, i) => {
+        p.time = minToTime(current);
+        if (i < durations.length) current += durations[i];
+      });
+    }
+
+    // Remettre les passagers dans data dans le bon ordre
+    t.passengers = passengers;
+
+    saveData(); render();
+    const nb = coords.filter(Boolean).length;
+    showRoutingStatus(`✓ Horaires recalculés avec succès — ${nb}/${passengers.length} adresses géolocalisées`, '');
+    setTimeout(() => showRoutingStatus(''), 5000);
+
+  } catch(e) {
+    console.error(e);
+    showRoutingStatus('⚠ Erreur lors du calcul. Vérifiez votre connexion ou les adresses.', 'error');
+    recalcTimesSimple(tournee);
+    saveData(); render();
+  }
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ══════════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════════
+function render() { renderTournee('morning'); renderTournee('evening'); renderStats(); }
+
+function renderTournee(tournee) {
+  const t    = data[tournee];
+  const tbody= document.getElementById(tournee==='morning'?'morningBody':'eveningBody');
+  const meta = document.getElementById(tournee==='morning'?'morningMeta':'eveningMeta');
+  const dur  = document.getElementById(tournee==='morning'?'morningDuration':'eveningDuration');
+  const cls  = tournee==='morning'?'time-morning':'time-evening';
+  const activeDepots = t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+
+  meta.innerHTML = `
+    <span>🚩 Départ <strong>${t.depart}</strong></span>
+    ${t.arrivee?`<span>🏁 Arrivée <strong>
+      <input type="text" class="arrival-edit" value="${t.arrivee}" maxlength="5"
+        onchange="updateArrival('${tournee}',this.value)" title="Modifier l'heure d'arrivée">
+    </strong></span>`:''}
+    <span>👥 <strong>${t.passengers.length + t.occasional.length}</strong> passager${t.passengers.length+t.occasional.length!==1?'s':''}</span>
+    <span>📍 <strong>${activeDepots.length}</strong> dépôt${activeDepots.length!==1?'s':''}</span>`;
+
+  tbody.innerHTML='';
+
+  const makePassRow = (p, isOcc=false) => {
+    const tr=document.createElement('tr');
+    tr.className = isOcc ? 'occasional-row' : 'passenger-row';
+    const addrDisplay = [p.adresse, p.codePostal, p.ville].filter(Boolean).join(', ');
+    tr.innerHTML=`
+      <td class="time-cell ${cls}">${p.time}</td>
+      <td>
+        <span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span>
+        ${isOcc?'<span class="type-badge type-occa" style="margin-left:4px">⚡ 1 jour</span>':''}
+      </td>
+      <td class="name-cell">${p.nom}</td>
+      <td><div class="address-cell">${addrDisplay||'—'}</div>${p.note?`<div class="note-cell">💬 ${p.note}</div>`:''}</td>
+      <td class="contact-cell">${p.lien}: ${p.tel}</td>
+      <td><div class="action-cell">
+        ${!isOcc?`<button class="icon-btn edit-btn" onclick="openEditPassenger('${tournee}',${p.id})" title="Modifier">✏️</button>`:''}
+        <button class="icon-btn delete-btn" onclick="${isOcc?`deleteOccasional('${tournee}',${p.id})`:`deletePassenger('${tournee}',${p.id})`}" title="Supprimer">✕</button>
+      </div></td>`;
+    return tr;
+  };
+
+  const makeDepRow = (d, label) => {
+    const tr=document.createElement('tr');
+    tr.className='depot-row';
+    tr.innerHTML=`
+      <td class="time-cell ${cls}">${d.time}</td>
+      <td><span class="type-badge type-depot">📍 ${label}</span></td>
+      <td><strong>${d.nom}</strong></td>
+      <td class="address-cell">${d.adresse||''}</td>
+      <td></td>
+      <td><div class="action-cell">
+        <button class="icon-btn delete-btn" onclick="deactivateDepot('${tournee}',${d.id})" title="Retirer">✕</button>
+      </div></td>`;
+    return tr;
+  };
+
+  const allRows = [];
+  if (tournee==='evening') activeDepots.forEach(d => allRows.push({type:'depot',d,label:'Prise'}));
+  t.passengers.forEach(p => allRows.push({type:'pass',p}));
+  t.occasional.forEach(p => allRows.push({type:'occ',p}));
+  if (tournee==='morning') activeDepots.forEach(d => allRows.push({type:'depot',d,label:'Dépôt'}));
+
+  if (!allRows.length) {
+    tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state">Aucun élément — utilisez les boutons ci-dessus</div></td></tr>`;
+  } else {
+    allRows.forEach(r => {
+      if (r.type==='depot') tbody.appendChild(makeDepRow(r.d, r.label));
+      else if (r.type==='pass') tbody.appendChild(makePassRow(r.p, false));
+      else tbody.appendChild(makePassRow(r.p, true));
+    });
+  }
+
+  if (t.passengers.length>0) {
+    const first=timeToMin(t.passengers[0].time), last=timeToMin(t.passengers[t.passengers.length-1].time);
+    dur.innerHTML=`<span>Durée estimée: <strong>~${last-timeToMin(t.depart)+20} min</strong></span><span>1er→dernier arrêt: <strong>${last-first} min</strong></span>`;
+  } else dur.innerHTML='';
+}
+
+function renderStats() {
+  const unique=new Set([...data.morning.passengers,...data.evening.passengers].map(p=>p.nom));
+  const occ=data.morning.occasional.length+data.evening.occasional.length;
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat"><div class="stat-num">${data.morning.passengers.length}</div><div class="stat-label">Passagers matin</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--evening)">${data.evening.passengers.length}</div><div class="stat-label">Passagers soir</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--accent2)">${unique.size}</div><div class="stat-label">Enfants</div></div>
+    ${occ?`<div class="stat"><div class="stat-num" style="color:var(--occasional)">${occ}</div><div class="stat-label">Occasionnel(s)</div></div>`:''}`;
+}
+
+// ══════════════════════════════════════════════════════════
+//  HEURE D'ARRIVÉE MODIFIABLE
+// ══════════════════════════════════════════════════════════
+function updateArrival(tournee, val) {
+  const t = validateTime(val);
+  if (!t) { alert('Format invalide. Ex: 09:03'); render(); return; }
+  data[tournee].arrivee = t;
+  saveData(); render();
+}
+
+// ══════════════════════════════════════════════════════════
+//  PASSAGERS
+// ══════════════════════════════════════════════════════════
+function deletePassenger(tournee,id){
+  data[tournee].passengers=data[tournee].passengers.filter(p=>p.id!==id);
+  saveData(); render();
+}
+
+function openPassengerModal(tournee,id=null){
+  currentTournee=tournee; editingPassengerId=id;
+  document.getElementById('modalPassagerTitle').textContent=id?'✏️ Modifier le passager':'➕ Nouveau passager';
+  if(id){
+    const p=data[tournee].passengers.find(x=>x.id===id);
+    const parts=p.nom.split(' ');
+    document.getElementById('pNom').value=parts[0]||'';
+    document.getElementById('pPrenom').value=parts.slice(1).join(' ')||'';
+    document.getElementById('pAdresse').value=p.adresse||'';
+    document.getElementById('pCodePostal').value=p.codePostal||'';
+    document.getElementById('pVille').value=p.ville||'';
+    document.getElementById('pNote').value=p.note||'';
+    document.getElementById('pLien').value=p.lien||'Mère';
+    document.getElementById('pTel').value=p.tel||'';
+    document.getElementById('pType').value=p.type||'Montée';
+    document.getElementById('pHeure').value=p.time||'07:00';
+  } else {
+    document.getElementById('pType').value=tournee==='morning'?'Montée':'Descente';
+    ['pNom','pPrenom','pAdresse','pCodePostal','pVille','pNote','pTel'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('pHeure').value=tournee==='morning'?'07:00':'17:00';
+  }
+  document.getElementById('modalPassager').classList.add('open');
+}
+function openEditPassenger(tournee,id){openPassengerModal(tournee,id);}
+function closePassengerModal(){document.getElementById('modalPassager').classList.remove('open');editingPassengerId=null;}
+
+function savePassenger(){
+  const nom=document.getElementById('pNom').value.trim();
+  if(!nom){alert('Veuillez saisir un nom.');return;}
+  const heureRaw = document.getElementById('pHeure').value.trim();
+  const heure = validateTime(heureRaw);
+  if(!heure){alert('Heure invalide. Utilisez le format HH:MM (ex: 07:07)');return;}
+  const obj={
+    nom:`${nom.toUpperCase()} ${document.getElementById('pPrenom').value.trim()}`.trim(),
+    adresse:document.getElementById('pAdresse').value.trim(),
+    codePostal:document.getElementById('pCodePostal').value.trim(),
+    ville:document.getElementById('pVille').value.trim(),
+    note:document.getElementById('pNote').value.trim(),
+    lien:document.getElementById('pLien').value,
+    tel:document.getElementById('pTel').value.trim()||'—',
+    type:document.getElementById('pType').value,
+    time:heure
+  };
+  if(editingPassengerId){
+    Object.assign(data[currentTournee].passengers.find(x=>x.id===editingPassengerId),obj);
+  } else {
+    data[currentTournee].passengers.push({id:nextId++,...obj});
+  }
+  data[currentTournee].passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  saveData(); render(); closePassengerModal();
+}
+
+// ══════════════════════════════════════════════════════════
+//  OCCASIONNELS
+// ══════════════════════════════════════════════════════════
+function openOccasionalModal(tournee){
+  currentTournee=tournee;
+  document.getElementById('oType').value=tournee==='morning'?'Montée':'Descente';
+  document.getElementById('oHeure').value=tournee==='morning'?'07:00':'17:00';
+  ['oNom','oPrenom','oAdresse','oCodePostal','oVille','oNote','oTel'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('modalOccasional').classList.add('open');
+}
+function closeOccasionalModal(){document.getElementById('modalOccasional').classList.remove('open');}
+
+function saveOccasional(){
+  const nom=document.getElementById('oNom').value.trim();
+  if(!nom){alert('Veuillez saisir un nom.');return;}
+  const heureRaw = document.getElementById('oHeure').value.trim();
+  const heure = validateTime(heureRaw);
+  if(!heure){alert('Heure invalide. Utilisez le format HH:MM (ex: 07:07)');return;}
+  const obj={
+    id:nextId++, date:todayStr,
+    nom:`${nom.toUpperCase()} ${document.getElementById('oPrenom').value.trim()}`.trim(),
+    adresse:document.getElementById('oAdresse').value.trim(),
+    codePostal:document.getElementById('oCodePostal').value.trim(),
+    ville:document.getElementById('oVille').value.trim(),
+    note:document.getElementById('oNote').value.trim(),
+    lien:document.getElementById('oLien').value,
+    tel:document.getElementById('oTel').value.trim()||'—',
+    type:document.getElementById('oType').value,
+    time:heure
+  };
+  data[currentTournee].occasional.push(obj);
+  saveData(); render(); closeOccasionalModal();
+}
+
+function deleteOccasional(tournee,id){
+  data[tournee].occasional=data[tournee].occasional.filter(p=>p.id!==id);
+  saveData(); render();
+}
+
+// ══════════════════════════════════════════════════════════
+//  DÉPÔTS
+// ══════════════════════════════════════════════════════════
+function deactivateDepot(tournee,id){
+  const d=data[tournee].depots.find(x=>x.id===id);
+  if(d){d.active=false; saveData(); render();}
+}
+function openDepotModal(tournee){
+  editingDepotTournee=tournee;
+  document.getElementById('depotsTitle').textContent=tournee==='morning'?'📍 Dépôts — Matin':'📍 Dépôts — Soir';
+  renderDepotsList();
+  document.getElementById('modalDepots').classList.add('open');
+}
+function closeDepotModal(){document.getElementById('modalDepots').classList.remove('open');}
+
+function renderDepotsList(){
+  const depots=data[editingDepotTournee].depots;
+  const c=document.getElementById('depotsList');
+  if(!depots.length){c.innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px 0">Aucun dépôt.</p>';return;}
+  c.innerHTML=depots.map(d=>`
+    <div class="depot-item">
+      <input type="checkbox" class="depot-checkbox" ${d.active?'checked':''} onchange="setDepotActive(${d.id},this.checked)">
+      <div class="depot-item-label" style="font-weight:${d.active?600:400};color:${d.active?'var(--text)':'var(--muted)'}">
+        ${d.nom} ${d.adresse?`<span style="color:var(--muted);font-size:11px">(${d.adresse})</span>`:''}
+      </div>
+      <input type="text" class="depot-time-input" value="${d.time}" maxlength="5" onchange="updateDepotTime(${d.id},this.value)">
+      <button class="icon-btn delete-btn" onclick="removeDepot(${d.id})" title="Supprimer">🗑</button>
+    </div>`).join('');
+}
+function setDepotActive(id,val){
+  const d=data[editingDepotTournee].depots.find(x=>x.id===id);
+  if(d){d.active=val; saveData(); renderDepotsList(); render();}
+}
+function updateDepotTime(id,val){
+  const t = validateTime(val);
+  if(!t){alert('Format invalide. Ex: 08:35'); renderDepotsList(); return;}
+  const d=data[editingDepotTournee].depots.find(x=>x.id===id);
+  if(d){d.time=t; saveData(); render();}
+}
+function removeDepot(id){
+  data[editingDepotTournee].depots=data[editingDepotTournee].depots.filter(x=>x.id!==id);
+  saveData(); renderDepotsList(); render();
+}
+function addDepot(){
+  const nom=document.getElementById('dNom').value.trim();
+  if(!nom){alert("Saisir le nom de l'établissement.");return;}
+  const heureRaw = document.getElementById('dHeure').value.trim();
+  const heure = validateTime(heureRaw) || '08:35';
+  data[editingDepotTournee].depots.push({id:nextId++,time:heure,nom,adresse:document.getElementById('dAdresse').value.trim(),active:true});
+  document.getElementById('dNom').value=''; document.getElementById('dAdresse').value=''; document.getElementById('dHeure').value='';
+  saveData(); renderDepotsList(); render();
+}
+
+// Fermer en cliquant dehors
+['modalPassager','modalOccasional','modalDepots'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this){closePassengerModal();closeOccasionalModal();closeDepotModal();}
+  });
+});
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+loadData();
+render();
+</script>
+</body>
+</html>
