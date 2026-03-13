@@ -396,7 +396,7 @@ const DEFAULT_BASE={
       {id:13,time:"17:40",type:"Descente",nom:"BURGAUD", prenom:"Jimmy",   adresse:"Les Brosses",           codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-07-21-XX-XX"},
       {id:14,time:"17:59",type:"Descente",nom:"TOGBA",   prenom:"Kimi Sun",adresse:"Route de la Forêt",     codePostal:"85190",ville:"Aizenay", note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
     ],
-    depots:[{id:201,time:"16:20",nom:"IME La Penière",adresse:"Aizenay",active:true}]
+    departCircuit:"16:30",depots:[{id:201,time:"16:20",nom:"IME La Penière",adresse:"Aizenay",active:true}]
   }
 };
 
@@ -433,6 +433,7 @@ function ensureDayData(dateStr,tournee){
     days[dateStr][tournee]={
       depart:b.depart,
       arrivee:b.arrivee,
+      departCircuit:b.departCircuit||null,
       departAdresse:b.departAdresse,
       departCP:b.departCP,
       departVille:b.departVille,
@@ -460,6 +461,7 @@ function getEffectiveTournee(dateStr,tournee){
   return{
     depart:ov?ov.depart:b.depart,
     arrivee:ov?ov.arrivee:b.arrivee,
+    departCircuit:ov?(ov.departCircuit||b.departCircuit||null):(b.departCircuit||null),
     departAdresse:ov?ov.departAdresse:b.departAdresse,
     departCP:ov?ov.departCP:b.departCP,
     departVille:ov?ov.departVille:b.departVille,
@@ -631,8 +633,17 @@ function renderTournee(tournee){
   dc.innerHTML=`<div class="card-time time-green">${eff.depart}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div><div class="card-address">${da||'Non renseigné'}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('${tournee}')">✏️</button></div>`;
   bodyEl.appendChild(dc);
 
-  // Dépôts en prise (soir)
-  if(tournee==='evening') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Prise',tournee,cls)));
+  // Dépôts en prise (soir) + carte départ circuit
+  if(tournee==='evening'){
+    activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Prise',tournee,cls)));
+    if(eff.departCircuit){
+      const{h:dcH,m:dcM}=splitTime(eff.departCircuit);
+      const dcc=document.createElement('div');
+      dcc.className='passenger-card depart-card';
+      dcc.innerHTML=`<div class="card-time time-evening">${eff.departCircuit}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚌 Départ circuit</span></div><div class="card-address">On repart — début des descentes</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartCircuitModal()">✏️</button></div>`;
+      bodyEl.appendChild(dcc);
+    }
+  }
 
   // Passagers de base (avec absents barrés)
   eff.passengers.forEach(p=>{
@@ -779,7 +790,7 @@ function deleteExtra(tournee,id){
 // ══════════════════════════════════════════
 // DÉPART → RECALC AUTO
 // ══════════════════════════════════════════
-async function onDepartChange(tournee,part,val){
+function onDepartChange(tournee,part,val){
   let ov;
   if(tournee==='occasional'){ov=ensureOccasional(selectedDate);}
   else{ov=ensureDayData(selectedDate,tournee);}
@@ -787,14 +798,44 @@ async function onDepartChange(tournee,part,val){
   const{h,m}=splitTime(cur);
   const newTime=part==='h'?parseHM(val,m):parseHM(h,val);
   if(!newTime)return;
+  const diff=timeToMin(newTime)-timeToMin(cur);
   ov.depart=newTime;
+  if(diff===0){saveData();render();return;}
+  if(tournee==='occasional'){
+    ov.passengers.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
+    ov.depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
+  }else{
+    base[tournee].passengers.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
+    base[tournee].depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
+    ov.extras.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
+    ov.depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
+    if(ov.arrivee)ov.arrivee=minToTime(timeToMin(ov.arrivee)+diff);
+    if(base[tournee].arrivee)base[tournee].arrivee=minToTime(timeToMin(base[tournee].arrivee)+diff);
+    if(base[tournee].departCircuit)base[tournee].departCircuit=minToTime(timeToMin(base[tournee].departCircuit)+diff);
+    if(ov.departCircuit)ov.departCircuit=minToTime(timeToMin(ov.departCircuit)+diff);
+  }
   saveData();render();
-  // Recalcul automatique
-  await recalcWithRouting(tournee);
 }
 function updateArriveeH(t,v){const ov=ensureDayData(selectedDate,t);const{m}=splitTime(ov.arrivee||'09:00');const r=parseHM(v,m);if(r){ov.arrivee=r;saveData();render();}}
 function updateArriveeM(t,v){const ov=ensureDayData(selectedDate,t);const{h}=splitTime(ov.arrivee||'09:00');const r=parseHM(h,v);if(r){ov.arrivee=r;saveData();render();}}
 
+function openDepartCircuitModal(){
+  const eff=getEffectiveTournee(selectedDate,'evening');
+  const{h,m}=splitTime(eff.departCircuit||'16:30');
+  const html=`<div class="modal-overlay open" id="modalDeptCircuit"><div class="modal"><div class="modal-handle"></div><h2>🚌 Heure de départ du circuit</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Heure à laquelle tu repars de l'IME pour commencer les descentes.</p><div class="form-group"><label>Heure de départ circuit</label><div class="time-inputs"><input type="text" id="dcH" value="${h}" maxlength="2" inputmode="numeric" placeholder="16"><span class="time-sep">:</span><input type="text" id="dcM" value="${m}" maxlength="2" inputmode="numeric" placeholder="30"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('modalDeptCircuit').remove()">Annuler</button><button class="btn-save" onclick="saveDepartCircuit()">Enregistrer</button></div></div></div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+  setupTimeField('dcH','dcM');
+  document.getElementById('modalDeptCircuit').addEventListener('click',function(e){if(e.target===this)this.remove();});
+}
+function saveDepartCircuit(){
+  const heure=parseHM(document.getElementById('dcH').value,document.getElementById('dcM').value);
+  if(!heure){alert('Heure invalide');return;}
+  const ov=ensureDayData(selectedDate,'evening');
+  ov.departCircuit=heure;
+  base['evening'].departCircuit=heure;
+  document.getElementById('modalDeptCircuit').remove();
+  saveData();render();
+}
 function resetOccasional(){
   if(!confirm('Effacer le circuit occasionnel de ce jour ?'))return;
   if(days[selectedDate])delete days[selectedDate].occasional;
