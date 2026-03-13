@@ -420,23 +420,51 @@ document.addEventListener('click',function(e){
 const cpCache={};let cpTimer=null;
 async function autoFillCity(cp,villeId,statusId){
   const status=document.getElementById(statusId),villeEl=document.getElementById(villeId);
+  // Trouver la liste ac associée à villeId
+  const villeWrap=villeEl.closest('.ac-wrap');
+  const acList=villeWrap?villeWrap.querySelector('.ac-list'):null;
   cp=cp.replace(/\D/g,'');
-  if(cp.length<5){status.textContent='';return;}
-  if(cpCache[cp]){villeEl.value=cpCache[cp];status.textContent='✓ '+cpCache[cp];status.style.color='var(--accent2)';return;}
+  if(cp.length<5){status.textContent='';if(acList)acList.classList.remove('open');return;}
+  if(cpCache[cp]){
+    const villes=cpCache[cp];
+    if(villes.length===1){villeEl.value=villes[0];status.textContent='✓ '+villes[0];status.style.color='var(--accent2)';}
+    else{status.textContent=villes.length+' communes — choisir ↓';status.style.color='var(--accent)';showCpChoices(villes,villeEl,acList,status);}
+    return;
+  }
   status.textContent='⏳ Recherche…';
   clearTimeout(cpTimer);
   cpTimer=setTimeout(async()=>{
     try{
-      const res=await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=1`);
+      const res=await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=20`);
       const json=await res.json();
       if(json&&json.length>0){
-        cpCache[cp]=json[0].nom;
-        villeEl.value=json[0].nom;
-        status.textContent='✓ '+json[0].nom;
-        status.style.color='var(--accent2)';
+        const villes=json.map(c=>c.nom);
+        cpCache[cp]=villes;
+        if(villes.length===1){
+          villeEl.value=villes[0];
+          status.textContent='✓ '+villes[0];
+          status.style.color='var(--accent2)';
+        }else{
+          status.textContent=villes.length+' communes — choisir ↓';
+          status.style.color='var(--accent)';
+          showCpChoices(villes,villeEl,acList,status);
+        }
       }else{status.textContent='Inconnu — saisir manuellement';status.style.color='var(--danger)';}
     }catch(e){status.textContent='Hors ligne — saisir manuellement';status.style.color='var(--muted)';}
   },400);
+}
+function showCpChoices(villes,villeEl,acList,status){
+  if(!acList)return;
+  acList.innerHTML=villes.map(v=>`<div class="ac-item" onclick="pickCpVille('${v.replace(/'/g,"\\'")}',this)"><div class="ac-name">${v}</div></div>`).join('');
+  acList._villeEl=villeEl;
+  acList._status=status;
+  acList.classList.add('open');
+}
+function pickCpVille(ville,el){
+  const list=el.closest('.ac-list');
+  if(list._villeEl)list._villeEl.value=ville;
+  if(list._status){list._status.textContent='✓ '+ville;list._status.style.color='var(--accent2)';}
+  list.classList.remove('open');
 }
 
 // ═══════════════════════════════════════════
