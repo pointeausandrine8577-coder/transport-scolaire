@@ -6,143 +6,147 @@
 <title>Transport Scolaire — ETS85-AIZ-C05</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0d1117; --surface:#161b22; --surface2:#21262d; --border:#30363d;
-    --accent:#f0a500; --accent2:#3fb950; --text:#e6edf3; --muted:#8b949e;
-    --danger:#f85149; --blue:#58a6ff; --morning:#f0a500; --evening:#58a6ff;
-    --occasional:#c084fc;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--accent:#f0a500;--accent2:#3fb950;--text:#e6edf3;--muted:#8b949e;--danger:#f85149;--blue:#58a6ff;--morning:#f0a500;--evening:#58a6ff;--occasional:#c084fc;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;}
 
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
-  .bus-icon{font-size:22px;background:var(--accent);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .header-info{flex:1;min-width:0;}
-  header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;}
-  header p{font-size:11px;color:var(--muted);margin-top:1px;}
-  .date-badge{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:6px 10px;text-align:right;flex-shrink:0;}
-  .date-day{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--accent);}
-  .date-full{font-size:10px;color:var(--muted);margin-top:1px;}
-  .save-indicator{font-size:10px;color:var(--accent2);margin-top:2px;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;}
+.bus-icon{font-size:20px;background:var(--accent);width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-info{flex:1;min-width:0;}
+header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
+header p{font-size:10px;color:var(--muted);}
+.save-indicator{font-size:10px;color:var(--accent2);}
 
-  .container{max-width:960px;margin:0 auto;padding:16px 12px;}
-  .stats-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 14px;flex:1;min-width:80px;}
-  .stat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);}
-  .stat-label{font-size:10px;color:var(--muted);margin-top:2px;}
+/* WEEK NAV */
+.week-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.week-nav::-webkit-scrollbar{display:none;}
+.day-btn{flex-shrink:0;padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-align:center;min-width:52px;transition:all .2s;}
+.day-btn .day-name{display:block;font-size:10px;margin-bottom:2px;}
+.day-btn .day-num{display:block;font-size:15px;}
+.day-btn.today{border-color:var(--accent);color:var(--accent);}
+.day-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+.day-btn.has-changes::after{content:'•';color:var(--occasional);font-size:8px;display:block;margin-top:1px;}
+.day-btn.weekend{opacity:0.35;}
 
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
-  .btn-group{display:flex;gap:6px;flex-wrap:wrap;}
-  .btn{border:none;border-radius:9px;padding:8px 12px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.2s;white-space:nowrap;}
-  .btn-primary{background:var(--accent);color:#000;}
-  .btn-primary:hover{background:#ffc107;}
-  .btn-blue{background:rgba(88,166,255,0.12);color:var(--blue);border:1px solid rgba(88,166,255,0.3);}
-  .btn-purple{background:rgba(192,132,252,0.12);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
-  .btn-green{background:rgba(63,185,80,0.12);color:var(--accent2);border:1px solid rgba(63,185,80,0.3);}
-  .btn-red{background:rgba(248,81,73,0.12);color:var(--danger);border:1px solid rgba(248,81,73,0.3);}
+.container{max-width:960px;margin:0 auto;padding:14px 12px;}
+.stats-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;flex:1;min-width:72px;}
+.stat-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);}
+.stat-label{font-size:10px;color:var(--muted);margin-top:1px;}
 
-  .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.4px;}
-  .badge-morning{background:rgba(240,165,0,0.15);color:var(--morning);border:1px solid rgba(240,165,0,0.3);}
-  .badge-evening{background:rgba(88,166,255,0.15);color:var(--evening);border:1px solid rgba(88,166,255,0.3);}
-  .badge-occasional{background:rgba(192,132,252,0.15);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:6px;flex-wrap:wrap;}
+.btn-group{display:flex;gap:5px;flex-wrap:wrap;}
+.btn{border:none;border-radius:8px;padding:7px 11px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#000;}
+.btn-blue{background:rgba(88,166,255,0.12);color:var(--blue);border:1px solid rgba(88,166,255,0.3);}
+.btn-purple{background:rgba(192,132,252,0.12);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
+.btn-green{background:rgba(63,185,80,0.12);color:var(--accent2);border:1px solid rgba(63,185,80,0.3);}
+.btn-red{background:rgba(248,81,73,0.12);color:var(--danger);border:1px solid rgba(248,81,73,0.3);}
 
-  .route-block{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden;margin-bottom:16px;}
-  .route-block.occasional-block{border-color:rgba(192,132,252,0.35);}
-  .route-meta{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:12px;font-size:11px;color:var(--muted);background:var(--surface2);flex-wrap:wrap;align-items:center;}
-  .route-meta span{display:flex;align-items:center;gap:4px;}
-  .route-meta strong{color:var(--text);}
-  .meta-time-edit{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:3px 7px;color:var(--text);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;width:34px;text-align:center;}
-  .meta-time-edit:focus{outline:none;border-color:var(--accent);}
+.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-morning{background:rgba(240,165,0,0.15);color:var(--morning);border:1px solid rgba(240,165,0,0.3);}
+.badge-evening{background:rgba(88,166,255,0.15);color:var(--evening);border:1px solid rgba(88,166,255,0.3);}
+.badge-occasional{background:rgba(192,132,252,0.15);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
 
-  .cards-list{padding:8px;display:flex;flex-direction:column;gap:8px;}
-  .passenger-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;}
-  .passenger-card.depot-card{background:rgba(88,166,255,0.04);border-color:rgba(88,166,255,0.2);}
-  .passenger-card.depart-card{background:rgba(63,185,80,0.04);border-color:rgba(63,185,80,0.2);}
-  .passenger-card.occasional-pass{background:rgba(192,132,252,0.04);border-color:rgba(192,132,252,0.15);}
+.route-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.route-block.occasional-block{border-color:rgba(192,132,252,0.35);}
+.route-meta{padding:9px 13px;border-bottom:1px solid var(--border);display:flex;gap:10px;font-size:11px;color:var(--muted);background:var(--surface2);flex-wrap:wrap;align-items:center;}
+.meta-time-edit{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 6px;color:var(--text);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;width:32px;text-align:center;}
+.meta-time-edit:focus{outline:none;border-color:var(--accent);}
 
-  .card-time{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;min-width:54px;flex-shrink:0;padding-top:2px;}
-  .time-morning{color:var(--morning);}
-  .time-evening{color:var(--evening);}
-  .time-occasional{color:var(--occasional);}
-  .time-green{color:var(--accent2);}
-  .card-body{flex:1;min-width:0;}
-  .card-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
-  .card-name{font-weight:600;font-size:14px;}
-  .card-address{font-size:12px;color:var(--muted);margin-bottom:3px;word-break:break-word;}
-  .card-note{font-size:11px;color:#6e7681;font-style:italic;}
-  .card-contact{font-size:11px;color:var(--muted);font-family:monospace;margin-top:4px;}
-  .card-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
-  .icon-btn{background:none;border:1px solid var(--border);width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-  .edit-btn:hover{background:rgba(240,165,0,0.12);border-color:rgba(240,165,0,0.4);}
-  .delete-btn:hover{background:rgba(248,81,73,0.1);border-color:rgba(248,81,73,0.4);}
+.cards-list{padding:7px;display:flex;flex-direction:column;gap:7px;}
+.passenger-card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;}
+.passenger-card.depot-card{background:rgba(88,166,255,0.04);border-color:rgba(88,166,255,0.2);}
+.passenger-card.depart-card{background:rgba(63,185,80,0.04);border-color:rgba(63,185,80,0.2);}
+.passenger-card.occasional-pass{background:rgba(192,132,252,0.04);border-color:rgba(192,132,252,0.15);}
+.passenger-card.absent-card{opacity:0.4;background:rgba(248,81,73,0.04);border-color:rgba(248,81,73,0.15);text-decoration:line-through;}
+.passenger-card.extra-card{background:rgba(63,185,80,0.04);border-color:rgba(63,185,80,0.2);}
 
-  .type-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;}
-  .type-montee{background:rgba(63,185,80,0.1);color:var(--accent2);}
-  .type-descente{background:rgba(248,81,73,0.12);color:#ff7b72;}
-  .type-depot{background:rgba(88,166,255,0.1);color:var(--blue);}
-  .type-depart{background:rgba(63,185,80,0.1);color:var(--accent2);}
+.card-time{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;min-width:50px;flex-shrink:0;padding-top:2px;}
+.time-morning{color:var(--morning);}
+.time-evening{color:var(--evening);}
+.time-occasional{color:var(--occasional);}
+.time-green{color:var(--accent2);}
+.card-body{flex:1;min-width:0;}
+.card-top{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
+.card-name{font-weight:600;font-size:13px;}
+.card-address{font-size:11px;color:var(--muted);margin-bottom:2px;word-break:break-word;}
+.card-note{font-size:10px;color:#6e7681;font-style:italic;}
+.card-contact{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;}
+.card-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.icon-btn{background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.edit-btn:hover{background:rgba(240,165,0,0.12);border-color:rgba(240,165,0,0.4);}
+.delete-btn:hover{background:rgba(248,81,73,0.1);border-color:rgba(248,81,73,0.4);}
+.restore-btn{background:rgba(63,185,80,0.1);border-color:rgba(63,185,80,0.3);}
 
-  .duration-info{font-size:11px;color:var(--muted);padding:8px 14px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
-  .empty-state{text-align:center;padding:28px;color:var(--muted);font-size:13px;}
+.type-badge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;}
+.type-montee{background:rgba(63,185,80,0.1);color:var(--accent2);}
+.type-descente{background:rgba(248,81,73,0.12);color:#ff7b72;}
+.type-depot{background:rgba(88,166,255,0.1);color:var(--blue);}
+.type-depart{background:rgba(63,185,80,0.1);color:var(--accent2);}
+.type-extra{background:rgba(63,185,80,0.15);color:var(--accent2);}
+.type-absent{background:rgba(248,81,73,0.12);color:var(--danger);}
 
-  .routing-banner{background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--accent2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-  .routing-banner.loading{background:rgba(240,165,0,0.08);border-color:rgba(240,165,0,0.2);color:var(--accent);}
-  .routing-banner.error{background:rgba(248,81,73,0.08);border-color:rgba(248,81,73,0.2);color:var(--danger);}
-  .occasional-info{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.2);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--occasional);margin-bottom:12px;}
+.duration-info{font-size:11px;color:var(--muted);padding:7px 13px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;}
+.empty-state{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
 
-  /* MODALS */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;align-items:flex-end;justify-content:center;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:12px 18px 36px;width:100%;max-width:540px;animation:slideUp .25s ease;max-height:94vh;overflow-y:auto;}
-  @keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-  .modal-handle{width:44px;height:5px;background:var(--border);border-radius:3px;margin:0 auto 18px;}
-  .modal h2{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;}
-  .form-group{margin-bottom:12px;position:relative;}
-  label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
-  input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;}
-  textarea{resize:vertical;min-height:60px;font-size:14px;}
-  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
-  select option{background:var(--surface2);}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .modal-actions{display:flex;gap:8px;margin-top:20px;}
-  .btn-cancel{flex:1;padding:13px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-  .btn-save{flex:2;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
-  .btn-save-purple{background:var(--occasional)!important;color:#000;}
+.routing-banner{background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--accent2);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.routing-banner.loading{background:rgba(240,165,0,0.08);border-color:rgba(240,165,0,0.2);color:var(--accent);}
+.routing-banner.error{background:rgba(248,81,73,0.08);border-color:rgba(248,81,73,0.2);color:var(--danger);}
+.occasional-info{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--occasional);margin-bottom:10px;}
 
-  .time-inputs{display:flex;align-items:center;gap:6px;}
-  .time-inputs input{text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:18px;padding:10px 6px;width:60px;}
-  .time-sep{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--accent);}
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:12px 18px 36px;width:100%;max-width:540px;animation:slideUp .25s ease;max-height:94vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:44px;height:5px;background:var(--border);border-radius:3px;margin:0 auto 16px;}
+.modal h2{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;}
+.form-group{margin-bottom:11px;position:relative;}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
+input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;}
+textarea{resize:vertical;min-height:56px;font-size:14px;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+select option{background:var(--surface2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.modal-actions{display:flex;gap:7px;margin-top:18px;}
+.btn-cancel{flex:1;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;color:var(--text);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-save{flex:2;padding:12px;background:var(--accent);border:none;border-radius:11px;color:#000;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-save-purple{background:var(--occasional)!important;color:#000;}
+.btn-save-green{background:var(--accent2)!important;color:#000;}
 
-  .cp-row{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;align-items:start;}
-  .cp-loading{font-size:10px;color:var(--muted);margin-top:3px;min-height:14px;}
+.time-inputs{display:flex;align-items:center;gap:6px;}
+.time-inputs input{text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:18px;padding:10px 6px;width:58px;}
+.time-sep{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--accent);}
 
-  /* AUTOCOMPLETE */
-  .ac-wrap{position:relative;}
-  .ac-list{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--accent);border-radius:10px;z-index:500;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);margin-top:3px;display:none;}
-  .ac-list.open{display:block;}
-  .ac-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
-  .ac-item:last-child{border-bottom:none;}
-  .ac-item:hover,.ac-item.selected{background:rgba(240,165,0,0.1);}
-  .ac-name{font-weight:600;font-size:14px;}
-  .ac-detail{font-size:11px;color:var(--muted);}
-  .ac-new{padding:11px 14px;cursor:pointer;color:var(--accent2);font-size:13px;font-style:italic;}
-  .ac-new:hover{background:rgba(63,185,80,0.08);}
+.cp-row{display:grid;grid-template-columns:1fr 1.5fr;gap:9px;align-items:start;}
+.cp-loading{font-size:10px;color:var(--muted);margin-top:3px;min-height:14px;}
 
-  .depot-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);}
-  .depot-item:last-child{border-bottom:none;}
-  .depot-checkbox{width:20px;height:20px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
-  .depot-item-label{flex:1;font-size:13px;}
-  .depot-time-h,.depot-time-m{width:46px!important;padding:5px 4px!important;font-size:13px!important;text-align:center;flex-shrink:0;}
-  .section-divider{margin:16px 0 12px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+/* AUTOCOMPLETE */
+.ac-wrap{position:relative;}
+.ac-list{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--accent);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);margin-top:3px;display:none;}
+.ac-list.open{display:block;}
+.ac-item{padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover{background:rgba(240,165,0,0.1);}
+.ac-name{font-weight:600;font-size:13px;}
+.ac-detail{font-size:11px;color:var(--muted);}
 
-  .spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,165,0,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+.depot-item{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--border);}
+.depot-item:last-child{border-bottom:none;}
+.depot-checkbox{width:20px;height:20px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.depot-item-label{flex:1;font-size:13px;}
+.depot-time-h,.depot-time-m{width:44px!important;padding:5px 3px!important;font-size:13px!important;text-align:center;flex-shrink:0;}
+.section-divider{margin:14px 0 11px;padding-top:13px;border-top:1px solid var(--border);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
 
-  @media(min-width:700px){
-    .modal-overlay{align-items:center;padding:16px;}
-    .modal{border-radius:18px;padding:24px;}
-    .modal-handle{display:none;}
-  }
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,165,0,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(min-width:700px){
+  .modal-overlay{align-items:center;padding:16px;}
+  .modal{border-radius:18px;padding:22px;}
+  .modal-handle{display:none;}
+}
 </style>
 </head>
 <body>
@@ -153,12 +157,11 @@
     <h1>Transport Scolaire</h1>
     <p>ETS85-AIZ-C05</p>
   </div>
-  <div class="date-badge">
-    <div class="date-day" id="dateDay"></div>
-    <div class="date-full" id="dateFull"></div>
-    <div class="save-indicator" id="saveIndicator">✓ Sauvegardé</div>
-  </div>
+  <div class="save-indicator" id="saveIndicator">✓ Sauvegardé</div>
 </header>
+
+<!-- NAVIGATION SEMAINE -->
+<div class="week-nav" id="weekNav"></div>
 
 <div class="container">
   <div id="routingStatus"></div>
@@ -166,7 +169,7 @@
 
   <!-- MATIN -->
   <div class="section-header">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;"><span class="badge badge-morning">☀️ MATIN</span></div>
+    <span class="badge badge-morning">☀️ MATIN</span>
     <div class="btn-group">
       <button class="btn btn-green" onclick="recalcWithRouting('morning')">🗺 Recalc.</button>
       <button class="btn btn-blue" onclick="openDepotModal('morning')">📍 Dépôts</button>
@@ -181,7 +184,7 @@
 
   <!-- SOIR -->
   <div class="section-header">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;"><span class="badge badge-evening">🌙 SOIR</span></div>
+    <span class="badge badge-evening">🌙 SOIR</span>
     <div class="btn-group">
       <button class="btn btn-green" onclick="recalcWithRouting('evening')">🗺 Recalc.</button>
       <button class="btn btn-blue" onclick="openDepotModal('evening')">📍 Dépôts</button>
@@ -196,7 +199,7 @@
 
   <!-- OCCASIONNEL -->
   <div class="section-header">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;"><span class="badge badge-occasional">⚡ OCCASIONNEL</span></div>
+    <span class="badge badge-occasional">⚡ OCCASIONNEL</span>
     <div class="btn-group">
       <button class="btn btn-red" onclick="resetOccasional()" id="btnResetOcc" style="display:none">🗑 Effacer</button>
       <button class="btn btn-green" onclick="recalcWithRouting('occasional')" id="btnRecalcOcc" style="display:none">🗺 Recalc.</button>
@@ -204,7 +207,7 @@
       <button class="btn btn-purple" onclick="openPassengerModal('occasional')">+ Passager</button>
     </div>
   </div>
-  <div class="occasional-info">⚡ Circuit ponctuel du jour — effacé automatiquement demain</div>
+  <div class="occasional-info">⚡ Circuit ponctuel — spécifique à ce jour</div>
   <div class="route-block occasional-block" id="occasionalBlock" style="display:none">
     <div class="route-meta" id="occasionalMeta"></div>
     <div class="cards-list" id="occasionalBody"></div>
@@ -217,8 +220,6 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <h2 id="modalPassagerTitle">➕ Nouveau passager</h2>
-
-    <!-- Recherche carnet -->
     <div class="form-group">
       <label>🔍 Rechercher dans le carnet</label>
       <div class="ac-wrap">
@@ -226,45 +227,36 @@
         <div class="ac-list" id="pSearchList"></div>
       </div>
     </div>
-
     <div class="form-row">
       <div class="form-group"><label>Nom</label><input type="text" id="pNom" placeholder="DUPONT" autocomplete="off"></div>
       <div class="form-group"><label>Prénom</label><input type="text" id="pPrenom" placeholder="Lucas" autocomplete="off"></div>
     </div>
-
-    <!-- Adresse avec autocomplete -->
-    <div class="form-group">
-      <label>Adresse (rue)</label>
+    <div class="form-group"><label>Adresse (rue)</label>
       <div class="ac-wrap">
-        <input type="text" id="pAdresse" placeholder="12 rue des Lilas" autocomplete="off" oninput="searchAddress(this.value)">
+        <input type="text" id="pAdresse" placeholder="12 rue des Lilas" autocomplete="off" oninput="searchAddress(this.value,'pAdresseList','pCodePostal','pVille','pCpStatus')">
         <div class="ac-list" id="pAdresseList"></div>
       </div>
     </div>
-
     <div class="cp-row">
       <div class="form-group">
         <label>Code postal</label>
-        <input type="text" id="pCodePostal" placeholder="85190" maxlength="5" inputmode="numeric" oninput="autoFillCity(this.value,'pVille','pCpStatus')">
+        <input type="text" id="pCodePostal" placeholder="85190" maxlength="5" inputmode="numeric" oninput="autoFillCity(this.value,'pVille','pCpStatus','pVilleList')">
         <div class="cp-loading" id="pCpStatus"></div>
       </div>
-      <div class="form-group">
-        <label>Ville (auto)</label>
+      <div class="form-group"><label>Ville (auto)</label>
         <div class="ac-wrap">
-          <input type="text" id="pVille" placeholder="Rempli auto…" autocomplete="off" oninput="searchVille(this.value)">
+          <input type="text" id="pVille" placeholder="Rempli auto…" autocomplete="off" oninput="searchVille(this.value,'pVilleList')">
           <div class="ac-list" id="pVilleList"></div>
         </div>
       </div>
     </div>
-
-    <div class="form-group"><label>Note / Repère</label><textarea id="pNote" placeholder="Portail bleu, 2ème maison..."></textarea></div>
+    <div class="form-group"><label>Note / Repère</label><textarea id="pNote" placeholder="Portail bleu..."></textarea></div>
     <div class="form-row">
-      <div class="form-group"><label>Lien</label>
-        <select id="pLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
+      <div class="form-group"><label>Lien</label><select id="pLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
       <div class="form-group"><label>Téléphone</label><input type="tel" id="pTel" placeholder="06 XX XX XX XX"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Type</label>
-        <select id="pType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
+      <div class="form-group"><label>Type</label><select id="pType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
       <div class="form-group"><label>Heure</label>
         <div class="time-inputs">
           <input type="text" id="pH" placeholder="07" maxlength="2" inputmode="numeric">
@@ -285,7 +277,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <h2 id="depotsTitle">📍 Gérer les dépôts</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Cochez les dépôts actifs aujourd'hui.</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Cochez les dépôts actifs.</p>
     <div id="depotsList"></div>
     <div class="section-divider">Ajouter un établissement</div>
     <div class="form-row">
@@ -299,195 +291,81 @@
       </div>
     </div>
     <div class="form-group"><label>Adresse (optionnel)</label><input type="text" id="dAdresse" placeholder="Aizenay"></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;font-size:14px;margin-top:4px" onclick="addDepot()">+ Ajouter</button>
-    <div class="modal-actions" style="margin-top:14px">
-      <button class="btn-cancel" onclick="closeDepotModal()">Fermer</button>
-    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:13px;margin-top:4px" onclick="addDepot()">+ Ajouter</button>
+    <div class="modal-actions" style="margin-top:12px"><button class="btn-cancel" onclick="closeDepotModal()">Fermer</button></div>
   </div>
 </div>
 
 <script>
 const ORS_KEY='eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImI4MWRkNjZhYzMxODRjZDI5NjVlNmUwMTcwZmY2NzVmIiwiaCI6Im11cm11cjY0In0=';
-const TODAY=new Date();
-const todayStr=TODAY.toISOString().split('T')[0];
-const JOURS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const JOURS_COURT=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const JOURS_LONG=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-document.getElementById('dateDay').textContent=JOURS[TODAY.getDay()];
-document.getElementById('dateFull').textContent=`${TODAY.getDate()} ${MOIS[TODAY.getMonth()]} ${TODAY.getFullYear()}`;
 
-// ═══════════════════════════════════════════
-// CARNET D'ADRESSES
-// ═══════════════════════════════════════════
-// Structure: [{nom, prenom, adresse, codePostal, ville, lien, tel, note}]
-let carnet=[];
+// ══════════════════════════════════════════
+// SEMAINE — Navigation
+// ══════════════════════════════════════════
+let selectedDate=getTodayStr();
 
-function loadCarnet(){
-  try{carnet=JSON.parse(localStorage.getItem('transport_carnet')||'[]');}
-  catch(e){carnet=[];}
-}
-function saveCarnet(){
-  localStorage.setItem('transport_carnet',JSON.stringify(carnet));
-}
-function addOrUpdateCarnet(p){
-  // Clé unique = nom complet normalisé
-  const key=normalizeStr(p.nom+p.prenom);
-  const idx=carnet.findIndex(c=>normalizeStr(c.nom+c.prenom)===key);
-  const entry={nom:p.nom,prenom:p.prenom,adresse:p.adresse,codePostal:p.codePostal,ville:p.ville,lien:p.lien,tel:p.tel,note:p.note||''};
-  if(idx>=0) carnet[idx]=entry;
-  else carnet.push(entry);
-  saveCarnet();
-}
-function normalizeStr(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');}
+function getTodayStr(){return new Date().toISOString().split('T')[0];}
 
-// Recherche dans le carnet par nom/prénom
-function searchContact(val){
-  const list=document.getElementById('pSearchList');
-  if(!val||val.length<2){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const results=carnet.filter(c=>normalizeStr(c.nom+c.prenom).includes(q)||normalizeStr(c.prenom+c.nom).includes(q)||normalizeStr(c.nom).startsWith(q)||normalizeStr(c.prenom).startsWith(q)).slice(0,6);
-  if(!results.length){list.classList.remove('open');return;}
-  list.innerHTML=results.map((c,i)=>`
-    <div class="ac-item" onclick="fillFromCarnet(${i})">
-      <div class="ac-name">${c.nom} ${c.prenom}</div>
-      <div class="ac-detail">${[c.adresse,c.codePostal,c.ville].filter(Boolean).join(', ')} · ${c.lien}: ${c.tel}</div>
-    </div>`).join('');
-  list._results=results;
-  list.classList.add('open');
-}
-function fillFromCarnet(idx){
-  const list=document.getElementById('pSearchList');
-  const c=list._results[idx];
-  if(!c)return;
-  document.getElementById('pNom').value=c.nom;
-  document.getElementById('pPrenom').value=c.prenom;
-  document.getElementById('pAdresse').value=c.adresse||'';
-  document.getElementById('pCodePostal').value=c.codePostal||'';
-  document.getElementById('pVille').value=c.ville||'';
-  document.getElementById('pNote').value=c.note||'';
-  document.getElementById('pLien').value=c.lien||'Mère';
-  document.getElementById('pTel').value=c.tel||'';
-  document.getElementById('pSearch').value=`${c.nom} ${c.prenom}`;
-  list.classList.remove('open');
-  if(c.codePostal){document.getElementById('pCpStatus').textContent='✓ '+c.ville;document.getElementById('pCpStatus').style.color='var(--accent2)';}
-}
-
-// Recherche adresse dans le carnet
-function searchAddress(val){
-  const list=document.getElementById('pAdresseList');
-  if(!val||val.length<3){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const addrs=[...new Set(carnet.map(c=>c.adresse).filter(Boolean))].filter(a=>normalizeStr(a).includes(q)).slice(0,5);
-  if(!addrs.length){list.classList.remove('open');return;}
-  list.innerHTML=addrs.map(a=>`<div class="ac-item" onclick="pickAddress('${a.replace(/'/g,"\\'")}')"><div class="ac-name">${a}</div></div>`).join('');
-  list.classList.add('open');
-}
-function pickAddress(addr){
-  document.getElementById('pAdresse').value=addr;
-  document.getElementById('pAdresseList').classList.remove('open');
-  // Si on trouve une entrée avec cette adresse, on peut aussi remplir CP/ville
-  const match=carnet.find(c=>c.adresse===addr);
-  if(match&&match.codePostal){
-    document.getElementById('pCodePostal').value=match.codePostal;
-    document.getElementById('pVille').value=match.ville||'';
-    document.getElementById('pCpStatus').textContent='✓ '+match.ville;
-    document.getElementById('pCpStatus').style.color='var(--accent2)';
+function getWeekDates(){
+  // Lundi de la semaine contenant selectedDate
+  const d=new Date(selectedDate+'T12:00:00');
+  const day=d.getDay();
+  const monday=new Date(d);
+  monday.setDate(d.getDate()-(day===0?6:day-1));
+  const dates=[];
+  for(let i=0;i<7;i++){
+    const dd=new Date(monday);
+    dd.setDate(monday.getDate()+i);
+    dates.push(dd.toISOString().split('T')[0]);
   }
+  return dates;
 }
 
-// Recherche ville dans le carnet
-function searchVille(val){
-  const list=document.getElementById('pVilleList');
-  if(!val||val.length<2){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const villes=[...new Set(carnet.map(c=>c.ville).filter(Boolean))].filter(v=>normalizeStr(v).includes(q)).slice(0,5);
-  if(!villes.length){list.classList.remove('open');return;}
-  list.innerHTML=villes.map(v=>`<div class="ac-item" onclick="pickVille('${v.replace(/'/g,"\\'")}')"><div class="ac-name">${v}</div></div>`).join('');
-  list.classList.add('open');
-}
-function pickVille(v){
-  document.getElementById('pVille').value=v;
-  document.getElementById('pVilleList').classList.remove('open');
+function renderWeekNav(){
+  const nav=document.getElementById('weekNav');
+  const today=getTodayStr();
+  const dates=getWeekDates();
+  nav.innerHTML='';
+
+  // Flèche semaine précédente
+  const prev=document.createElement('button');
+  prev.className='day-btn';prev.style.minWidth='30px';prev.textContent='‹';
+  prev.onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()-7);selectedDate=d.toISOString().split('T')[0];renderWeekNav();render();};
+  nav.appendChild(prev);
+
+  dates.forEach(dateStr=>{
+    const d=new Date(dateStr+'T12:00:00');
+    const isWeekend=d.getDay()===0||d.getDay()===6;
+    const btn=document.createElement('button');
+    btn.className='day-btn'+(dateStr===today?' today':'')+(dateStr===selectedDate?' active':'')+(isWeekend?' weekend':'');
+    btn.innerHTML=`<span class="day-name">${JOURS_COURT[d.getDay()]}</span><span class="day-num">${d.getDate()}</span>`;
+    // Indicateur si ce jour a des modifications
+    const dayData=getDayData(dateStr);
+    if(dayData&&(dayData.morning.absents.length||dayData.morning.extras.length||dayData.evening.absents.length||dayData.evening.extras.length||(dayData.occasional&&dayData.occasional.passengers.length))){
+      btn.classList.add('has-changes');
+    }
+    btn.onclick=()=>{selectedDate=dateStr;renderWeekNav();render();};
+    nav.appendChild(btn);
+  });
+
+  // Flèche semaine suivante
+  const next=document.createElement('button');
+  next.className='day-btn';next.style.minWidth='30px';next.textContent='›';
+  next.onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+7);selectedDate=d.toISOString().split('T')[0];renderWeekNav();render();};
+  nav.appendChild(next);
 }
 
-// Fermer les listes au clic extérieur
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));
-});
-
-// ═══════════════════════════════════════════
-// AUTO-FILL VILLE PAR CP (API gouvernement)
-// ═══════════════════════════════════════════
-const cpCache={};let cpTimer=null;
-async function autoFillCity(cp,villeId,statusId){
-  const status=document.getElementById(statusId),villeEl=document.getElementById(villeId);
-  // Trouver la liste ac associée à villeId
-  const villeWrap=villeEl.closest('.ac-wrap');
-  const acList=villeWrap?villeWrap.querySelector('.ac-list'):null;
-  cp=cp.replace(/\D/g,'');
-  if(cp.length<5){status.textContent='';if(acList)acList.classList.remove('open');return;}
-  if(cpCache[cp]){
-    const villes=cpCache[cp];
-    if(villes.length===1){villeEl.value=villes[0];status.textContent='✓ '+villes[0];status.style.color='var(--accent2)';}
-    else{status.textContent=villes.length+' communes — choisir ↓';status.style.color='var(--accent)';showCpChoices(villes,villeEl,acList,status);}
-    return;
-  }
-  status.textContent='⏳ Recherche…';
-  clearTimeout(cpTimer);
-  cpTimer=setTimeout(async()=>{
-    try{
-      const res=await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=20`);
-      const json=await res.json();
-      if(json&&json.length>0){
-        const villes=json.map(c=>c.nom);
-        cpCache[cp]=villes;
-        if(villes.length===1){
-          villeEl.value=villes[0];
-          status.textContent='✓ '+villes[0];
-          status.style.color='var(--accent2)';
-        }else{
-          status.textContent=villes.length+' communes — choisir ↓';
-          status.style.color='var(--accent)';
-          showCpChoices(villes,villeEl,acList,status);
-        }
-      }else{status.textContent='Inconnu — saisir manuellement';status.style.color='var(--danger)';}
-    }catch(e){status.textContent='Hors ligne — saisir manuellement';status.style.color='var(--muted)';}
-  },400);
-}
-function showCpChoices(villes,villeEl,acList,status){
-  if(!acList)return;
-  acList.innerHTML=villes.map(v=>`<div class="ac-item" onclick="pickCpVille('${v.replace(/'/g,"\\'")}',this)"><div class="ac-name">${v}</div></div>`).join('');
-  acList._villeEl=villeEl;
-  acList._status=status;
-  acList.classList.add('open');
-}
-function pickCpVille(ville,el){
-  const list=el.closest('.ac-list');
-  if(list._villeEl)list._villeEl.value=ville;
-  if(list._status){list._status.textContent='✓ '+ville;list._status.style.color='var(--accent2)';}
-  list.classList.remove('open');
-}
-
-// ═══════════════════════════════════════════
-// TIME UTILS
-// ═══════════════════════════════════════════
-function setupTimeField(hId,mId){
-  const h=document.getElementById(hId),m=document.getElementById(mId);
-  if(!h||!m)return;
-  h.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');if(this.value.length===2)m.focus();});
-  m.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');});
-}
-setupTimeField('pH','pM');
-setupTimeField('dH','dM');
-const pad2=n=>String(n).padStart(2,'0');
-function parseHM(hVal,mVal){const h=parseInt(hVal)||0,m=parseInt(mVal)||0;if(h<0||h>23||m<0||m>59)return null;return`${pad2(h)}:${pad2(m)}`;}
-function splitTime(t){if(!t||!t.includes(':'))return{h:'00',m:'00'};const[h,m]=t.split(':');return{h:h||'00',m:m||'00'};}
-const timeToMin=t=>{if(!t||!t.includes(':'))return 0;const[h,m]=t.split(':').map(Number);return h*60+(isNaN(m)?0:m);};
-const minToTime=m=>`${pad2(Math.floor(m/60)%24)}:${pad2(m%60)}`;
-
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // DONNÉES
-// ═══════════════════════════════════════════
-const DEFAULT_DATA={
+// ══════════════════════════════════════════
+// Structure:
+// - base: {morning:{passengers,depots,depart,arrivee,departAdresse,departCP,departVille}, evening:{...}}
+// - days: { "2026-03-13": { morning:{absents:[id,...], extras:[{...}], depart, arrivee, depots}, evening:{...}, occasional:{...} } }
+
+const DEFAULT_BASE={
   morning:{
     depart:"06:38",arrivee:"09:03",
     departAdresse:"Dépôt bus",departCP:"85190",departVille:"Aizenay",
@@ -519,182 +397,419 @@ const DEFAULT_DATA={
       {id:14,time:"17:59",type:"Descente",nom:"TOGBA",   prenom:"Kimi Sun",adresse:"Route de la Forêt",     codePostal:"85190",ville:"Aizenay", note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
     ],
     depots:[{id:201,time:"16:20",nom:"IME La Penière",adresse:"Aizenay",active:true}]
-  },
-  occasional:{
-    date:null,depart:"08:00",arrivee:null,
-    departAdresse:"",departCP:"",departVille:"",
-    passengers:[],depots:[]
   }
 };
 
-let data,nextId=300,currentTournee='morning',editingPassengerId=null,editingDepotTournee=null,editingDepartTournee=null;
+let base,days,nextId=300,carnet=[];
+let currentTournee='morning',editingPassengerId=null,editingDepotTournee=null,editingDepartTournee=null;
 
 function loadData(){
-  try{
-    const saved=localStorage.getItem('transport_data_v4');
-    if(saved){
-      data=JSON.parse(saved);
-      if(!data.occasional||data.occasional.date!==todayStr)
-        data.occasional=JSON.parse(JSON.stringify(DEFAULT_DATA.occasional));
-      ['morning','evening','occasional'].forEach(t=>{
-        if(!data[t].departAdresse)data[t].departAdresse='';
-        if(!data[t].departCP)data[t].departCP='';
-        if(!data[t].departVille)data[t].departVille='';
-        data[t].passengers.forEach(p=>{
-          if(!p.prenom)p.prenom='';
-          if(!p.codePostal)p.codePostal='';
-          if(!p.ville)p.ville='';
-        });
-      });
-    }else{data=JSON.parse(JSON.stringify(DEFAULT_DATA));}
-    localStorage.setItem('transport_date',todayStr);
-  }catch(e){data=JSON.parse(JSON.stringify(DEFAULT_DATA));}
+  try{base=JSON.parse(localStorage.getItem('transport_base')||'null')||JSON.parse(JSON.stringify(DEFAULT_BASE));}
+  catch(e){base=JSON.parse(JSON.stringify(DEFAULT_BASE));}
+  try{days=JSON.parse(localStorage.getItem('transport_days')||'{}');}
+  catch(e){days={};}
+  try{carnet=JSON.parse(localStorage.getItem('transport_carnet')||'[]');}
+  catch(e){carnet=[];}
+  initCarnetFromBase();
 }
 
 function saveData(){
   try{
-    if(data.occasional.passengers.length>0)data.occasional.date=todayStr;
-    localStorage.setItem('transport_data_v4',JSON.stringify(data));
-    localStorage.setItem('transport_date',todayStr);
+    localStorage.setItem('transport_base',JSON.stringify(base));
+    localStorage.setItem('transport_days',JSON.stringify(days));
+    localStorage.setItem('transport_carnet',JSON.stringify(carnet));
     const ind=document.getElementById('saveIndicator');
     ind.textContent='✓ Sauvegardé';ind.style.color='var(--accent2)';
   }catch(e){document.getElementById('saveIndicator').textContent='⚠ Erreur';}
 }
 
-// Initialise le carnet avec les passagers existants
-function initCarnetFromPassengers(){
-  if(carnet.length>0)return; // déjà initialisé
-  ['morning','evening'].forEach(t=>{
-    data[t].passengers.forEach(p=>{
-      addOrUpdateCarnet(p);
-    });
-  });
+// Obtenir les données du jour (overrides sur la base)
+function getDayData(dateStr){return days[dateStr]||null;}
+
+function ensureDayData(dateStr,tournee){
+  if(!days[dateStr])days[dateStr]={};
+  if(!days[dateStr][tournee]){
+    const b=base[tournee];
+    days[dateStr][tournee]={
+      depart:b.depart,
+      arrivee:b.arrivee,
+      departAdresse:b.departAdresse,
+      departCP:b.departCP,
+      departVille:b.departVille,
+      absents:[],
+      extras:[],
+      depots:JSON.parse(JSON.stringify(b.depots))
+    };
+  }
+  return days[dateStr][tournee];
 }
 
-// ═══════════════════════════════════════════
+function ensureOccasional(dateStr){
+  if(!days[dateStr])days[dateStr]={};
+  if(!days[dateStr].occasional){
+    days[dateStr].occasional={depart:"08:00",arrivee:null,departAdresse:"",departCP:"",departVille:"",passengers:[],depots:[]};
+  }
+  return days[dateStr].occasional;
+}
+
+// Obtenir la tournée effective pour un jour = base + overrides
+function getEffectiveTournee(dateStr,tournee){
+  const b=base[tournee];
+  const d=getDayData(dateStr);
+  const ov=d?d[tournee]:null;
+  return{
+    depart:ov?ov.depart:b.depart,
+    arrivee:ov?ov.arrivee:b.arrivee,
+    departAdresse:ov?ov.departAdresse:b.departAdresse,
+    departCP:ov?ov.departCP:b.departCP,
+    departVille:ov?ov.departVille:b.departVille,
+    passengers:b.passengers,
+    absents:ov?ov.absents:[],
+    extras:ov?ov.extras:[],
+    depots:ov?ov.depots:b.depots
+  };
+}
+
+// ══════════════════════════════════════════
+// CARNET
+// ══════════════════════════════════════════
+function normalizeStr(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');}
+function addOrUpdateCarnet(p){
+  const key=normalizeStr(p.nom+p.prenom);
+  const idx=carnet.findIndex(c=>normalizeStr(c.nom+c.prenom)===key);
+  const e={nom:p.nom,prenom:p.prenom,adresse:p.adresse,codePostal:p.codePostal,ville:p.ville,lien:p.lien,tel:p.tel,note:p.note||''};
+  if(idx>=0)carnet[idx]=e;else carnet.push(e);
+}
+function initCarnetFromBase(){
+  if(carnet.length>0)return;
+  ['morning','evening'].forEach(t=>base[t].passengers.forEach(p=>addOrUpdateCarnet(p)));
+}
+function searchContact(val){
+  const list=document.getElementById('pSearchList');
+  if(!val||val.length<2){list.classList.remove('open');return;}
+  const q=normalizeStr(val);
+  const res=carnet.filter(c=>normalizeStr(c.nom+c.prenom).includes(q)||normalizeStr(c.nom).startsWith(q)||normalizeStr(c.prenom).startsWith(q)).slice(0,6);
+  if(!res.length){list.classList.remove('open');return;}
+  list.innerHTML=res.map((c,i)=>`<div class="ac-item" onclick="fillFromCarnet(${i})"><div class="ac-name">${c.nom} ${c.prenom}</div><div class="ac-detail">${[c.adresse,c.codePostal,c.ville].filter(Boolean).join(', ')} · ${c.lien}: ${c.tel}</div></div>`).join('');
+  list._results=res;list.classList.add('open');
+}
+function fillFromCarnet(idx){
+  const c=document.getElementById('pSearchList')._results[idx];
+  if(!c)return;
+  document.getElementById('pNom').value=c.nom;
+  document.getElementById('pPrenom').value=c.prenom;
+  document.getElementById('pAdresse').value=c.adresse||'';
+  document.getElementById('pCodePostal').value=c.codePostal||'';
+  document.getElementById('pVille').value=c.ville||'';
+  document.getElementById('pNote').value=c.note||'';
+  document.getElementById('pLien').value=c.lien||'Mère';
+  document.getElementById('pTel').value=c.tel||'';
+  document.getElementById('pSearch').value=`${c.nom} ${c.prenom}`;
+  document.getElementById('pSearchList').classList.remove('open');
+  if(c.codePostal){document.getElementById('pCpStatus').textContent='✓ '+c.ville;document.getElementById('pCpStatus').style.color='var(--accent2)';}
+}
+function searchAddress(val,listId,cpId,villeId,statusId){
+  const list=document.getElementById(listId);
+  if(!val||val.length<3){list.classList.remove('open');return;}
+  const q=normalizeStr(val);
+  const addrs=[...new Set(carnet.map(c=>c.adresse).filter(Boolean))].filter(a=>normalizeStr(a).includes(q)).slice(0,5);
+  if(!addrs.length){list.classList.remove('open');return;}
+  list.innerHTML=addrs.map(a=>`<div class="ac-item" onclick="pickAddress('${a.replace(/'/g,"\\'")}','${listId}','${cpId}','${villeId}','${statusId}')"><div class="ac-name">${a}</div></div>`).join('');
+  list.classList.add('open');
+}
+function pickAddress(addr,listId,cpId,villeId,statusId){
+  document.getElementById('pAdresse').value=addr;
+  document.getElementById(listId).classList.remove('open');
+  const match=carnet.find(c=>c.adresse===addr);
+  if(match&&match.codePostal){
+    document.getElementById(cpId).value=match.codePostal;
+    document.getElementById(villeId).value=match.ville||'';
+    if(statusId){document.getElementById(statusId).textContent='✓ '+match.ville;document.getElementById(statusId).style.color='var(--accent2)';}
+  }
+}
+function searchVille(val,listId){
+  const list=document.getElementById(listId);
+  if(!val||val.length<2){list.classList.remove('open');return;}
+  const q=normalizeStr(val);
+  const villes=[...new Set(carnet.map(c=>c.ville).filter(Boolean))].filter(v=>normalizeStr(v).includes(q)).slice(0,5);
+  if(!villes.length){list.classList.remove('open');return;}
+  list.innerHTML=villes.map(v=>`<div class="ac-item" onclick="document.getElementById('pVille').value='${v.replace(/'/g,"\\'")}';document.getElementById('${listId}').classList.remove('open')"><div class="ac-name">${v}</div></div>`).join('');
+  list.classList.add('open');
+}
+document.addEventListener('click',function(e){if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));});
+
+// ══════════════════════════════════════════
+// CP → VILLE (toutes les communes)
+// ══════════════════════════════════════════
+const cpCache={};let cpTimer=null;
+async function autoFillCity(cp,villeId,statusId,listId){
+  const status=document.getElementById(statusId),villeEl=document.getElementById(villeId);
+  const acList=listId?document.getElementById(listId):null;
+  cp=cp.replace(/\D/g,'');
+  if(cp.length<5){status.textContent='';if(acList)acList.classList.remove('open');return;}
+  if(cpCache[cp]){showCpResult(cpCache[cp],villeEl,acList,status);return;}
+  status.textContent='⏳ Recherche…';
+  clearTimeout(cpTimer);
+  cpTimer=setTimeout(async()=>{
+    try{
+      const res=await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=20`);
+      const json=await res.json();
+      if(json&&json.length>0){cpCache[cp]=json.map(c=>c.nom);showCpResult(cpCache[cp],villeEl,acList,status);}
+      else{status.textContent='Inconnu — saisir manuellement';status.style.color='var(--danger)';}
+    }catch(e){status.textContent='Hors ligne — saisir manuellement';status.style.color='var(--muted)';}
+  },400);
+}
+function showCpResult(villes,villeEl,acList,status){
+  if(villes.length===1){
+    villeEl.value=villes[0];status.textContent='✓ '+villes[0];status.style.color='var(--accent2)';
+    if(acList)acList.classList.remove('open');
+  }else{
+    status.textContent=villes.length+' communes — choisir ↓';status.style.color='var(--accent)';
+    if(acList){
+      acList.innerHTML=villes.map(v=>`<div class="ac-item" onclick="pickCpVille('${v.replace(/'/g,"\\'")}',this)"><div class="ac-name">${v}</div></div>`).join('');
+      acList._villeEl=villeEl;acList._status=status;acList.classList.add('open');
+    }
+  }
+}
+function pickCpVille(v,el){
+  const list=el.closest('.ac-list');
+  if(list._villeEl)list._villeEl.value=v;
+  if(list._status){list._status.textContent='✓ '+v;list._status.style.color='var(--accent2)';}
+  list.classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+// TIME UTILS
+// ══════════════════════════════════════════
+function setupTimeField(hId,mId){
+  const h=document.getElementById(hId),m=document.getElementById(mId);
+  if(!h||!m)return;
+  h.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');if(this.value.length===2)m.focus();});
+  m.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');});
+}
+setupTimeField('pH','pM');setupTimeField('dH','dM');
+const pad2=n=>String(n).padStart(2,'0');
+function parseHM(hVal,mVal){const h=parseInt(hVal)||0,m=parseInt(mVal)||0;if(h<0||h>23||m<0||m>59)return null;return`${pad2(h)}:${pad2(m)}`;}
+function splitTime(t){if(!t||!t.includes(':'))return{h:'00',m:'00'};const[h,m]=t.split(':');return{h:h||'00',m:m||'00'};}
+const timeToMin=t=>{if(!t||!t.includes(':'))return 0;const[h,m]=t.split(':').map(Number);return h*60+(isNaN(m)?0:m);};
+const minToTime=m=>`${pad2(Math.floor(m/60)%24)}:${pad2(m%60)}`;
+
+// ══════════════════════════════════════════
 // RENDER
-// ═══════════════════════════════════════════
-function render(){renderTournee('morning');renderTournee('evening');renderTournee('occasional');renderStats();}
+// ══════════════════════════════════════════
+function render(){
+  renderTournee('morning');
+  renderTournee('evening');
+  renderOccasional();
+  renderStats();
+}
 
 function renderTournee(tournee){
-  const t=data[tournee];
-  const isOcc=tournee==='occasional';
+  const eff=getEffectiveTournee(selectedDate,tournee);
+  const cls=tournee==='morning'?'time-morning':'time-evening';
   const bodyEl=document.getElementById(tournee+'Body');
   const metaEl=document.getElementById(tournee+'Meta');
   const durEl=document.getElementById(tournee+'Duration');
-  const cls=tournee==='morning'?'time-morning':tournee==='evening'?'time-evening':'time-occasional';
-  const activeDepots=t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  const activeDepots=eff.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  const{h:dH,m:dM}=splitTime(eff.depart);
+  const{h:aH,m:aM}=splitTime(eff.arrivee||'');
 
-  if(isOcc){
-    const has=t.passengers.length>0;
-    document.getElementById('btnResetOcc').style.display=has?'':'none';
-    document.getElementById('btnRecalcOcc').style.display=has?'':'none';
-    document.getElementById('btnDepotOcc').style.display=has?'':'none';
-    document.getElementById('occasionalBlock').style.display=has?'':'none';
-    if(!has){metaEl.innerHTML='';bodyEl.innerHTML='';durEl.innerHTML='';return;}
-  }
-
-  const{h:dH,m:dM}=splitTime(t.depart);
-  const{h:aH,m:aM}=splitTime(t.arrivee||'');
   metaEl.innerHTML=`
-    <span>🚩 <input class="meta-time-edit" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="updateDepartH('${tournee}',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="updateDepartM('${tournee}',this.value)"></span>
-    ${t.arrivee?`<span>🏁 <input class="meta-time-edit" type="text" value="${aH}" maxlength="2" inputmode="numeric" onchange="updateArriveeH('${tournee}',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${aM}" maxlength="2" inputmode="numeric" onchange="updateArriveeM('${tournee}',this.value)"></span>`:''}
-    <span>👥 <strong>${t.passengers.length}</strong> pass.</span>
-    <span>📍 <strong>${activeDepots.length}</strong> dépôt${activeDepots.length!==1?'s':''}</span>`;
+    <span>🚩 <input class="meta-time-edit" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepartChange('${tournee}','h',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepartChange('${tournee}','m',this.value)"></span>
+    ${eff.arrivee?`<span>🏁 <input class="meta-time-edit" type="text" value="${aH}" maxlength="2" inputmode="numeric" onchange="updateArriveeH('${tournee}',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${aM}" maxlength="2" inputmode="numeric" onchange="updateArriveeM('${tournee}',this.value)"></span>`:''}
+    <span>👥 <strong>${eff.passengers.length-eff.absents.length+eff.extras.length}</strong> actifs</span>
+    <span>📍 <strong>${activeDepots.length}</strong> dépôt${activeDepots.length!==1?'s':''}</span>
+    ${eff.absents.length?`<span style="color:var(--danger)">❌ ${eff.absents.length} absent${eff.absents.length>1?'s':''}</span>`:''}
+    ${eff.extras.length?`<span style="color:var(--accent2)">➕ ${eff.extras.length} extra${eff.extras.length>1?'s':''}</span>`:''}`;
 
   bodyEl.innerHTML='';
 
   // Départ
   const dc=document.createElement('div');
   dc.className='passenger-card depart-card';
-  const da=[t.departAdresse,t.departCP,t.departVille].filter(Boolean).join(', ');
-  dc.innerHTML=`
-    <div class="card-time time-green">${t.depart}</div>
-    <div class="card-body">
-      <div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div>
-      <div class="card-address">${da||'Non renseigné'}</div>
-    </div>
-    <div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('${tournee}')">✏️</button></div>`;
+  const da=[eff.departAdresse,eff.departCP,eff.departVille].filter(Boolean).join(', ');
+  dc.innerHTML=`<div class="card-time time-green">${eff.depart}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div><div class="card-address">${da||'Non renseigné'}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('${tournee}')">✏️</button></div>`;
   bodyEl.appendChild(dc);
 
-  const makeCard=(p,trn)=>{
+  // Dépôts en prise (soir)
+  if(tournee==='evening') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Prise',tournee,cls)));
+
+  // Passagers de base (avec absents barrés)
+  eff.passengers.forEach(p=>{
+    const isAbsent=eff.absents.includes(p.id);
     const div=document.createElement('div');
-    div.className='passenger-card'+(isOcc?' occasional-pass':'');
+    div.className='passenger-card'+(isAbsent?' absent-card':'');
     const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
-    const displayName=p.prenom?`${p.nom} ${p.prenom}`:p.nom;
     div.innerHTML=`
       <div class="card-time ${cls}">${p.time}</div>
       <div class="card-body">
         <div class="card-top">
           <span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span>
-          <span class="card-name">${displayName}</span>
+          ${isAbsent?'<span class="type-badge type-absent">❌ Absent</span>':''}
+          <span class="card-name">${p.nom} ${p.prenom}</span>
         </div>
         <div class="card-address">${addr||'—'}</div>
         ${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}
         <div class="card-contact">${p.lien}: ${p.tel}</div>
       </div>
       <div class="card-actions">
-        <button class="icon-btn edit-btn" onclick="openEditPassenger('${trn}',${p.id})">✏️</button>
-        <button class="icon-btn delete-btn" onclick="deletePassenger('${trn}',${p.id})">✕</button>
+        ${isAbsent
+          ?`<button class="icon-btn restore-btn" title="Remettre" onclick="toggleAbsent('${tournee}',${p.id})">↩️</button>`
+          :`<button class="icon-btn delete-btn" title="Marquer absent" onclick="toggleAbsent('${tournee}',${p.id})">❌</button>`
+        }
       </div>`;
-    return div;
-  };
+    bodyEl.appendChild(div);
+  });
 
-  const makeDepotCard=(d,label,trn)=>{
+  // Extras du jour
+  eff.extras.forEach(p=>{
     const div=document.createElement('div');
-    div.className='passenger-card depot-card';
+    div.className='passenger-card extra-card';
+    const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
     div.innerHTML=`
-      <div class="card-time ${cls}">${d.time}</div>
+      <div class="card-time ${cls}">${p.time}</div>
       <div class="card-body">
-        <div class="card-top"><span class="type-badge type-depot">📍 ${label}</span><span class="card-name">${d.nom}</span></div>
-        ${d.adresse?`<div class="card-address">${d.adresse}</div>`:''}
+        <div class="card-top">
+          <span class="type-badge type-extra">➕ Extra</span>
+          <span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span>
+          <span class="card-name">${p.nom} ${p.prenom}</span>
+        </div>
+        <div class="card-address">${addr||'—'}</div>
+        ${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}
+        <div class="card-contact">${p.lien}: ${p.tel}</div>
       </div>
-      <div class="card-actions"><button class="icon-btn delete-btn" onclick="deactivateDepot('${trn}',${d.id})">✕</button></div>`;
-    return div;
-  };
+      <div class="card-actions">
+        <button class="icon-btn edit-btn" onclick="openEditExtra('${tournee}',${p.id})">✏️</button>
+        <button class="icon-btn delete-btn" onclick="deleteExtra('${tournee}',${p.id})">✕</button>
+      </div>`;
+    bodyEl.appendChild(div);
+  });
 
-  if(tournee==='evening'||tournee==='occasional') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Prise',tournee)));
-  t.passengers.forEach(p=>bodyEl.appendChild(makeCard(p,tournee)));
-  if(tournee==='morning') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Dépôt',tournee)));
+  // Dépôts matin
+  if(tournee==='morning') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Dépôt',tournee,cls)));
 
-  if(!t.passengers.length){const e=document.createElement('div');e.className='empty-state';e.textContent='Aucun passager';bodyEl.appendChild(e);}
+  const actifs=eff.passengers.filter(p=>!eff.absents.includes(p.id));
+  if(actifs.length+eff.extras.length===0){const e=document.createElement('div');e.className='empty-state';e.textContent='Aucun passager';bodyEl.appendChild(e);}
 
-  if(t.passengers.length>0){
-    const first=timeToMin(t.passengers[0].time),last=timeToMin(t.passengers[t.passengers.length-1].time);
-    durEl.innerHTML=`<span>Durée ~<strong>${last-timeToMin(t.depart)+20} min</strong></span><span>1er→dernier: <strong>${last-first} min</strong></span>`;
+  const allTimes=[...actifs,...eff.extras].map(p=>timeToMin(p.time)).filter(Boolean);
+  if(allTimes.length>0){
+    const first=Math.min(...allTimes),last=Math.max(...allTimes);
+    durEl.innerHTML=`<span>Durée ~<strong>${last-timeToMin(eff.depart)+20} min</strong></span><span>1er→dernier: <strong>${last-first} min</strong></span>`;
   }else durEl.innerHTML='';
 }
 
-function renderStats(){
-  const unique=new Set([...data.morning.passengers,...data.evening.passengers].map(p=>p.nom+p.prenom));
-  const occ=data.occasional.passengers.length;
-  document.getElementById('statsBar').innerHTML=`
-    <div class="stat"><div class="stat-num">${data.morning.passengers.length}</div><div class="stat-label">☀️ Matin</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--evening)">${data.evening.passengers.length}</div><div class="stat-label">🌙 Soir</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--accent2)">${unique.size}</div><div class="stat-label">Enfants</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--muted);font-size:16px">${carnet.length}</div><div class="stat-label">📒 Carnet</div></div>
-    ${occ?`<div class="stat"><div class="stat-num" style="color:var(--occasional)">${occ}</div><div class="stat-label">⚡ Occas.</div></div>`:''}`;
+function makeDepotCard(d,label,tournee,cls){
+  const div=document.createElement('div');
+  div.className='passenger-card depot-card';
+  div.innerHTML=`<div class="card-time ${cls}">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 ${label}</span><span class="card-name">${d.nom}</span></div>${d.adresse?`<div class="card-address">${d.adresse}</div>`:''}</div><div class="card-actions"><button class="icon-btn delete-btn" onclick="deactivateDepot('${tournee}',${d.id})">✕</button></div>`;
+  return div;
 }
 
-// HORAIRES
-function updateDepartH(t,v){const{m}=splitTime(data[t].depart);const r=parseHM(v,m);if(r){data[t].depart=r;saveData();render();}}
-function updateDepartM(t,v){const{h}=splitTime(data[t].depart);const r=parseHM(h,v);if(r){data[t].depart=r;saveData();render();}}
-function updateArriveeH(t,v){const{m}=splitTime(data[t].arrivee||'09:00');const r=parseHM(v,m);if(r){data[t].arrivee=r;saveData();render();}}
-function updateArriveeM(t,v){const{h}=splitTime(data[t].arrivee||'09:00');const r=parseHM(h,v);if(r){data[t].arrivee=r;saveData();render();}}
+function renderOccasional(){
+  const d=getDayData(selectedDate);
+  const occ=d&&d.occasional?d.occasional:null;
+  const has=occ&&occ.passengers.length>0;
+  document.getElementById('btnResetOcc').style.display=has?'':'none';
+  document.getElementById('btnRecalcOcc').style.display=has?'':'none';
+  document.getElementById('btnDepotOcc').style.display=has?'':'none';
+  document.getElementById('occasionalBlock').style.display=has?'':'none';
+  if(!has)return;
+
+  const metaEl=document.getElementById('occasionalMeta');
+  const bodyEl=document.getElementById('occasionalBody');
+  const durEl=document.getElementById('occasionalDuration');
+  const activeDepots=occ.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  const{h:dH,m:dM}=splitTime(occ.depart);
+  metaEl.innerHTML=`<span>🚩 <input class="meta-time-edit" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepartChange('occasional','h',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepartChange('occasional','m',this.value)"></span><span>👥 <strong>${occ.passengers.length}</strong> pass.</span>`;
+  bodyEl.innerHTML='';
+  const da=[occ.departAdresse,occ.departCP,occ.departVille].filter(Boolean).join(', ');
+  const dc=document.createElement('div');dc.className='passenger-card depart-card';
+  dc.innerHTML=`<div class="card-time time-green">${occ.depart}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div><div class="card-address">${da||'Non renseigné'}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('occasional')">✏️</button></div>`;
+  bodyEl.appendChild(dc);
+  activeDepots.forEach(d=>{const div=document.createElement('div');div.className='passenger-card depot-card';div.innerHTML=`<div class="card-time time-occasional">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 Prise</span><span class="card-name">${d.nom}</span></div></div><div class="card-actions"><button class="icon-btn delete-btn" onclick="deactivateDepot('occasional',${d.id})">✕</button></div>`;bodyEl.appendChild(div);});
+  occ.passengers.forEach(p=>{
+    const div=document.createElement('div');div.className='passenger-card occasional-pass';
+    const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
+    div.innerHTML=`<div class="card-time time-occasional">${p.time}</div><div class="card-body"><div class="card-top"><span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span><span class="card-name">${p.nom} ${p.prenom}</span></div><div class="card-address">${addr||'—'}</div>${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}<div class="card-contact">${p.lien}: ${p.tel}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openEditExtra('occasional',${p.id})">✏️</button><button class="icon-btn delete-btn" onclick="deleteExtra('occasional',${p.id})">✕</button></div>`;
+    bodyEl.appendChild(div);
+  });
+  const times=occ.passengers.map(p=>timeToMin(p.time));
+  if(times.length>0){const first=Math.min(...times),last=Math.max(...times);durEl.innerHTML=`<span>Durée ~<strong>${last-timeToMin(occ.depart)+20} min</strong></span>`;}
+  else durEl.innerHTML='';
+}
+
+function renderStats(){
+  const d=getDayData(selectedDate);
+  const mAbs=d&&d.morning?d.morning.absents.length:0;
+  const eAbs=d&&d.evening?d.evening.absents.length:0;
+  const mExt=d&&d.morning?d.morning.extras.length:0;
+  const eExt=d&&d.evening?d.evening.extras.length:0;
+  const occ=d&&d.occasional?d.occasional.passengers.length:0;
+  const mTotal=base.morning.passengers.length-mAbs+mExt;
+  const eTotal=base.evening.passengers.length-eAbs+eExt;
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat"><div class="stat-num">${mTotal}</div><div class="stat-label">☀️ Matin</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--evening)">${eTotal}</div><div class="stat-label">🌙 Soir</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--muted);font-size:16px">${carnet.length}</div><div class="stat-label">📒 Carnet</div></div>
+    ${occ?`<div class="stat"><div class="stat-num" style="color:var(--occasional)">${occ}</div><div class="stat-label">⚡ Occas.</div></div>`:''}
+    ${mAbs+eAbs?`<div class="stat"><div class="stat-num" style="color:var(--danger)">${mAbs+eAbs}</div><div class="stat-label">❌ Absents</div></div>`:''}`;
+}
+
+// ══════════════════════════════════════════
+// ABSENT / EXTRA
+// ══════════════════════════════════════════
+function toggleAbsent(tournee,id){
+  const ov=ensureDayData(selectedDate,tournee);
+  const idx=ov.absents.indexOf(id);
+  if(idx>=0)ov.absents.splice(idx,1);
+  else ov.absents.push(id);
+  saveData();render();renderWeekNav();
+}
+function deleteExtra(tournee,id){
+  if(tournee==='occasional'){
+    const occ=days[selectedDate]&&days[selectedDate].occasional;
+    if(occ)occ.passengers=occ.passengers.filter(p=>p.id!==id);
+  }else{
+    const ov=ensureDayData(selectedDate,tournee);
+    ov.extras=ov.extras.filter(p=>p.id!==id);
+  }
+  saveData();render();renderWeekNav();
+}
+
+// ══════════════════════════════════════════
+// DÉPART → RECALC AUTO
+// ══════════════════════════════════════════
+async function onDepartChange(tournee,part,val){
+  let ov;
+  if(tournee==='occasional'){ov=ensureOccasional(selectedDate);}
+  else{ov=ensureDayData(selectedDate,tournee);}
+  const cur=ov.depart||'00:00';
+  const{h,m}=splitTime(cur);
+  const newTime=part==='h'?parseHM(val,m):parseHM(h,val);
+  if(!newTime)return;
+  ov.depart=newTime;
+  saveData();render();
+  // Recalcul automatique
+  await recalcWithRouting(tournee);
+}
+function updateArriveeH(t,v){const ov=ensureDayData(selectedDate,t);const{m}=splitTime(ov.arrivee||'09:00');const r=parseHM(v,m);if(r){ov.arrivee=r;saveData();render();}}
+function updateArriveeM(t,v){const ov=ensureDayData(selectedDate,t);const{h}=splitTime(ov.arrivee||'09:00');const r=parseHM(h,v);if(r){ov.arrivee=r;saveData();render();}}
 
 function resetOccasional(){
-  if(!confirm('Effacer tout le circuit occasionnel ?'))return;
-  data.occasional=JSON.parse(JSON.stringify(DEFAULT_DATA.occasional));
-  saveData();render();
+  if(!confirm('Effacer le circuit occasionnel de ce jour ?'))return;
+  if(days[selectedDate])delete days[selectedDate].occasional;
+  saveData();render();renderWeekNav();
 }
 
-// ═══════════════════════════════════════════
-// MODAL DÉPART (avec carnet)
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
+// MODAL DÉPART
+// ══════════════════════════════════════════
 function openDepartModal(tournee){
   editingDepartTournee=tournee;
-  const t=data[tournee];
-  const{h,m}=splitTime(t.depart);
+  let eff;
+  if(tournee==='occasional'){eff=ensureOccasional(selectedDate);}
+  else{eff=getEffectiveTournee(selectedDate,tournee);}
+  const{h,m}=splitTime(eff.depart);
   const html=`
     <div class="modal-overlay open" id="modalDepart">
       <div class="modal">
@@ -702,28 +817,28 @@ function openDepartModal(tournee){
         <h2>🚩 Point de départ — ${tournee==='morning'?'Matin':tournee==='evening'?'Soir':'Occasionnel'}</h2>
         <div class="form-group"><label>Adresse</label>
           <div class="ac-wrap">
-            <input type="text" id="dpAdresse" value="${t.departAdresse||''}" placeholder="12 rue du Dépôt" oninput="searchDpAddress(this.value)">
+            <input type="text" id="dpAdresse" value="${eff.departAdresse||''}" placeholder="12 rue du Dépôt" oninput="searchDpAddr(this.value)">
             <div class="ac-list" id="dpAdresseList"></div>
           </div>
         </div>
         <div class="cp-row">
           <div class="form-group">
             <label>Code postal</label>
-            <input type="text" id="dpCP" value="${t.departCP||''}" placeholder="85190" inputmode="numeric" maxlength="5" oninput="autoFillCity(this.value,'dpVille','dpCpStatus')">
+            <input type="text" id="dpCP" value="${eff.departCP||''}" placeholder="85190" inputmode="numeric" maxlength="5" oninput="autoFillCity(this.value,'dpVille','dpCpStatus','dpVilleList')">
             <div class="cp-loading" id="dpCpStatus"></div>
           </div>
-          <div class="form-group"><label>Ville (auto)</label>
+          <div class="form-group"><label>Ville</label>
             <div class="ac-wrap">
-              <input type="text" id="dpVille" value="${t.departVille||''}" placeholder="Rempli auto…" oninput="searchDpVille(this.value)">
+              <input type="text" id="dpVille" value="${eff.departVille||''}" placeholder="Rempli auto…" oninput="searchDpVille(this.value)">
               <div class="ac-list" id="dpVilleList"></div>
             </div>
           </div>
         </div>
         <div class="form-group"><label>Heure de départ</label>
           <div class="time-inputs">
-            <input type="text" id="dpH" value="${h}" maxlength="2" inputmode="numeric" placeholder="06">
+            <input type="text" id="dpH" value="${h}" maxlength="2" inputmode="numeric">
             <span class="time-sep">:</span>
-            <input type="text" id="dpM" value="${m}" maxlength="2" inputmode="numeric" placeholder="38">
+            <input type="text" id="dpM" value="${m}" maxlength="2" inputmode="numeric">
           </div>
         </div>
         <div class="modal-actions">
@@ -736,9 +851,9 @@ function openDepartModal(tournee){
   setupTimeField('dpH','dpM');
   document.getElementById('modalDepart').addEventListener('click',function(e){if(e.target===this)this.remove();});
 }
-function searchDpAddress(val){
-  const list=document.getElementById('dpAdresseList');
-  if(!list||!val||val.length<3){if(list)list.classList.remove('open');return;}
+function searchDpAddr(val){
+  const list=document.getElementById('dpAdresseList');if(!list)return;
+  if(!val||val.length<3){list.classList.remove('open');return;}
   const q=normalizeStr(val);
   const addrs=[...new Set(carnet.map(c=>c.adresse).filter(Boolean))].filter(a=>normalizeStr(a).includes(q)).slice(0,5);
   if(!addrs.length){list.classList.remove('open');return;}
@@ -746,28 +861,31 @@ function searchDpAddress(val){
   list.classList.add('open');
 }
 function searchDpVille(val){
-  const list=document.getElementById('dpVilleList');
-  if(!list||!val||val.length<2){if(list)list.classList.remove('open');return;}
+  const list=document.getElementById('dpVilleList');if(!list)return;
+  if(!val||val.length<2){list.classList.remove('open');return;}
   const q=normalizeStr(val);
   const villes=[...new Set(carnet.map(c=>c.ville).filter(Boolean))].filter(v=>normalizeStr(v).includes(q)).slice(0,5);
   if(!villes.length){list.classList.remove('open');return;}
   list.innerHTML=villes.map(v=>`<div class="ac-item" onclick="document.getElementById('dpVille').value='${v.replace(/'/g,"\\'")}';this.closest('.ac-list').classList.remove('open')"><div class="ac-name">${v}</div></div>`).join('');
   list.classList.add('open');
 }
-function saveDepartModal(){
-  const t=data[editingDepartTournee];
-  t.departAdresse=document.getElementById('dpAdresse').value.trim();
-  t.departCP=document.getElementById('dpCP').value.trim();
-  t.departVille=document.getElementById('dpVille').value.trim();
+async function saveDepartModal(){
+  let ov;
+  if(editingDepartTournee==='occasional'){ov=ensureOccasional(selectedDate);}
+  else{ov=ensureDayData(selectedDate,editingDepartTournee);}
+  ov.departAdresse=document.getElementById('dpAdresse').value.trim();
+  ov.departCP=document.getElementById('dpCP').value.trim();
+  ov.departVille=document.getElementById('dpVille').value.trim();
   const heure=parseHM(document.getElementById('dpH').value,document.getElementById('dpM').value);
-  if(heure)t.depart=heure;
+  if(heure)ov.depart=heure;
   document.getElementById('modalDepart').remove();
   saveData();render();
+  if(heure) await recalcWithRouting(editingDepartTournee);
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // ORS ROUTING
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 function getFullAddress(p){return`${p.adresse||''} ${p.codePostal||''} ${p.ville||''}`.trim();}
 async function geocodeAddress(address){
   try{const res=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${ORS_KEY}&text=${encodeURIComponent(address)}&boundary.country=FR&size=1`);const json=await res.json();if(json.features&&json.features.length>0)return json.features[0].geometry.coordinates;}catch(e){}return null;
@@ -776,11 +894,23 @@ async function getRouteDuration(a,b){
   try{const res=await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${a[0]},${a[1]}&end=${b[0]},${b[1]}`);const json=await res.json();if(json.features&&json.features[0])return json.features[0].properties.segments[0].duration;}catch(e){}return null;
 }
 function showRoutingStatus(msg,type=''){const el=document.getElementById('routingStatus');if(!msg){el.innerHTML='';return;}el.innerHTML=`<div class="routing-banner ${type}">${msg}</div>`;}
+
 async function recalcWithRouting(tournee){
-  const t=data[tournee];if(!t.passengers.length){alert('Aucun passager.');return;}
-  showRoutingStatus(`<span class="spinner"></span> Calcul en cours…`,'loading');
+  let passengers,ov,depart;
+  if(tournee==='occasional'){
+    const occ=ensureOccasional(selectedDate);
+    passengers=[...occ.passengers];
+    ov=occ;depart=occ.depart;
+  }else{
+    const eff=getEffectiveTournee(selectedDate,tournee);
+    ov=ensureDayData(selectedDate,tournee);
+    passengers=[...eff.passengers.filter(p=>!eff.absents.includes(p.id)),...eff.extras];
+    depart=eff.depart;
+  }
+  if(!passengers.length){showRoutingStatus('Aucun passager actif.','error');setTimeout(()=>showRoutingStatus(''),3000);return;}
+  showRoutingStatus(`<span class="spinner"></span> Recalcul en cours…`,'loading');
   try{
-    const passengers=[...t.passengers].sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+    passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
     const coords=[];
     for(const p of passengers){coords.push(await geocodeAddress(getFullAddress(p)));await sleep(150);}
     const durations=[];
@@ -789,50 +919,57 @@ async function recalcWithRouting(tournee){
       else durations.push(8);
     }
     if(tournee==='morning'){
-      const ad=t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+      const ad=ov.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
       const dt=ad.length?timeToMin(ad[0].time):timeToMin("08:35");
       let cur=dt-20-durations.reduce((a,b)=>a+b,0);
       passengers.forEach((p,i)=>{p.time=minToTime(cur);if(i<durations.length)cur+=durations[i];});
-      t.arrivee=minToTime((ad.length?timeToMin(ad[ad.length-1].time):dt+10)+15);
+      ov.arrivee=minToTime((ad.length?timeToMin(ad[ad.length-1].time):dt+10)+15);
     }else{
-      const ad=t.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-      let cur=ad.length?timeToMin(ad[ad.length-1].time)+15:timeToMin(t.depart)+5;
+      const ad=(tournee==='occasional'?ov.depots:ov.depots).filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+      let cur=ad.length?timeToMin(ad[ad.length-1].time)+15:timeToMin(depart)+5;
       passengers.forEach((p,i)=>{p.time=minToTime(cur);if(i<durations.length)cur+=durations[i];});
     }
-    t.passengers=passengers;saveData();render();
-    showRoutingStatus(`✓ Recalculé — ${coords.filter(Boolean).length}/${passengers.length} adresses trouvées`,'');
+    // Réécrire les temps dans les vraies structures
+    if(tournee==='occasional'){
+      passengers.forEach(p=>{const orig=ov.passengers.find(x=>x.id===p.id);if(orig)orig.time=p.time;});
+    }else{
+      const eff=getEffectiveTournee(selectedDate,tournee);
+      passengers.forEach(p=>{
+        const base_p=base[tournee].passengers.find(x=>x.id===p.id);
+        if(base_p)base_p.time=p.time;
+        else{const ex=ov.extras.find(x=>x.id===p.id);if(ex)ex.time=p.time;}
+      });
+    }
+    saveData();render();
+    showRoutingStatus(`✓ Horaires recalculés — ${coords.filter(Boolean).length}/${passengers.length} adresses trouvées`,'');
     setTimeout(()=>showRoutingStatus(''),5000);
   }catch(e){showRoutingStatus('⚠ Erreur de calcul.','error');saveData();render();}
 }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // PASSAGERS
-// ═══════════════════════════════════════════
-function deletePassenger(tournee,id){data[tournee].passengers=data[tournee].passengers.filter(p=>p.id!==id);saveData();render();}
-
+// ══════════════════════════════════════════
 function openPassengerModal(tournee,id=null){
   currentTournee=tournee;editingPassengerId=id;
   const isOcc=tournee==='occasional';
-  document.getElementById('modalPassagerTitle').textContent=id?'✏️ Modifier':'➕ Nouveau passager'+(isOcc?' (⚡ occasionnel)':'');
-  const btn=document.getElementById('btnSavePassager');
-  btn.className='btn-save'+(isOcc?' btn-save-purple':'');
+  document.getElementById('modalPassagerTitle').textContent=id?'✏️ Modifier':'➕ Ajouter pour ce jour'+(isOcc?' (⚡)':'');
+  document.getElementById('btnSavePassager').className='btn-save'+(isOcc?' btn-save-purple':'');
   document.getElementById('pCpStatus').textContent='';
   document.getElementById('pSearch').value='';
   document.getElementById('pSearchList').classList.remove('open');
   if(id){
-    const p=data[tournee].passengers.find(x=>x.id===id);
-    document.getElementById('pNom').value=p.nom||'';
-    document.getElementById('pPrenom').value=p.prenom||'';
-    document.getElementById('pAdresse').value=p.adresse||'';
-    document.getElementById('pCodePostal').value=p.codePostal||'';
-    document.getElementById('pVille').value=p.ville||'';
-    document.getElementById('pNote').value=p.note||'';
-    document.getElementById('pLien').value=p.lien||'Mère';
-    document.getElementById('pTel').value=p.tel||'';
-    document.getElementById('pType').value=p.type||'Montée';
-    const{h,m}=splitTime(p.time||'07:00');
-    document.getElementById('pH').value=h;document.getElementById('pM').value=m;
+    let p;
+    if(isOcc){const occ=days[selectedDate]&&days[selectedDate].occasional;p=occ&&occ.passengers.find(x=>x.id===id);}
+    else{const ov=days[selectedDate]&&days[selectedDate][tournee];p=ov&&ov.extras.find(x=>x.id===id);}
+    if(p){
+      document.getElementById('pNom').value=p.nom||'';document.getElementById('pPrenom').value=p.prenom||'';
+      document.getElementById('pAdresse').value=p.adresse||'';document.getElementById('pCodePostal').value=p.codePostal||'';
+      document.getElementById('pVille').value=p.ville||'';document.getElementById('pNote').value=p.note||'';
+      document.getElementById('pLien').value=p.lien||'Mère';document.getElementById('pTel').value=p.tel||'';
+      document.getElementById('pType').value=p.type||'Montée';
+      const{h,m}=splitTime(p.time||'07:00');document.getElementById('pH').value=h;document.getElementById('pM').value=m;
+    }
   }else{
     document.getElementById('pType').value=tournee==='morning'?'Montée':'Descente';
     ['pNom','pPrenom','pAdresse','pCodePostal','pVille','pNote','pTel'].forEach(i=>document.getElementById(i).value='');
@@ -841,41 +978,47 @@ function openPassengerModal(tournee,id=null){
   }
   document.getElementById('modalPassager').classList.add('open');
 }
-function openEditPassenger(t,id){openPassengerModal(t,id);}
-function closePassengerModal(){
-  document.getElementById('modalPassager').classList.remove('open');
-  editingPassengerId=null;
-  document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));
-}
+function openEditExtra(tournee,id){openPassengerModal(tournee,id);}
+function closePassengerModal(){document.getElementById('modalPassager').classList.remove('open');editingPassengerId=null;document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));}
 function savePassenger(){
   const nom=document.getElementById('pNom').value.trim();
   if(!nom){alert('Veuillez saisir un nom.');return;}
   const heure=parseHM(document.getElementById('pH').value,document.getElementById('pM').value);
   if(!heure){alert('Heure invalide.');return;}
   const obj={
-    nom:nom.toUpperCase(),
-    prenom:document.getElementById('pPrenom').value.trim(),
+    nom:nom.toUpperCase(),prenom:document.getElementById('pPrenom').value.trim(),
     adresse:document.getElementById('pAdresse').value.trim(),
     codePostal:document.getElementById('pCodePostal').value.trim(),
     ville:document.getElementById('pVille').value.trim(),
     note:document.getElementById('pNote').value.trim(),
     lien:document.getElementById('pLien').value,
     tel:document.getElementById('pTel').value.trim()||'—',
-    type:document.getElementById('pType').value,
-    time:heure
+    type:document.getElementById('pType').value,time:heure
   };
-  // Sauvegarder dans le carnet
   addOrUpdateCarnet(obj);
-  if(editingPassengerId){Object.assign(data[currentTournee].passengers.find(x=>x.id===editingPassengerId),obj);}
-  else{data[currentTournee].passengers.push({id:nextId++,...obj});}
-  data[currentTournee].passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-  saveData();render();closePassengerModal();
+  if(currentTournee==='occasional'){
+    const occ=ensureOccasional(selectedDate);
+    if(editingPassengerId){Object.assign(occ.passengers.find(x=>x.id===editingPassengerId),obj);}
+    else{occ.passengers.push({id:nextId++,...obj});}
+    occ.passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  }else{
+    const ov=ensureDayData(selectedDate,currentTournee);
+    if(editingPassengerId){Object.assign(ov.extras.find(x=>x.id===editingPassengerId),obj);}
+    else{ov.extras.push({id:nextId++,...obj});}
+    ov.extras.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  }
+  saveData();render();renderWeekNav();closePassengerModal();
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // DÉPÔTS
-// ═══════════════════════════════════════════
-function deactivateDepot(tournee,id){const d=data[tournee].depots.find(x=>x.id===id);if(d){d.active=false;saveData();render();}}
+// ══════════════════════════════════════════
+function deactivateDepot(tournee,id){
+  let depots;
+  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
+  else{depots=ensureDayData(selectedDate,tournee).depots;}
+  const d=depots.find(x=>x.id===id);if(d){d.active=false;saveData();render();}
+}
 function openDepotModal(tournee){
   editingDepotTournee=tournee;
   const labels={morning:'Matin',evening:'Soir',occasional:'Occasionnel'};
@@ -883,30 +1026,31 @@ function openDepotModal(tournee){
   renderDepotsList();document.getElementById('modalDepots').classList.add('open');
 }
 function closeDepotModal(){document.getElementById('modalDepots').classList.remove('open');}
+function getEditingDepots(){
+  if(editingDepotTournee==='occasional')return ensureOccasional(selectedDate).depots;
+  return ensureDayData(selectedDate,editingDepotTournee).depots;
+}
 function renderDepotsList(){
-  const depots=data[editingDepotTournee].depots;
-  const c=document.getElementById('depotsList');
+  const depots=getEditingDepots();const c=document.getElementById('depotsList');
   if(!depots.length){c.innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px 0">Aucun dépôt.</p>';return;}
   c.innerHTML=depots.map(d=>{const{h,m}=splitTime(d.time);return`
     <div class="depot-item">
       <input type="checkbox" class="depot-checkbox" ${d.active?'checked':''} onchange="setDepotActive(${d.id},this.checked)">
-      <div class="depot-item-label" style="font-weight:${d.active?600:400};color:${d.active?'var(--text)':'var(--muted)'}">
-        ${d.nom}${d.adresse?` <span style="color:var(--muted);font-size:11px">(${d.adresse})</span>`:''}
-      </div>
+      <div class="depot-item-label" style="font-weight:${d.active?600:400};color:${d.active?'var(--text)':'var(--muted)'}">${d.nom}${d.adresse?` <span style="color:var(--muted);font-size:11px">(${d.adresse})</span>`:''}</div>
       <input type="text" class="depot-time-h" value="${h}" maxlength="2" inputmode="numeric" onchange="updateDepotH(${d.id},this.value)">
       <span style="color:var(--accent);font-weight:800">:</span>
       <input type="text" class="depot-time-m" value="${m}" maxlength="2" inputmode="numeric" onchange="updateDepotM(${d.id},this.value)">
       <button class="icon-btn delete-btn" onclick="removeDepot(${d.id})">🗑</button>
     </div>`;}).join('');
 }
-function setDepotActive(id,val){const d=data[editingDepotTournee].depots.find(x=>x.id===id);if(d){d.active=val;saveData();renderDepotsList();render();}}
-function updateDepotH(id,val){const d=data[editingDepotTournee].depots.find(x=>x.id===id);if(d){const{m}=splitTime(d.time);const t=parseHM(val,m);if(t){d.time=t;saveData();render();}}}
-function updateDepotM(id,val){const d=data[editingDepotTournee].depots.find(x=>x.id===id);if(d){const{h}=splitTime(d.time);const t=parseHM(h,val);if(t){d.time=t;saveData();render();}}}
-function removeDepot(id){data[editingDepotTournee].depots=data[editingDepotTournee].depots.filter(x=>x.id!==id);saveData();renderDepotsList();render();}
+function setDepotActive(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){d.active=val;saveData();renderDepotsList();render();}}
+function updateDepotH(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){const{m}=splitTime(d.time);const t=parseHM(val,m);if(t){d.time=t;saveData();render();}}}
+function updateDepotM(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){const{h}=splitTime(d.time);const t=parseHM(h,val);if(t){d.time=t;saveData();render();}}}
+function removeDepot(id){const arr=getEditingDepots();const idx=arr.findIndex(x=>x.id===id);if(idx>=0){arr.splice(idx,1);saveData();renderDepotsList();render();}}
 function addDepot(){
   const nom=document.getElementById('dNom').value.trim();if(!nom){alert("Saisir le nom.");return;}
   const heure=parseHM(document.getElementById('dH').value,document.getElementById('dM').value)||'08:35';
-  data[editingDepotTournee].depots.push({id:nextId++,time:heure,nom,adresse:document.getElementById('dAdresse').value.trim(),active:true});
+  getEditingDepots().push({id:nextId++,time:heure,nom,adresse:document.getElementById('dAdresse').value.trim(),active:true});
   document.getElementById('dNom').value='';document.getElementById('dAdresse').value='';
   document.getElementById('dH').value='';document.getElementById('dM').value='';
   saveData();renderDepotsList();render();
@@ -918,8 +1062,7 @@ function addDepot(){
 
 // INIT
 loadData();
-loadCarnet();
-initCarnetFromPassengers();
+renderWeekNav();
 render();
 </script>
 </body>
