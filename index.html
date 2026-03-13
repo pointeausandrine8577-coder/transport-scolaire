@@ -401,7 +401,7 @@ const DEFAULT_BASE={
 };
 
 let base,days,nextId=300,carnet=[];
-let currentTournee='morning',editingPassengerId=null,editingDepotTournee=null,editingDepartTournee=null;
+let currentTournee='morning',editingPassengerId=null,editingBasePassengerId=null,editingDepotTournee=null,editingDepartTournee=null;
 
 function loadData(){
   try{base=JSON.parse(localStorage.getItem('transport_base')||'null')||JSON.parse(JSON.stringify(DEFAULT_BASE));}
@@ -438,6 +438,7 @@ function ensureDayData(dateStr,tournee){
       departCP:b.departCP,
       departVille:b.departVille,
       absents:[],
+      overrides:{},
       extras:[],
       depots:JSON.parse(JSON.stringify(b.depots))
     };
@@ -458,6 +459,9 @@ function getEffectiveTournee(dateStr,tournee){
   const b=base[tournee];
   const d=getDayData(dateStr);
   const ov=d?d[tournee]:null;
+  const overrides=ov?ov.overrides||{}:{};
+  // Appliquer les overrides du jour sur les passagers de base
+  const passengers=b.passengers.map(p=>overrides[p.id]?{...p,...overrides[p.id],id:p.id}:p);
   return{
     depart:ov?ov.depart:b.depart,
     arrivee:ov?ov.arrivee:b.arrivee,
@@ -465,7 +469,7 @@ function getEffectiveTournee(dateStr,tournee){
     departAdresse:ov?ov.departAdresse:b.departAdresse,
     departCP:ov?ov.departCP:b.departCP,
     departVille:ov?ov.departVille:b.departVille,
-    passengers:b.passengers,
+    passengers,
     absents:ov?ov.absents:[],
     extras:ov?ov.extras:[],
     depots:ov?ov.depots:b.depots
@@ -664,10 +668,12 @@ function renderTournee(tournee){
         <div class="card-contact">${p.lien}: ${p.tel}</div>
       </div>
       <div class="card-actions">
+        <button class="icon-btn edit-btn" onclick="openEditBasePassenger('${tournee}',${p.id})">✏️</button>
         ${isAbsent
           ?`<button class="icon-btn restore-btn" title="Remettre" onclick="toggleAbsent('${tournee}',${p.id})">↩️</button>`
           :`<button class="icon-btn delete-btn" title="Marquer absent" onclick="toggleAbsent('${tournee}',${p.id})">❌</button>`
         }
+        <button class="icon-btn delete-btn" title="Supprimer définitivement" onclick="deleteBasePassenger('${tournee}',${p.id})">🗑</button>
       </div>`;
     bodyEl.appendChild(div);
   });
@@ -991,6 +997,35 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 // ══════════════════════════════════════════
 // PASSAGERS
 // ══════════════════════════════════════════
+function deleteBasePassenger(tournee,id){
+  if(!confirm("Supprimer ce passager définitivement de tous les jours ?"))return;
+  base[tournee].passengers=base[tournee].passengers.filter(x=>x.id!==id);
+  saveData();render();renderWeekNav();
+}
+function openEditBasePassenger(tournee,id){
+  currentTournee=tournee;
+  editingPassengerId=null;
+  editingBasePassengerId=id;
+  const p=base[tournee].passengers.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('modalPassagerTitle').textContent='✏️ Modifier passager';
+  document.getElementById('btnSavePassager').className='btn-save';
+  document.getElementById('pCpStatus').textContent='';
+  document.getElementById('pSearch').value='';
+  document.getElementById('pNom').value=p.nom||'';
+  document.getElementById('pPrenom').value=p.prenom||'';
+  document.getElementById('pAdresse').value=p.adresse||'';
+  document.getElementById('pCodePostal').value=p.codePostal||'';
+  document.getElementById('pVille').value=p.ville||'';
+  document.getElementById('pNote').value=p.note||'';
+  document.getElementById('pLien').value=p.lien||'Mère';
+  document.getElementById('pTel').value=p.tel||'';
+  document.getElementById('pType').value=p.type||'Montée';
+  const{h,m}=splitTime(p.time||'07:00');
+  document.getElementById('pH').value=h;
+  document.getElementById('pM').value=m;
+  document.getElementById('modalPassager').classList.add('open');
+}
 function openPassengerModal(tournee,id=null){
   currentTournee=tournee;editingPassengerId=id;
   const isOcc=tournee==='occasional';
@@ -1020,7 +1055,7 @@ function openPassengerModal(tournee,id=null){
   document.getElementById('modalPassager').classList.add('open');
 }
 function openEditExtra(tournee,id){openPassengerModal(tournee,id);}
-function closePassengerModal(){document.getElementById('modalPassager').classList.remove('open');editingPassengerId=null;document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));}
+function closePassengerModal(){document.getElementById('modalPassager').classList.remove('open');editingPassengerId=null;editingBasePassengerId=null;document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));}
 function savePassenger(){
   const nom=document.getElementById('pNom').value.trim();
   if(!nom){alert('Veuillez saisir un nom.');return;}
@@ -1037,7 +1072,13 @@ function savePassenger(){
     type:document.getElementById('pType').value,time:heure
   };
   addOrUpdateCarnet(obj);
-  if(currentTournee==='occasional'){
+  if(editingBasePassengerId){
+    // Stocker override pour ce jour uniquement
+    const ov=ensureDayData(selectedDate,currentTournee);
+    if(!ov.overrides)ov.overrides={};
+    ov.overrides[editingBasePassengerId]=obj;
+    editingBasePassengerId=null;
+  }else if(currentTournee==='occasional'){
     const occ=ensureOccasional(selectedDate);
     if(editingPassengerId){Object.assign(occ.passengers.find(x=>x.id===editingPassengerId),obj);}
     else{occ.passengers.push({id:nextId++,...obj});}
