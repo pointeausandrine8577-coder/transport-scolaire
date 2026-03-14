@@ -718,7 +718,7 @@ function renderTournee(tournee){
 function makeDepotCard(d,label,tournee,cls){
   const div=document.createElement('div');
   div.className='passenger-card depot-card';
-  div.innerHTML=`<div class="card-time ${cls}">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 ${label}</span><span class="card-name">${d.nom}</span></div>${d.adresse?`<div class="card-address">${d.adresse}</div>`:''}</div><div class="card-actions"><button class="icon-btn delete-btn" onclick="deactivateDepot('${tournee}',${d.id})">✕</button></div>`;
+  div.innerHTML=`<div class="card-time ${cls}">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 ${label}</span><span class="card-name">${d.nom}</span></div>${d.adresse?`<div class="card-address">${d.adresse}</div>`:''}</div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openEditDepot('${tournee}',${d.id})">✏️</button><button class="icon-btn delete-btn" onclick="deactivateDepot('${tournee}',${d.id})">✕</button></div>`;
   return div;
 }
 
@@ -814,7 +814,8 @@ function onDepartChange(tournee,part,val){
     base[tournee].passengers.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
     base[tournee].depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
     ov.extras.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
-    ov.depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
+    // Sync les dépôts du jour avec la base (éviter double décalage)
+    ov.depots.forEach(d=>{const bd=base[tournee].depots.find(x=>x.id===d.id);if(bd)d.time=bd.time;else d.time=minToTime(timeToMin(d.time)+diff);});
     if(ov.arrivee)ov.arrivee=minToTime(timeToMin(ov.arrivee)+diff);
     if(base[tournee].arrivee)base[tournee].arrivee=minToTime(timeToMin(base[tournee].arrivee)+diff);
     if(base[tournee].departCircuit)base[tournee].departCircuit=minToTime(timeToMin(base[tournee].departCircuit)+diff);
@@ -1095,6 +1096,36 @@ function savePassenger(){
 // ══════════════════════════════════════════
 // DÉPÔTS
 // ══════════════════════════════════════════
+function openEditDepot(tournee,id){
+  let depots;
+  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
+  else{depots=ensureDayData(selectedDate,tournee).depots;}
+  const d=depots.find(x=>x.id===id);
+  if(!d)return;
+  const{h,m}=splitTime(d.time);
+  const html=`<div class="modal-overlay open" id="modalEditDepot"><div class="modal"><div class="modal-handle"></div><h2>✏️ Modifier le dépôt</h2><div class="form-group"><label>Nom</label><input type="text" id="edNom" value="${d.nom}" placeholder="IME La Penière"></div><div class="form-group"><label>Adresse</label><input type="text" id="edAdresse" value="${d.adresse||''}" placeholder="Aizenay"></div><div class="form-group"><label>Heure</label><div class="time-inputs"><input type="text" id="edH" value="${h}" maxlength="2" inputmode="numeric"><span class="time-sep">:</span><input type="text" id="edM" value="${m}" maxlength="2" inputmode="numeric"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('modalEditDepot').remove()">Annuler</button><button class="btn-save" onclick="saveEditDepot('${tournee}',${id})">Enregistrer</button></div></div></div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+  setupTimeField('edH','edM');
+  document.getElementById('modalEditDepot').addEventListener('click',function(e){if(e.target===this)this.remove();});
+}
+function saveEditDepot(tournee,id){
+  const nom=document.getElementById('edNom').value.trim();
+  if(!nom){alert('Saisir un nom');return;}
+  const heure=parseHM(document.getElementById('edH').value,document.getElementById('edM').value);
+  if(!heure){alert('Heure invalide');return;}
+  let depots;
+  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
+  else{
+    depots=ensureDayData(selectedDate,tournee).depots;
+    // Aussi mettre à jour la base
+    const bd=base[tournee].depots.find(x=>x.id===id);
+    if(bd){bd.nom=nom;bd.adresse=document.getElementById('edAdresse').value.trim();bd.time=heure;}
+  }
+  const d=depots.find(x=>x.id===id);
+  if(d){d.nom=nom;d.adresse=document.getElementById('edAdresse').value.trim();d.time=heure;}
+  document.getElementById('modalEditDepot').remove();
+  saveData();render();
+}
 function deactivateDepot(tournee,id){
   let depots;
   if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
