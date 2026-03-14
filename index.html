@@ -795,17 +795,26 @@ function onDepart(tournee, part, val) {
   if (diff === 0) { saveData(); render(); return; }
   if (tournee === 'occasional') {
     ov.passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    ov.passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
     ov.depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
   } else {
-    // Décaler la base
+    // Décaler la base — passagers ET dépôts
     base[tournee].passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    base[tournee].passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
     base[tournee].depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
     if (base[tournee].arrivee) base[tournee].arrivee = m2t(t2m(base[tournee].arrivee) + diff);
     if (base[tournee].departCircuit) base[tournee].departCircuit = m2t(t2m(base[tournee].departCircuit) + diff);
+    // Décaler aussi les overrides du jour
+    if (ov.overrides) {
+      Object.values(ov.overrides).forEach(p => { if (p.time) p.time = m2t(t2m(p.time) + diff); });
+    }
     // Décaler les extras du jour
     ov.extras.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    ov.extras.sort((a, b) => t2m(a.time) - t2m(b.time));
     if (ov.arrivee) ov.arrivee = m2t(t2m(ov.arrivee) + diff);
     if (ov.departCircuit) ov.departCircuit = m2t(t2m(ov.departCircuit) + diff);
+    // Aussi mettre à jour le depart dans la base pour cohérence
+    base[tournee].depart = newT;
   }
   saveData(); render();
 }
