@@ -400,7 +400,7 @@ function ensureOv(dateStr, tournee) {
     days[dateStr][tournee] = {
       depart: b.depart, arrivee: b.arrivee, departCircuit: b.departCircuit || null,
       departAdresse: b.departAdresse, departCP: b.departCP, departVille: b.departVille,
-      absents: [], extras: [], overrides: {}, depotsState: {}
+      absents: [], extras: [], overrides: {}, depotsState: {}, timeShift: 0
     };
   }
   return days[dateStr][tournee];
@@ -417,17 +417,28 @@ function getEff(dateStr, tournee) {
   const ov = getDayOv(dateStr, tournee);
   const overrides = ov ? (ov.overrides || {}) : {};
   const depotsState = ov ? (ov.depotsState || {}) : {};
+  // Décalage horaire du jour (ne modifie pas la base)
+  const shift = ov ? (ov.timeShift || 0) : 0;
+
   return {
     depart: ov ? ov.depart : b.depart,
     arrivee: ov ? ov.arrivee : b.arrivee,
-    departCircuit: ov ? (ov.departCircuit !== undefined ? ov.departCircuit : b.departCircuit) : b.departCircuit,
+    departCircuit: ov ? (ov.departCircuit !== undefined ? ov.departCircuit : (shift ? m2t(t2m(b.departCircuit) + shift) : b.departCircuit)) : b.departCircuit,
     departAdresse: ov ? ov.departAdresse : b.departAdresse,
     departCP: ov ? ov.departCP : b.departCP,
     departVille: ov ? ov.departVille : b.departVille,
-    passengers: b.passengers.map(p => overrides[p.id] ? { ...p, ...overrides[p.id], id: p.id } : p),
+    passengers: b.passengers.map(p => {
+      const base_time = shift ? m2t(t2m(p.time) + shift) : p.time;
+      const shifted = { ...p, time: base_time };
+      return overrides[p.id] ? { ...shifted, ...overrides[p.id], id: p.id, time: overrides[p.id].time || base_time } : shifted;
+    }).sort((a, b) => t2m(a.time) - t2m(b.time)),
     absents: ov ? (ov.absents || []) : [],
     extras: ov ? (ov.extras || []) : [],
-    depots: b.depots.map(d => ({ ...d, active: depotsState[d.id] !== undefined ? depotsState[d.id] : d.active }))
+    depots: b.depots.map(d => ({
+      ...d,
+      time: shift ? m2t(t2m(d.time) + shift) : d.time,
+      active: depotsState[d.id] !== undefined ? depotsState[d.id] : d.active
+    }))
   };
 }
 
@@ -780,41 +791,44 @@ function renderStats() {
 // HORAIRES — DÉCALAGE
 // ══════════════════════════════════════════════════
 function onDepart(tournee, part, val) {
-  let ov, cur;
-  if (tournee === 'occasional') { ov = ensureOcc(selDate); cur = ov.depart || '00:00'; }
-  else { ov = ensureOv(selDate, tournee); cur = ov.depart || '00:00'; }
-  // Lire l'autre champ depuis le DOM, utiliser val pour le champ modifié
+  let ov;
+  if (tournee === 'occasional') { ov = ensureOcc(selDate); }
+  else { ov = ensureOv(selDate, tournee); }
+
+  // Lire les deux champs H et M depuis le DOM
   const hEl = document.getElementById(tournee + 'DH');
   const mEl = document.getElementById(tournee + 'DM');
-  const hVal = part === 'h' ? val : (hEl ? hEl.value : splitT(cur).h);
-  const mVal = part === 'm' ? val : (mEl ? mEl.value : splitT(cur).m);
+  const hVal = part === 'h' ? val : (hEl ? hEl.value : splitT(ov.depart || '00:00').h);
+  const mVal = part === 'm' ? val : (mEl ? mEl.value : splitT(ov.depart || '00:00').m);
   const newT = parseHM(hVal, mVal);
   if (!newT) return;
-  const diff = t2m(newT) - t2m(cur);
-  ov.depart = newT;
-  if (diff === 0) { saveData(); render(); return; }
+
   if (tournee === 'occasional') {
+    const oldDepart = ov.depart || '00:00';
+    const diff = t2m(newT) - t2m(oldDepart);
+    ov.depart = newT;
+    if (diff === 0) { saveData(); render(); return; }
     ov.passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
     ov.passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
     ov.depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
   } else {
-    // Décaler la base — passagers ET dépôts
-    base[tournee].passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
-    base[tournee].passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
-    base[tournee].depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
-    if (base[tournee].arrivee) base[tournee].arrivee = m2t(t2m(base[tournee].arrivee) + diff);
-    if (base[tournee].departCircuit) base[tournee].departCircuit = m2t(t2m(base[tournee].departCircuit) + diff);
-    // Décaler aussi les overrides du jour
-    if (ov.overrides) {
-      Object.values(ov.overrides).forEach(p => { if (p.time) p.time = m2t(t2m(p.time) + diff); });
-    }
-    // Décaler les extras du jour
-    ov.extras.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    // Nouveau décalage par rapport à la BASE originale (jamais modifiée)
+    const baseDepart = t2m(base[tournee].depart);
+    const newDepart = t2m(newT);
+    const newShift = newDepart - baseDepart;
+    const oldShift = ov.timeShift || 0;
+    const diffExtras = newShift - oldShift;
+
+    ov.depart = newT;
+    ov.timeShift = newShift;
+
+    // Décaler les extras du jour par rapport à leur position actuelle
+    ov.extras.forEach(p => { p.time = m2t(t2m(p.time) + diffExtras); });
     ov.extras.sort((a, b) => t2m(a.time) - t2m(b.time));
-    if (ov.arrivee) ov.arrivee = m2t(t2m(ov.arrivee) + diff);
-    if (ov.departCircuit) ov.departCircuit = m2t(t2m(ov.departCircuit) + diff);
-    // Aussi mettre à jour le depart dans la base pour cohérence
-    base[tournee].depart = newT;
+
+    // Arrivée et départ circuit
+    if (base[tournee].arrivee) ov.arrivee = m2t(t2m(base[tournee].arrivee) + newShift);
+    if (base[tournee].departCircuit) ov.departCircuit = m2t(t2m(base[tournee].departCircuit) + newShift);
   }
   saveData(); render();
 }
