@@ -6,1174 +6,1161 @@
 <title>Transport Scolaire — ETS85-AIZ-C05</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--accent:#f0a500;--accent2:#3fb950;--text:#e6edf3;--muted:#8b949e;--danger:#f85149;--blue:#58a6ff;--morning:#f0a500;--evening:#58a6ff;--occasional:#c084fc;}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--accent:#f0a500;--accent2:#3fb950;--text:#e6edf3;--muted:#8b949e;--danger:#f85149;--blue:#58a6ff;--occasional:#c084fc;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;}
 
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;}
 .bus-icon{font-size:20px;background:var(--accent);width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.header-info{flex:1;min-width:0;}
+.header-info{flex:1;}
 header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
 header p{font-size:10px;color:var(--muted);}
 .save-indicator{font-size:10px;color:var(--accent2);}
 
-/* WEEK NAV */
 .week-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
 .week-nav::-webkit-scrollbar{display:none;}
-.day-btn{flex-shrink:0;padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-align:center;min-width:52px;transition:all .2s;}
-.day-btn .day-name{display:block;font-size:10px;margin-bottom:2px;}
-.day-btn .day-num{display:block;font-size:15px;}
+.day-btn{flex-shrink:0;padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-align:center;min-width:50px;transition:all .2s;}
+.day-btn .dn{display:block;font-size:10px;margin-bottom:2px;}
+.day-btn .dd{display:block;font-size:15px;}
 .day-btn.today{border-color:var(--accent);color:var(--accent);}
 .day-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
-.day-btn.has-changes::after{content:'•';color:var(--occasional);font-size:8px;display:block;margin-top:1px;}
-.day-btn.weekend{opacity:0.35;}
+.day-btn.has-mod::after{content:'•';color:var(--occasional);font-size:8px;display:block;margin-top:1px;}
+.day-btn.weekend{opacity:.35;}
+.nav-arrow{flex-shrink:0;padding:7px 8px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;min-width:30px;}
 
 .container{max-width:960px;margin:0 auto;padding:14px 12px;}
 .stats-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;flex:1;min-width:72px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;flex:1;min-width:70px;}
 .stat-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);}
 .stat-label{font-size:10px;color:var(--muted);margin-top:1px;}
 
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:6px;flex-wrap:wrap;}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:6px;flex-wrap:wrap;}
 .btn-group{display:flex;gap:5px;flex-wrap:wrap;}
 .btn{border:none;border-radius:8px;padding:7px 11px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .2s;white-space:nowrap;}
 .btn-primary{background:var(--accent);color:#000;}
-.btn-blue{background:rgba(88,166,255,0.12);color:var(--blue);border:1px solid rgba(88,166,255,0.3);}
-.btn-purple{background:rgba(192,132,252,0.12);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
-.btn-green{background:rgba(63,185,80,0.12);color:var(--accent2);border:1px solid rgba(63,185,80,0.3);}
-.btn-red{background:rgba(248,81,73,0.12);color:var(--danger);border:1px solid rgba(248,81,73,0.3);}
+.btn-blue{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.3);}
+.btn-purple{background:rgba(192,132,252,.12);color:var(--occasional);border:1px solid rgba(192,132,252,.3);}
+.btn-green{background:rgba(63,185,80,.12);color:var(--accent2);border:1px solid rgba(63,185,80,.3);}
+.btn-red{background:rgba(248,81,73,.12);color:var(--danger);border:1px solid rgba(248,81,73,.3);}
 
 .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-morning{background:rgba(240,165,0,0.15);color:var(--morning);border:1px solid rgba(240,165,0,0.3);}
-.badge-evening{background:rgba(88,166,255,0.15);color:var(--evening);border:1px solid rgba(88,166,255,0.3);}
-.badge-occasional{background:rgba(192,132,252,0.15);color:var(--occasional);border:1px solid rgba(192,132,252,0.3);}
+.badge-m{background:rgba(240,165,0,.15);color:var(--accent);border:1px solid rgba(240,165,0,.3);}
+.badge-e{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3);}
+.badge-o{background:rgba(192,132,252,.15);color:var(--occasional);border:1px solid rgba(192,132,252,.3);}
 
 .route-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;}
-.route-block.occasional-block{border-color:rgba(192,132,252,0.35);}
+.route-block.occ-block{border-color:rgba(192,132,252,.35);}
 .route-meta{padding:9px 13px;border-bottom:1px solid var(--border);display:flex;gap:10px;font-size:11px;color:var(--muted);background:var(--surface2);flex-wrap:wrap;align-items:center;}
-.meta-time-edit{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 6px;color:var(--text);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;width:32px;text-align:center;}
-.meta-time-edit:focus{outline:none;border-color:var(--accent);}
+.te{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 5px;color:var(--text);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;width:30px;text-align:center;}
+.te:focus{outline:none;border-color:var(--accent);}
 
-.cards-list{padding:7px;display:flex;flex-direction:column;gap:7px;}
-.passenger-card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;}
-.passenger-card.depot-card{background:rgba(88,166,255,0.04);border-color:rgba(88,166,255,0.2);}
-.passenger-card.depart-card{background:rgba(63,185,80,0.04);border-color:rgba(63,185,80,0.2);}
-.passenger-card.occasional-pass{background:rgba(192,132,252,0.04);border-color:rgba(192,132,252,0.15);}
-.passenger-card.absent-card{opacity:0.4;background:rgba(248,81,73,0.04);border-color:rgba(248,81,73,0.15);text-decoration:line-through;}
-.passenger-card.extra-card{background:rgba(63,185,80,0.04);border-color:rgba(63,185,80,0.2);}
+.cards{padding:7px;display:flex;flex-direction:column;gap:7px;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;}
+.card.depot-card{background:rgba(88,166,255,.04);border-color:rgba(88,166,255,.2);}
+.card.depart-card{background:rgba(63,185,80,.04);border-color:rgba(63,185,80,.2);}
+.card.occ-card{background:rgba(192,132,252,.04);border-color:rgba(192,132,252,.15);}
+.card.absent-card{opacity:.4;border-color:rgba(248,81,73,.2);}
+.card.extra-card{background:rgba(63,185,80,.04);border-color:rgba(63,185,80,.2);}
 
-.card-time{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;min-width:50px;flex-shrink:0;padding-top:2px;}
-.time-morning{color:var(--morning);}
-.time-evening{color:var(--evening);}
-.time-occasional{color:var(--occasional);}
-.time-green{color:var(--accent2);}
-.card-body{flex:1;min-width:0;}
-.card-top{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
-.card-name{font-weight:600;font-size:13px;}
-.card-address{font-size:11px;color:var(--muted);margin-bottom:2px;word-break:break-word;}
-.card-note{font-size:10px;color:#6e7681;font-style:italic;}
-.card-contact{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;}
-.card-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.icon-btn{background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.edit-btn:hover{background:rgba(240,165,0,0.12);border-color:rgba(240,165,0,0.4);}
-.delete-btn:hover{background:rgba(248,81,73,0.1);border-color:rgba(248,81,73,0.4);}
-.restore-btn{background:rgba(63,185,80,0.1);border-color:rgba(63,185,80,0.3);}
+.ct{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;min-width:50px;flex-shrink:0;padding-top:2px;}
+.ct-m{color:var(--accent);}
+.ct-e{color:var(--blue);}
+.ct-o{color:var(--occasional);}
+.ct-g{color:var(--accent2);}
+.cb{flex:1;min-width:0;}
+.ctop{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
+.cname{font-weight:600;font-size:13px;}
+.caddr{font-size:11px;color:var(--muted);margin-bottom:2px;word-break:break-word;}
+.cnote{font-size:10px;color:#6e7681;font-style:italic;}
+.ctel{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;}
+.cact{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.ib{background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ib:hover{background:rgba(240,165,0,.12);border-color:rgba(240,165,0,.4);}
+.ib.del:hover{background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.4);}
+.ib.restore{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.3);}
 
-.type-badge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;}
-.type-montee{background:rgba(63,185,80,0.1);color:var(--accent2);}
-.type-descente{background:rgba(248,81,73,0.12);color:#ff7b72;}
-.type-depot{background:rgba(88,166,255,0.1);color:var(--blue);}
-.type-depart{background:rgba(63,185,80,0.1);color:var(--accent2);}
-.type-extra{background:rgba(63,185,80,0.15);color:var(--accent2);}
-.type-absent{background:rgba(248,81,73,0.12);color:var(--danger);}
+.tbadge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;}
+.tb-up{background:rgba(63,185,80,.1);color:var(--accent2);}
+.tb-down{background:rgba(248,81,73,.12);color:#ff7b72;}
+.tb-depot{background:rgba(88,166,255,.1);color:var(--blue);}
+.tb-depart{background:rgba(63,185,80,.1);color:var(--accent2);}
+.tb-extra{background:rgba(63,185,80,.15);color:var(--accent2);}
+.tb-absent{background:rgba(248,81,73,.12);color:var(--danger);}
 
-.duration-info{font-size:11px;color:var(--muted);padding:7px 13px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;}
-.empty-state{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+.dur{font-size:11px;color:var(--muted);padding:7px 13px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;}
+.empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
 
-.routing-banner{background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--accent2);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
-.routing-banner.loading{background:rgba(240,165,0,0.08);border-color:rgba(240,165,0,0.2);color:var(--accent);}
-.routing-banner.error{background:rgba(248,81,73,0.08);border-color:rgba(248,81,73,0.2);color:var(--danger);}
-.occasional-info{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--occasional);margin-bottom:10px;}
+.rbanner{border-radius:8px;padding:9px 13px;font-size:12px;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.rbanner.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:var(--accent2);}
+.rbanner.loading{background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);color:var(--accent);}
+.rbanner.error{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.2);color:var(--danger);}
+.occ-info{background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--occasional);margin-bottom:10px;}
 
-/* MODALS */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;align-items:flex-end;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:12px 18px 36px;width:100%;max-width:540px;animation:slideUp .25s ease;max-height:94vh;overflow-y:auto;}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-handle{width:44px;height:5px;background:var(--border);border-radius:3px;margin:0 auto 16px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:12px 18px 36px;width:100%;max-width:540px;animation:sUp .25s ease;max-height:94vh;overflow-y:auto;}
+@keyframes sUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mhandle{width:44px;height:5px;background:var(--border);border-radius:3px;margin:0 auto 16px;}
 .modal h2{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;}
-.form-group{margin-bottom:11px;position:relative;}
+.fg{margin-bottom:11px;position:relative;}
 label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
 input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;}
 textarea{resize:vertical;min-height:56px;font-size:14px;}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);}
 select option{background:var(--surface2);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.modal-actions{display:flex;gap:7px;margin-top:18px;}
-.btn-cancel{flex:1;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;color:var(--text);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.btn-save{flex:2;padding:12px;background:var(--accent);border:none;border-radius:11px;color:#000;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
-.btn-save-purple{background:var(--occasional)!important;color:#000;}
-.btn-save-green{background:var(--accent2)!important;color:#000;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.mact{display:flex;gap:7px;margin-top:18px;}
+.mbtn-c{flex:1;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;color:var(--text);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mbtn-s{flex:2;padding:12px;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
+.mbtn-s.yellow{background:var(--accent);color:#000;}
+.mbtn-s.purple{background:var(--occasional);color:#000;}
+.mbtn-s.green{background:var(--accent2);color:#000;}
 
-.time-inputs{display:flex;align-items:center;gap:6px;}
-.time-inputs input{text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:18px;padding:10px 6px;width:58px;}
-.time-sep{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--accent);}
+.ti{display:flex;align-items:center;gap:6px;}
+.ti input{text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:18px;padding:10px 6px;width:58px;}
+.tsep{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--accent);}
 
-.cp-row{display:grid;grid-template-columns:1fr 1.5fr;gap:9px;align-items:start;}
-.cp-loading{font-size:10px;color:var(--muted);margin-top:3px;min-height:14px;}
+.cprow{display:grid;grid-template-columns:1fr 1.5fr;gap:9px;align-items:start;}
+.cpst{font-size:10px;color:var(--muted);margin-top:3px;min-height:14px;}
 
-/* AUTOCOMPLETE */
-.ac-wrap{position:relative;}
-.ac-list{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--accent);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);margin-top:3px;display:none;}
-.ac-list.open{display:block;}
-.ac-item{padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
-.ac-item:last-child{border-bottom:none;}
-.ac-item:hover{background:rgba(240,165,0,0.1);}
-.ac-name{font-weight:600;font-size:13px;}
-.ac-detail{font-size:11px;color:var(--muted);}
+.acw{position:relative;}
+.acl{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--accent);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);margin-top:3px;display:none;}
+.acl.open{display:block;}
+.aci{padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--border);}
+.aci:last-child{border-bottom:none;}
+.aci:hover{background:rgba(240,165,0,.1);}
+.aci-name{font-weight:600;font-size:13px;}
+.aci-detail{font-size:11px;color:var(--muted);}
 
-.depot-item{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--border);}
-.depot-item:last-child{border-bottom:none;}
-.depot-checkbox{width:20px;height:20px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
-.depot-item-label{flex:1;font-size:13px;}
-.depot-time-h,.depot-time-m{width:44px!important;padding:5px 3px!important;font-size:13px!important;text-align:center;flex-shrink:0;}
-.section-divider{margin:14px 0 11px;padding-top:13px;border-top:1px solid var(--border);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.dep-item{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--border);}
+.dep-item:last-child{border-bottom:none;}
+.dep-cb{width:20px;height:20px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.dep-lbl{flex:1;font-size:13px;}
+.dep-th,.dep-tm{width:44px!important;padding:5px 3px!important;font-size:13px!important;text-align:center;flex-shrink:0;}
+.sdiv{margin:14px 0 11px;padding-top:13px;border-top:1px solid var(--border);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
 
-.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,165,0,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,165,0,.3);border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
 
 @media(min-width:700px){
-  .modal-overlay{align-items:center;padding:16px;}
+  .overlay{align-items:center;padding:16px;}
   .modal{border-radius:18px;padding:22px;}
-  .modal-handle{display:none;}
+  .mhandle{display:none;}
 }
 </style>
 </head>
 <body>
-
 <header>
   <div class="bus-icon">🚌</div>
   <div class="header-info">
     <h1>Transport Scolaire</h1>
     <p>ETS85-AIZ-C05</p>
   </div>
-  <div class="save-indicator" id="saveIndicator">✓ Sauvegardé</div>
+  <div class="save-indicator" id="saveInd">✓ Sauvegardé</div>
 </header>
 
-<!-- NAVIGATION SEMAINE -->
 <div class="week-nav" id="weekNav"></div>
 
 <div class="container">
   <div id="routingStatus"></div>
   <div class="stats-bar" id="statsBar"></div>
 
-  <!-- MATIN -->
-  <div class="section-header">
-    <span class="badge badge-morning">☀️ MATIN</span>
+  <div class="sec-header">
+    <span class="badge badge-m">☀️ MATIN</span>
     <div class="btn-group">
-      <button class="btn btn-green" onclick="recalcWithRouting('morning')">🗺 Recalc.</button>
+      <button class="btn btn-green" onclick="recalc('morning')">🗺 Recalc.</button>
       <button class="btn btn-blue" onclick="openDepotModal('morning')">📍 Dépôts</button>
-      <button class="btn btn-primary" onclick="openPassengerModal('morning')">+ Passager</button>
+      <button class="btn btn-primary" onclick="openPassModal('morning')">+ Passager</button>
     </div>
   </div>
   <div class="route-block">
     <div class="route-meta" id="morningMeta"></div>
-    <div class="cards-list" id="morningBody"></div>
-    <div class="duration-info" id="morningDuration"></div>
+    <div class="cards" id="morningBody"></div>
+    <div class="dur" id="morningDur"></div>
   </div>
 
-  <!-- SOIR -->
-  <div class="section-header">
-    <span class="badge badge-evening">🌙 SOIR</span>
+  <div class="sec-header">
+    <span class="badge badge-e">🌙 SOIR</span>
     <div class="btn-group">
-      <button class="btn btn-green" onclick="recalcWithRouting('evening')">🗺 Recalc.</button>
+      <button class="btn btn-green" onclick="recalc('evening')">🗺 Recalc.</button>
       <button class="btn btn-blue" onclick="openDepotModal('evening')">📍 Dépôts</button>
-      <button class="btn btn-primary" onclick="openPassengerModal('evening')">+ Passager</button>
+      <button class="btn btn-primary" onclick="openPassModal('evening')">+ Passager</button>
     </div>
   </div>
   <div class="route-block">
     <div class="route-meta" id="eveningMeta"></div>
-    <div class="cards-list" id="eveningBody"></div>
-    <div class="duration-info" id="eveningDuration"></div>
+    <div class="cards" id="eveningBody"></div>
+    <div class="dur" id="eveningDur"></div>
   </div>
 
-  <!-- OCCASIONNEL -->
-  <div class="section-header">
-    <span class="badge badge-occasional">⚡ OCCASIONNEL</span>
+  <div class="sec-header">
+    <span class="badge badge-o">⚡ OCCASIONNEL</span>
     <div class="btn-group">
-      <button class="btn btn-red" onclick="resetOccasional()" id="btnResetOcc" style="display:none">🗑 Effacer</button>
-      <button class="btn btn-green" onclick="recalcWithRouting('occasional')" id="btnRecalcOcc" style="display:none">🗺 Recalc.</button>
-      <button class="btn btn-blue" onclick="openDepotModal('occasional')" id="btnDepotOcc" style="display:none">📍 Dépôts</button>
-      <button class="btn btn-purple" onclick="openPassengerModal('occasional')">+ Passager</button>
+      <button class="btn btn-red" id="btnResetOcc" style="display:none" onclick="resetOcc()">🗑 Effacer</button>
+      <button class="btn btn-green" id="btnRecalcOcc" style="display:none" onclick="recalc('occasional')">🗺 Recalc.</button>
+      <button class="btn btn-blue" id="btnDepotOcc" style="display:none" onclick="openDepotModal('occasional')">📍 Dépôts</button>
+      <button class="btn btn-purple" onclick="openPassModal('occasional')">+ Passager</button>
     </div>
   </div>
-  <div class="occasional-info">⚡ Circuit ponctuel — spécifique à ce jour</div>
-  <div class="route-block occasional-block" id="occasionalBlock" style="display:none">
+  <div class="occ-info">⚡ Circuit ponctuel — spécifique à ce jour</div>
+  <div class="route-block occ-block" id="occBlock" style="display:none">
     <div class="route-meta" id="occasionalMeta"></div>
-    <div class="cards-list" id="occasionalBody"></div>
-    <div class="duration-info" id="occasionalDuration"></div>
+    <div class="cards" id="occasionalBody"></div>
+    <div class="dur" id="occasionalDur"></div>
   </div>
 </div>
 
 <!-- MODAL PASSAGER -->
-<div class="modal-overlay" id="modalPassager">
+<div class="overlay" id="modalPass">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <h2 id="modalPassagerTitle">➕ Nouveau passager</h2>
-    <div class="form-group">
+    <div class="mhandle"></div>
+    <h2 id="mPassTitle">➕ Nouveau passager</h2>
+    <div class="fg">
       <label>🔍 Rechercher dans le carnet</label>
-      <div class="ac-wrap">
-        <input type="text" id="pSearch" placeholder="Taper un nom…" autocomplete="off" oninput="searchContact(this.value)">
-        <div class="ac-list" id="pSearchList"></div>
+      <div class="acw">
+        <input type="text" id="pSearch" placeholder="Taper un nom…" autocomplete="off" oninput="searchCarnet(this.value)">
+        <div class="acl" id="pSearchList"></div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Nom</label><input type="text" id="pNom" placeholder="DUPONT" autocomplete="off"></div>
-      <div class="form-group"><label>Prénom</label><input type="text" id="pPrenom" placeholder="Lucas" autocomplete="off"></div>
+    <div class="frow">
+      <div class="fg"><label>Nom</label><input type="text" id="pNom" placeholder="DUPONT" autocomplete="off"></div>
+      <div class="fg"><label>Prénom</label><input type="text" id="pPrenom" placeholder="Lucas" autocomplete="off"></div>
     </div>
-    <div class="form-group"><label>Adresse (rue)</label>
-      <div class="ac-wrap">
-        <input type="text" id="pAdresse" placeholder="12 rue des Lilas" autocomplete="off" oninput="searchAddress(this.value,'pAdresseList','pCodePostal','pVille','pCpStatus')">
-        <div class="ac-list" id="pAdresseList"></div>
+    <div class="fg"><label>Adresse</label>
+      <div class="acw">
+        <input type="text" id="pAdresse" placeholder="12 rue des Lilas" autocomplete="off" oninput="searchAddr(this.value)">
+        <div class="acl" id="pAdresseList"></div>
       </div>
     </div>
-    <div class="cp-row">
-      <div class="form-group">
+    <div class="cprow">
+      <div class="fg">
         <label>Code postal</label>
-        <input type="text" id="pCodePostal" placeholder="85190" maxlength="5" inputmode="numeric" oninput="autoFillCity(this.value,'pVille','pCpStatus','pVilleList')">
-        <div class="cp-loading" id="pCpStatus"></div>
+        <input type="text" id="pCP" placeholder="85190" maxlength="5" inputmode="numeric" oninput="autoCP(this.value,'pVille','pCPSt','pVilleList')">
+        <div class="cpst" id="pCPSt"></div>
       </div>
-      <div class="form-group"><label>Ville (auto)</label>
-        <div class="ac-wrap">
+      <div class="fg"><label>Ville</label>
+        <div class="acw">
           <input type="text" id="pVille" placeholder="Rempli auto…" autocomplete="off" oninput="searchVille(this.value,'pVilleList')">
-          <div class="ac-list" id="pVilleList"></div>
+          <div class="acl" id="pVilleList"></div>
         </div>
       </div>
     </div>
-    <div class="form-group"><label>Note / Repère</label><textarea id="pNote" placeholder="Portail bleu..."></textarea></div>
-    <div class="form-row">
-      <div class="form-group"><label>Lien</label><select id="pLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
-      <div class="form-group"><label>Téléphone</label><input type="tel" id="pTel" placeholder="06 XX XX XX XX"></div>
+    <div class="fg"><label>Note</label><textarea id="pNote" placeholder="Portail bleu..."></textarea></div>
+    <div class="frow">
+      <div class="fg"><label>Lien</label><select id="pLien"><option>Mère</option><option>Père</option><option>Mobile</option><option>Tuteur</option></select></div>
+      <div class="fg"><label>Téléphone</label><input type="tel" id="pTel" placeholder="06 XX XX XX XX"></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Type</label><select id="pType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
-      <div class="form-group"><label>Heure</label>
-        <div class="time-inputs">
+    <div class="frow">
+      <div class="fg"><label>Type</label><select id="pType"><option value="Montée">Montée</option><option value="Descente">Descente</option></select></div>
+      <div class="fg"><label>Heure</label>
+        <div class="ti">
           <input type="text" id="pH" placeholder="07" maxlength="2" inputmode="numeric">
-          <span class="time-sep">:</span>
-          <input type="text" id="pM" placeholder="00" maxlength="2" inputmode="numeric">
+          <span class="tsep">:</span>
+          <input type="text" id="pMin" placeholder="00" maxlength="2" inputmode="numeric">
         </div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closePassengerModal()">Annuler</button>
-      <button class="btn-save" id="btnSavePassager" onclick="savePassenger()">Enregistrer</button>
+    <div class="mact">
+      <button class="mbtn-c" onclick="closePassModal()">Annuler</button>
+      <button class="mbtn-s yellow" id="mPassSave" onclick="savePass()">Enregistrer</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL DÉPÔTS -->
-<div class="modal-overlay" id="modalDepots">
+<div class="overlay" id="modalDepots">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <h2 id="depotsTitle">📍 Gérer les dépôts</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Cochez les dépôts actifs.</p>
+    <div class="mhandle"></div>
+    <h2 id="mDepotTitle">📍 Dépôts</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Cochez les dépôts actifs ce jour.</p>
     <div id="depotsList"></div>
-    <div class="section-divider">Ajouter un établissement</div>
-    <div class="form-row">
-      <div class="form-group"><label>Nom</label><input type="text" id="dNom" placeholder="Lycée Colette"></div>
-      <div class="form-group"><label>Heure</label>
-        <div class="time-inputs">
+    <div class="sdiv">Ajouter un établissement</div>
+    <div class="frow">
+      <div class="fg"><label>Nom</label><input type="text" id="dNom" placeholder="Lycée Colette"></div>
+      <div class="fg"><label>Heure</label>
+        <div class="ti">
           <input type="text" id="dH" placeholder="08" maxlength="2" inputmode="numeric">
-          <span class="time-sep">:</span>
-          <input type="text" id="dM" placeholder="35" maxlength="2" inputmode="numeric">
+          <span class="tsep">:</span>
+          <input type="text" id="dMin" placeholder="35" maxlength="2" inputmode="numeric">
         </div>
       </div>
     </div>
-    <div class="form-group"><label>Adresse (optionnel)</label><input type="text" id="dAdresse" placeholder="Aizenay"></div>
+    <div class="fg"><label>Adresse (opt.)</label><input type="text" id="dAdresse" placeholder="Aizenay"></div>
     <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:13px;margin-top:4px" onclick="addDepot()">+ Ajouter</button>
-    <div class="modal-actions" style="margin-top:12px"><button class="btn-cancel" onclick="closeDepotModal()">Fermer</button></div>
+    <div class="mact"><button class="mbtn-c" onclick="closeDepotModal()">Fermer</button></div>
   </div>
 </div>
 
 <script>
-const ORS_KEY='eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImI4MWRkNjZhYzMxODRjZDI5NjVlNmUwMTcwZmY2NzVmIiwiaCI6Im11cm11cjY0In0=';
-const JOURS_COURT=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-const JOURS_LONG=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-const MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+// ══════════════════════════════════════════════════
+// CONSTANTES
+// ══════════════════════════════════════════════════
+const ORS_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImI4MWRkNjZhYzMxODRjZDI5NjVlNmUwMTcwZmY2NzVmIiwiaCI6Im11cm11cjY0In0=';
+const JOURS_C = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
-// ══════════════════════════════════════════
-// SEMAINE — Navigation
-// ══════════════════════════════════════════
-let selectedDate=getTodayStr();
+// ══════════════════════════════════════════════════
+// UTILS TEMPS
+// ══════════════════════════════════════════════════
+const pad2 = n => String(n).padStart(2, '0');
+const t2m = t => { if (!t || !t.includes(':')) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + (isNaN(m) ? 0 : m); };
+const m2t = m => `${pad2(Math.floor(m / 60) % 24)}:${pad2(m % 60)}`;
+function parseHM(h, m) { const hh = parseInt(h) || 0, mm = parseInt(m) || 0; if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null; return `${pad2(hh)}:${pad2(mm)}`; }
+function splitT(t) { if (!t || !t.includes(':')) return { h: '00', m: '00' }; const [h, m] = t.split(':'); return { h: h || '00', m: m || '00' }; }
 
-function getTodayStr(){return new Date().toISOString().split('T')[0];}
-
-function getWeekDates(){
-  // Lundi de la semaine contenant selectedDate
-  const d=new Date(selectedDate+'T12:00:00');
-  const day=d.getDay();
-  const monday=new Date(d);
-  monday.setDate(d.getDate()-(day===0?6:day-1));
-  const dates=[];
-  for(let i=0;i<7;i++){
-    const dd=new Date(monday);
-    dd.setDate(monday.getDate()+i);
-    dates.push(dd.toISOString().split('T')[0]);
-  }
-  return dates;
+function setupTF(hId, mId) {
+  const h = document.getElementById(hId), m = document.getElementById(mId);
+  if (!h || !m) return;
+  h.addEventListener('input', function () { this.value = this.value.replace(/\D/g, ''); if (this.value.length === 2) m.focus(); });
+  m.addEventListener('input', function () { this.value = this.value.replace(/\D/g, ''); });
 }
+setupTF('pH', 'pMin'); setupTF('dH', 'dMin');
 
-function renderWeekNav(){
-  const nav=document.getElementById('weekNav');
-  const today=getTodayStr();
-  const dates=getWeekDates();
-  nav.innerHTML='';
-
-  // Flèche semaine précédente
-  const prev=document.createElement('button');
-  prev.className='day-btn';prev.style.minWidth='30px';prev.textContent='‹';
-  prev.onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()-7);selectedDate=d.toISOString().split('T')[0];renderWeekNav();render();};
-  nav.appendChild(prev);
-
-  dates.forEach(dateStr=>{
-    const d=new Date(dateStr+'T12:00:00');
-    const isWeekend=d.getDay()===0||d.getDay()===6;
-    const btn=document.createElement('button');
-    btn.className='day-btn'+(dateStr===today?' today':'')+(dateStr===selectedDate?' active':'')+(isWeekend?' weekend':'');
-    btn.innerHTML=`<span class="day-name">${JOURS_COURT[d.getDay()]}</span><span class="day-num">${d.getDate()}</span>`;
-    // Indicateur si ce jour a des modifications
-    const dayData=getDayData(dateStr);
-    if(dayData&&(dayData.morning.absents.length||dayData.morning.extras.length||dayData.evening.absents.length||dayData.evening.extras.length||(dayData.occasional&&dayData.occasional.passengers.length))){
-      btn.classList.add('has-changes');
-    }
-    btn.onclick=()=>{selectedDate=dateStr;renderWeekNav();render();};
-    nav.appendChild(btn);
-  });
-
-  // Flèche semaine suivante
-  const next=document.createElement('button');
-  next.className='day-btn';next.style.minWidth='30px';next.textContent='›';
-  next.onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+7);selectedDate=d.toISOString().split('T')[0];renderWeekNav();render();};
-  nav.appendChild(next);
-}
-
-// ══════════════════════════════════════════
-// DONNÉES
-// ══════════════════════════════════════════
-// Structure:
-// - base: {morning:{passengers,depots,depart,arrivee,departAdresse,departCP,departVille}, evening:{...}}
-// - days: { "2026-03-13": { morning:{absents:[id,...], extras:[{...}], depart, arrivee, depots}, evening:{...}, occasional:{...} } }
-
-const DEFAULT_BASE={
-  morning:{
-    depart:"06:38",arrivee:"09:03",
-    departAdresse:"Dépôt bus",departCP:"85190",departVille:"Aizenay",
-    passengers:[
-      {id:1,time:"06:55",type:"Montée",nom:"TOGBA",   prenom:"Kimi Sun",adresse:"Route de la Forêt",      codePostal:"85190",ville:"Aizenay", note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
-      {id:2,time:"07:13",type:"Montée",nom:"BURGAUD", prenom:"Jimmy",   adresse:"Les Brosses",             codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-07-21-XX-XX"},
-      {id:3,time:"07:33",type:"Montée",nom:"ANDIVEAU",prenom:"Etan",    adresse:"14 Chemin des Vignes",    codePostal:"85190",ville:"Aizenay", note:"",lien:"Mobile",tel:"06-09-18-XX-XX"},
-      {id:4,time:"07:38",type:"Montée",nom:"KIRKWOOD",prenom:"Mathilda",adresse:"Le Bourg",                codePostal:"85300",ville:"Challans",note:"",lien:"Mère",  tel:"06-72-XX-XX-XX"},
-      {id:5,time:"07:47",type:"Montée",nom:"CHAPRON", prenom:"Ethan",   adresse:"5 Impasse des Chênes",    codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-04-48-XX-XX"},
-      {id:6,time:"08:01",type:"Montée",nom:"MINGUET", prenom:"Alexandre",adresse:"La Guérinière",          codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-75-XX-XX-XX"},
-      {id:7,time:"08:12",type:"Montée",nom:"DEBOMY",  prenom:"Maelyne", adresse:"Rue de la Plaine",        codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-19-18-XX-XX"},
+// ══════════════════════════════════════════════════
+// DONNÉES PAR DÉFAUT
+// ══════════════════════════════════════════════════
+const DEFAULT_BASE = {
+  morning: {
+    depart: "06:38", arrivee: "09:03", departCircuit: null,
+    departAdresse: "", departCP: "85190", departVille: "Aizenay",
+    passengers: [
+      { id: 1, time: "06:55", type: "Montée",   nom: "TOGBA",    prenom: "Kimi Sun",  adresse: "Route de la Forêt",       cp: "85190", ville: "Aizenay",  note: "", lien: "Père",   tel: "06-46-85-XX-XX" },
+      { id: 2, time: "07:13", type: "Montée",   nom: "BURGAUD",  prenom: "Jimmy",     adresse: "Les Brosses",              cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-07-21-XX-XX" },
+      { id: 3, time: "07:33", type: "Montée",   nom: "ANDIVEAU", prenom: "Etan",      adresse: "14 Chemin des Vignes",     cp: "85190", ville: "Aizenay",  note: "", lien: "Mobile", tel: "06-09-18-XX-XX" },
+      { id: 4, time: "07:38", type: "Montée",   nom: "KIRKWOOD", prenom: "Mathilda",  adresse: "Le Bourg",                 cp: "85300", ville: "Challans", note: "", lien: "Mère",   tel: "06-72-XX-XX-XX" },
+      { id: 5, time: "07:47", type: "Montée",   nom: "CHAPRON",  prenom: "Ethan",     adresse: "5 Impasse des Chênes",     cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-04-48-XX-XX" },
+      { id: 6, time: "08:01", type: "Montée",   nom: "MINGUET",  prenom: "Alexandre", adresse: "La Guérinière",            cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-75-XX-XX-XX" },
+      { id: 7, time: "08:12", type: "Montée",   nom: "DEBOMY",   prenom: "Maelyne",   adresse: "Rue de la Plaine",         cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-19-18-XX-XX" },
     ],
-    depots:[
-      {id:101,time:"08:35",nom:"Lycée Colette",       adresse:"Aizenay",active:true},
-      {id:102,time:"08:40",nom:"Collège Soljenitsyne",adresse:"Aizenay",active:true},
-      {id:103,time:"08:45",nom:"IME La Penière",      adresse:"Aizenay",active:true},
+    depots: [
+      { id: 101, time: "08:35", nom: "Lycée Colette",        adresse: "Aizenay", active: true },
+      { id: 102, time: "08:40", nom: "Collège Soljenitsyne", adresse: "Aizenay", active: true },
+      { id: 103, time: "08:45", nom: "IME La Penière",       adresse: "Aizenay", active: true },
     ]
   },
-  evening:{
-    depart:"16:03",arrivee:null,
-    departAdresse:"IME La Penière",departCP:"85190",departVille:"Aizenay",
-    passengers:[
-      {id:8, time:"16:38",type:"Descente",nom:"DEBOMY",  prenom:"Maelyne", adresse:"Rue de la Plaine",    codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-19-18-XX-XX"},
-      {id:9, time:"16:49",type:"Descente",nom:"MINGUET", prenom:"Alexandre",adresse:"La Guérinière",       codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-75-XX-XX-XX"},
-      {id:10,time:"17:03",type:"Descente",nom:"CHAPRON", prenom:"Ethan",   adresse:"5 Impasse des Chênes", codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-04-48-XX-XX"},
-      {id:11,time:"17:13",type:"Descente",nom:"KIRKWOOD",prenom:"Mathilda",adresse:"Le Bourg",              codePostal:"85300",ville:"Challans",note:"",lien:"Mère",  tel:"06-72-XX-XX-XX"},
-      {id:12,time:"17:18",type:"Descente",nom:"ANDIVEAU",prenom:"Etan",    adresse:"14 Chemin des Vignes",  codePostal:"85190",ville:"Aizenay", note:"",lien:"Mobile",tel:"06-09-18-XX-XX"},
-      {id:13,time:"17:40",type:"Descente",nom:"BURGAUD", prenom:"Jimmy",   adresse:"Les Brosses",           codePostal:"85190",ville:"Aizenay", note:"",lien:"Mère",  tel:"06-07-21-XX-XX"},
-      {id:14,time:"17:59",type:"Descente",nom:"TOGBA",   prenom:"Kimi Sun",adresse:"Route de la Forêt",     codePostal:"85190",ville:"Aizenay", note:"",lien:"Père",  tel:"06-46-85-XX-XX"},
+  evening: {
+    depart: "16:03", arrivee: null, departCircuit: "16:30",
+    departAdresse: "", departCP: "85190", departVille: "Aizenay",
+    passengers: [
+      { id: 8,  time: "16:38", type: "Descente", nom: "DEBOMY",   prenom: "Maelyne",   adresse: "Rue de la Plaine",         cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-19-18-XX-XX" },
+      { id: 9,  time: "16:49", type: "Descente", nom: "MINGUET",  prenom: "Alexandre", adresse: "La Guérinière",            cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-75-XX-XX-XX" },
+      { id: 10, time: "17:03", type: "Descente", nom: "CHAPRON",  prenom: "Ethan",     adresse: "5 Impasse des Chênes",     cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-04-48-XX-XX" },
+      { id: 11, time: "17:13", type: "Descente", nom: "KIRKWOOD", prenom: "Mathilda",  adresse: "Le Bourg",                 cp: "85300", ville: "Challans", note: "", lien: "Mère",   tel: "06-72-XX-XX-XX" },
+      { id: 12, time: "17:18", type: "Descente", nom: "ANDIVEAU", prenom: "Etan",      adresse: "14 Chemin des Vignes",     cp: "85190", ville: "Aizenay",  note: "", lien: "Mobile", tel: "06-09-18-XX-XX" },
+      { id: 13, time: "17:40", type: "Descente", nom: "BURGAUD",  prenom: "Jimmy",     adresse: "Les Brosses",              cp: "85190", ville: "Aizenay",  note: "", lien: "Mère",   tel: "06-07-21-XX-XX" },
+      { id: 14, time: "17:59", type: "Descente", nom: "TOGBA",    prenom: "Kimi Sun",  adresse: "Route de la Forêt",        cp: "85190", ville: "Aizenay",  note: "", lien: "Père",   tel: "06-46-85-XX-XX" },
     ],
-    departCircuit:"16:30",depots:[{id:201,time:"16:20",nom:"IME La Penière",adresse:"Aizenay",active:true}]
+    depots: [
+      { id: 201, time: "16:20", nom: "IME La Penière", adresse: "Aizenay", active: true }
+    ]
   }
 };
 
-let base,days,nextId=300,carnet=[];
-let currentTournee='morning',editingPassengerId=null,editingBasePassengerId=null,editingDepotTournee=null,editingDepartTournee=null;
+const DEFAULT_OCC = { depart: "08:00", arrivee: null, departCircuit: null, departAdresse: "", departCP: "", departVille: "", passengers: [], depots: [] };
 
-function loadData(){
-  try{base=JSON.parse(localStorage.getItem('transport_base')||'null')||JSON.parse(JSON.stringify(DEFAULT_BASE));}
-  catch(e){base=JSON.parse(JSON.stringify(DEFAULT_BASE));}
-  try{days=JSON.parse(localStorage.getItem('transport_days')||'{}');}
-  catch(e){days={};}
-  try{carnet=JSON.parse(localStorage.getItem('transport_carnet')||'[]');}
-  catch(e){carnet=[];}
-  initCarnetFromBase();
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let base, days, carnet = [];
+let nextId = 300, selDate = getTodayStr();
+let curTournee = 'morning', editPassId = null, editBasePassId = null, editDepotTournee = null;
+
+function getTodayStr() { return new Date().toISOString().split('T')[0]; }
+
+function loadData() {
+  try { base = JSON.parse(localStorage.getItem('tb_base') || 'null') || JSON.parse(JSON.stringify(DEFAULT_BASE)); } catch (e) { base = JSON.parse(JSON.stringify(DEFAULT_BASE)); }
+  try { days = JSON.parse(localStorage.getItem('tb_days') || '{}'); } catch (e) { days = {}; }
+  try { carnet = JSON.parse(localStorage.getItem('tb_carnet') || '[]'); } catch (e) { carnet = []; }
+  // Migration champ cp → cp
+  ['morning','evening'].forEach(t => base[t].passengers.forEach(p => { if (p.codePostal && !p.cp) { p.cp = p.codePostal; delete p.codePostal; } }));
+  if (!base.evening.departCircuit) base.evening.departCircuit = "16:30";
+  initCarnet();
 }
 
-function saveData(){
-  try{
-    localStorage.setItem('transport_base',JSON.stringify(base));
-    localStorage.setItem('transport_days',JSON.stringify(days));
-    localStorage.setItem('transport_carnet',JSON.stringify(carnet));
-    const ind=document.getElementById('saveIndicator');
-    ind.textContent='✓ Sauvegardé';ind.style.color='var(--accent2)';
-  }catch(e){document.getElementById('saveIndicator').textContent='⚠ Erreur';}
+function saveData() {
+  try {
+    localStorage.setItem('tb_base', JSON.stringify(base));
+    localStorage.setItem('tb_days', JSON.stringify(days));
+    localStorage.setItem('tb_carnet', JSON.stringify(carnet));
+    const ind = document.getElementById('saveInd');
+    ind.textContent = '✓ Sauvegardé'; ind.style.color = 'var(--accent2)';
+  } catch (e) { document.getElementById('saveInd').textContent = '⚠ Erreur'; }
 }
 
-// Obtenir les données du jour (overrides sur la base)
-function getDayData(dateStr){return days[dateStr]||null;}
+// Données du jour (overrides)
+function getDayOv(dateStr, tournee) {
+  if (!days[dateStr] || !days[dateStr][tournee]) return null;
+  return days[dateStr][tournee];
+}
 
-function ensureDayData(dateStr,tournee){
-  if(!days[dateStr])days[dateStr]={};
-  if(!days[dateStr][tournee]){
-    const b=base[tournee];
-    days[dateStr][tournee]={
-      depart:b.depart,
-      arrivee:b.arrivee,
-      departCircuit:b.departCircuit||null,
-      departAdresse:b.departAdresse,
-      departCP:b.departCP,
-      departVille:b.departVille,
-      absents:[],
-      overrides:{},
-      extras:[],
-      depots:JSON.parse(JSON.stringify(b.depots))
+function ensureOv(dateStr, tournee) {
+  if (!days[dateStr]) days[dateStr] = {};
+  if (!days[dateStr][tournee]) {
+    const b = base[tournee];
+    days[dateStr][tournee] = {
+      depart: b.depart, arrivee: b.arrivee, departCircuit: b.departCircuit || null,
+      departAdresse: b.departAdresse, departCP: b.departCP, departVille: b.departVille,
+      absents: [], extras: [], overrides: {}, depotsState: {}
     };
   }
   return days[dateStr][tournee];
 }
 
-function ensureOccasional(dateStr){
-  if(!days[dateStr])days[dateStr]={};
-  if(!days[dateStr].occasional){
-    days[dateStr].occasional={depart:"08:00",arrivee:null,departAdresse:"",departCP:"",departVille:"",passengers:[],depots:[]};
-  }
+function ensureOcc(dateStr) {
+  if (!days[dateStr]) days[dateStr] = {};
+  if (!days[dateStr].occasional) days[dateStr].occasional = JSON.parse(JSON.stringify(DEFAULT_OCC));
   return days[dateStr].occasional;
 }
 
-// Obtenir la tournée effective pour un jour = base + overrides
-function getEffectiveTournee(dateStr,tournee){
-  const b=base[tournee];
-  const d=getDayData(dateStr);
-  const ov=d?d[tournee]:null;
-  const overrides=ov?ov.overrides||{}:{};
-  // Appliquer les overrides du jour sur les passagers de base
-  const passengers=b.passengers.map(p=>overrides[p.id]?{...p,...overrides[p.id],id:p.id}:p);
-  return{
-    depart:ov?ov.depart:b.depart,
-    arrivee:ov?ov.arrivee:b.arrivee,
-    departCircuit:ov?(ov.departCircuit||b.departCircuit||null):(b.departCircuit||null),
-    departAdresse:ov?ov.departAdresse:b.departAdresse,
-    departCP:ov?ov.departCP:b.departCP,
-    departVille:ov?ov.departVille:b.departVille,
-    passengers,
-    absents:ov?ov.absents:[],
-    extras:ov?ov.extras:[],
-    depots:ov?ov.depots:b.depots
+function getEff(dateStr, tournee) {
+  const b = base[tournee];
+  const ov = getDayOv(dateStr, tournee);
+  const overrides = ov ? (ov.overrides || {}) : {};
+  const depotsState = ov ? (ov.depotsState || {}) : {};
+  return {
+    depart: ov ? ov.depart : b.depart,
+    arrivee: ov ? ov.arrivee : b.arrivee,
+    departCircuit: ov ? (ov.departCircuit !== undefined ? ov.departCircuit : b.departCircuit) : b.departCircuit,
+    departAdresse: ov ? ov.departAdresse : b.departAdresse,
+    departCP: ov ? ov.departCP : b.departCP,
+    departVille: ov ? ov.departVille : b.departVille,
+    passengers: b.passengers.map(p => overrides[p.id] ? { ...p, ...overrides[p.id], id: p.id } : p),
+    absents: ov ? (ov.absents || []) : [],
+    extras: ov ? (ov.extras || []) : [],
+    depots: b.depots.map(d => ({ ...d, active: depotsState[d.id] !== undefined ? depotsState[d.id] : d.active }))
   };
 }
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // CARNET
-// ══════════════════════════════════════════
-function normalizeStr(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');}
-function addOrUpdateCarnet(p){
-  const key=normalizeStr(p.nom+p.prenom);
-  const idx=carnet.findIndex(c=>normalizeStr(c.nom+c.prenom)===key);
-  const e={nom:p.nom,prenom:p.prenom,adresse:p.adresse,codePostal:p.codePostal,ville:p.ville,lien:p.lien,tel:p.tel,note:p.note||''};
-  if(idx>=0)carnet[idx]=e;else carnet.push(e);
+// ══════════════════════════════════════════════════
+function norm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ''); }
+
+function initCarnet() {
+  if (carnet.length > 0) return;
+  ['morning', 'evening'].forEach(t => base[t].passengers.forEach(p => upsertCarnet(p)));
 }
-function initCarnetFromBase(){
-  if(carnet.length>0)return;
-  ['morning','evening'].forEach(t=>base[t].passengers.forEach(p=>addOrUpdateCarnet(p)));
+
+function upsertCarnet(p) {
+  const key = norm(p.nom + p.prenom);
+  const idx = carnet.findIndex(c => norm(c.nom + c.prenom) === key);
+  const e = { nom: p.nom, prenom: p.prenom, adresse: p.adresse, cp: p.cp || p.codePostal || '', ville: p.ville, lien: p.lien, tel: p.tel, note: p.note || '' };
+  if (idx >= 0) carnet[idx] = e; else carnet.push(e);
 }
-function searchContact(val){
-  const list=document.getElementById('pSearchList');
-  if(!val||val.length<2){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const res=carnet.filter(c=>normalizeStr(c.nom+c.prenom).includes(q)||normalizeStr(c.nom).startsWith(q)||normalizeStr(c.prenom).startsWith(q)).slice(0,6);
-  if(!res.length){list.classList.remove('open');return;}
-  list.innerHTML=res.map((c,i)=>`<div class="ac-item" onclick="fillFromCarnet(${i})"><div class="ac-name">${c.nom} ${c.prenom}</div><div class="ac-detail">${[c.adresse,c.codePostal,c.ville].filter(Boolean).join(', ')} · ${c.lien}: ${c.tel}</div></div>`).join('');
-  list._results=res;list.classList.add('open');
+
+function searchCarnet(val) {
+  const list = document.getElementById('pSearchList');
+  if (!val || val.length < 2) { list.classList.remove('open'); return; }
+  const q = norm(val);
+  const res = carnet.filter(c => norm(c.nom + c.prenom).includes(q) || norm(c.nom).startsWith(q) || norm(c.prenom).startsWith(q)).slice(0, 6);
+  if (!res.length) { list.classList.remove('open'); return; }
+  list.innerHTML = res.map((c, i) => `<div class="aci" onclick="fillCarnet(${i})"><div class="aci-name">${c.nom} ${c.prenom}</div><div class="aci-detail">${[c.adresse, c.cp, c.ville].filter(Boolean).join(', ')} · ${c.lien}: ${c.tel}</div></div>`).join('');
+  list._res = res; list.classList.add('open');
 }
-function fillFromCarnet(idx){
-  const c=document.getElementById('pSearchList')._results[idx];
-  if(!c)return;
-  document.getElementById('pNom').value=c.nom;
-  document.getElementById('pPrenom').value=c.prenom;
-  document.getElementById('pAdresse').value=c.adresse||'';
-  document.getElementById('pCodePostal').value=c.codePostal||'';
-  document.getElementById('pVille').value=c.ville||'';
-  document.getElementById('pNote').value=c.note||'';
-  document.getElementById('pLien').value=c.lien||'Mère';
-  document.getElementById('pTel').value=c.tel||'';
-  document.getElementById('pSearch').value=`${c.nom} ${c.prenom}`;
+
+function fillCarnet(idx) {
+  const c = document.getElementById('pSearchList')._res[idx]; if (!c) return;
+  document.getElementById('pNom').value = c.nom;
+  document.getElementById('pPrenom').value = c.prenom;
+  document.getElementById('pAdresse').value = c.adresse || '';
+  document.getElementById('pCP').value = c.cp || '';
+  document.getElementById('pVille').value = c.ville || '';
+  document.getElementById('pNote').value = c.note || '';
+  document.getElementById('pLien').value = c.lien || 'Mère';
+  document.getElementById('pTel').value = c.tel || '';
+  document.getElementById('pSearch').value = `${c.nom} ${c.prenom}`;
   document.getElementById('pSearchList').classList.remove('open');
-  if(c.codePostal){document.getElementById('pCpStatus').textContent='✓ '+c.ville;document.getElementById('pCpStatus').style.color='var(--accent2)';}
+  if (c.cp) { document.getElementById('pCPSt').textContent = '✓ ' + c.ville; document.getElementById('pCPSt').style.color = 'var(--accent2)'; }
 }
-function searchAddress(val,listId,cpId,villeId,statusId){
-  const list=document.getElementById(listId);
-  if(!val||val.length<3){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const addrs=[...new Set(carnet.map(c=>c.adresse).filter(Boolean))].filter(a=>normalizeStr(a).includes(q)).slice(0,5);
-  if(!addrs.length){list.classList.remove('open');return;}
-  list.innerHTML=addrs.map(a=>`<div class="ac-item" onclick="pickAddress('${a.replace(/'/g,"\\'")}','${listId}','${cpId}','${villeId}','${statusId}')"><div class="ac-name">${a}</div></div>`).join('');
+
+function searchAddr(val) {
+  const list = document.getElementById('pAdresseList');
+  if (!val || val.length < 3) { list.classList.remove('open'); return; }
+  const q = norm(val);
+  const addrs = [...new Set(carnet.map(c => c.adresse).filter(Boolean))].filter(a => norm(a).includes(q)).slice(0, 5);
+  if (!addrs.length) { list.classList.remove('open'); return; }
+  list.innerHTML = addrs.map(a => `<div class="aci" onclick="pickAddr('${a.replace(/'/g, "\\'")}')"><div class="aci-name">${a}</div></div>`).join('');
   list.classList.add('open');
 }
-function pickAddress(addr,listId,cpId,villeId,statusId){
-  document.getElementById('pAdresse').value=addr;
-  document.getElementById(listId).classList.remove('open');
-  const match=carnet.find(c=>c.adresse===addr);
-  if(match&&match.codePostal){
-    document.getElementById(cpId).value=match.codePostal;
-    document.getElementById(villeId).value=match.ville||'';
-    if(statusId){document.getElementById(statusId).textContent='✓ '+match.ville;document.getElementById(statusId).style.color='var(--accent2)';}
+
+function pickAddr(addr) {
+  document.getElementById('pAdresse').value = addr;
+  document.getElementById('pAdresseList').classList.remove('open');
+  const m = carnet.find(c => c.adresse === addr);
+  if (m && m.cp) {
+    document.getElementById('pCP').value = m.cp;
+    document.getElementById('pVille').value = m.ville || '';
+    document.getElementById('pCPSt').textContent = '✓ ' + m.ville;
+    document.getElementById('pCPSt').style.color = 'var(--accent2)';
   }
 }
-function searchVille(val,listId){
-  const list=document.getElementById(listId);
-  if(!val||val.length<2){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const villes=[...new Set(carnet.map(c=>c.ville).filter(Boolean))].filter(v=>normalizeStr(v).includes(q)).slice(0,5);
-  if(!villes.length){list.classList.remove('open');return;}
-  list.innerHTML=villes.map(v=>`<div class="ac-item" onclick="document.getElementById('pVille').value='${v.replace(/'/g,"\\'")}';document.getElementById('${listId}').classList.remove('open')"><div class="ac-name">${v}</div></div>`).join('');
+
+function searchVille(val, listId) {
+  const list = document.getElementById(listId);
+  if (!val || val.length < 2) { list.classList.remove('open'); return; }
+  const q = norm(val);
+  const villes = [...new Set(carnet.map(c => c.ville).filter(Boolean))].filter(v => norm(v).includes(q)).slice(0, 5);
+  if (!villes.length) { list.classList.remove('open'); return; }
+  list.innerHTML = villes.map(v => `<div class="aci" onclick="document.getElementById('pVille').value='${v.replace(/'/g, "\\'")}';document.getElementById('${listId}').classList.remove('open')"><div class="aci-name">${v}</div></div>`).join('');
   list.classList.add('open');
 }
-document.addEventListener('click',function(e){if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));});
 
-// ══════════════════════════════════════════
-// CP → VILLE (toutes les communes)
-// ══════════════════════════════════════════
-const cpCache={};let cpTimer=null;
-async function autoFillCity(cp,villeId,statusId,listId){
-  const status=document.getElementById(statusId),villeEl=document.getElementById(villeId);
-  const acList=listId?document.getElementById(listId):null;
-  cp=cp.replace(/\D/g,'');
-  if(cp.length<5){status.textContent='';if(acList)acList.classList.remove('open');return;}
-  if(cpCache[cp]){showCpResult(cpCache[cp],villeEl,acList,status);return;}
-  status.textContent='⏳ Recherche…';
+document.addEventListener('click', e => { if (!e.target.closest('.acw')) document.querySelectorAll('.acl').forEach(l => l.classList.remove('open')); });
+
+// ══════════════════════════════════════════════════
+// AUTO CP → VILLE
+// ══════════════════════════════════════════════════
+const cpCache = {}; let cpTimer = null;
+async function autoCP(cp, villeId, statusId, listId) {
+  const status = document.getElementById(statusId), villeEl = document.getElementById(villeId);
+  const acList = listId ? document.getElementById(listId) : null;
+  cp = cp.replace(/\D/g, '');
+  if (cp.length < 5) { status.textContent = ''; if (acList) acList.classList.remove('open'); return; }
+  if (cpCache[cp]) { showCPResult(cpCache[cp], villeEl, acList, status); return; }
+  status.textContent = '⏳ Recherche…';
   clearTimeout(cpTimer);
-  cpTimer=setTimeout(async()=>{
-    try{
-      const res=await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=20`);
-      const json=await res.json();
-      if(json&&json.length>0){cpCache[cp]=json.map(c=>c.nom);showCpResult(cpCache[cp],villeEl,acList,status);}
-      else{status.textContent='Inconnu — saisir manuellement';status.style.color='var(--danger)';}
-    }catch(e){status.textContent='Hors ligne — saisir manuellement';status.style.color='var(--muted)';}
-  },400);
+  cpTimer = setTimeout(async () => {
+    try {
+      const res = await fetch(`https://geo.api.gouv.fr/communes?codePostal=${cp}&fields=nom&limit=20`);
+      const json = await res.json();
+      if (json && json.length > 0) { cpCache[cp] = json.map(c => c.nom); showCPResult(cpCache[cp], villeEl, acList, status); }
+      else { status.textContent = 'Inconnu'; status.style.color = 'var(--danger)'; }
+    } catch (e) { status.textContent = 'Hors ligne'; status.style.color = 'var(--muted)'; }
+  }, 400);
 }
-function showCpResult(villes,villeEl,acList,status){
-  if(villes.length===1){
-    villeEl.value=villes[0];status.textContent='✓ '+villes[0];status.style.color='var(--accent2)';
-    if(acList)acList.classList.remove('open');
-  }else{
-    status.textContent=villes.length+' communes — choisir ↓';status.style.color='var(--accent)';
-    if(acList){
-      acList.innerHTML=villes.map(v=>`<div class="ac-item" onclick="pickCpVille('${v.replace(/'/g,"\\'")}',this)"><div class="ac-name">${v}</div></div>`).join('');
-      acList._villeEl=villeEl;acList._status=status;acList.classList.add('open');
+
+function showCPResult(villes, villeEl, acList, status) {
+  if (villes.length === 1) {
+    villeEl.value = villes[0]; status.textContent = '✓ ' + villes[0]; status.style.color = 'var(--accent2)';
+    if (acList) acList.classList.remove('open');
+  } else {
+    status.textContent = villes.length + ' communes ↓'; status.style.color = 'var(--accent)';
+    if (acList) {
+      acList.innerHTML = villes.map(v => `<div class="aci" onclick="pickCP('${v.replace(/'/g, "\\'")}',this)"><div class="aci-name">${v}</div></div>`).join('');
+      acList._ve = villeEl; acList._st = status; acList.classList.add('open');
     }
   }
 }
-function pickCpVille(v,el){
-  const list=el.closest('.ac-list');
-  if(list._villeEl)list._villeEl.value=v;
-  if(list._status){list._status.textContent='✓ '+v;list._status.style.color='var(--accent2)';}
+
+function pickCP(v, el) {
+  const list = el.closest('.acl');
+  if (list._ve) list._ve.value = v;
+  if (list._st) { list._st.textContent = '✓ ' + v; list._st.style.color = 'var(--accent2)'; }
   list.classList.remove('open');
 }
 
-// ══════════════════════════════════════════
-// TIME UTILS
-// ══════════════════════════════════════════
-function setupTimeField(hId,mId){
-  const h=document.getElementById(hId),m=document.getElementById(mId);
-  if(!h||!m)return;
-  h.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');if(this.value.length===2)m.focus();});
-  m.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'');});
+// ══════════════════════════════════════════════════
+// NAVIGATION SEMAINE
+// ══════════════════════════════════════════════════
+function getWeekDates() {
+  const d = new Date(selDate + 'T12:00:00');
+  const day = d.getDay();
+  const mon = new Date(d);
+  mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  const dates = [];
+  for (let i = 0; i < 7; i++) { const dd = new Date(mon); dd.setDate(mon.getDate() + i); dates.push(dd.toISOString().split('T')[0]); }
+  return dates;
 }
-setupTimeField('pH','pM');setupTimeField('dH','dM');
-const pad2=n=>String(n).padStart(2,'0');
-function parseHM(hVal,mVal){const h=parseInt(hVal)||0,m=parseInt(mVal)||0;if(h<0||h>23||m<0||m>59)return null;return`${pad2(h)}:${pad2(m)}`;}
-function splitTime(t){if(!t||!t.includes(':'))return{h:'00',m:'00'};const[h,m]=t.split(':');return{h:h||'00',m:m||'00'};}
-const timeToMin=t=>{if(!t||!t.includes(':'))return 0;const[h,m]=t.split(':').map(Number);return h*60+(isNaN(m)?0:m);};
-const minToTime=m=>`${pad2(Math.floor(m/60)%24)}:${pad2(m%60)}`;
 
-// ══════════════════════════════════════════
+function renderWeekNav() {
+  const nav = document.getElementById('weekNav');
+  const today = getTodayStr();
+  const dates = getWeekDates();
+  nav.innerHTML = '';
+
+  const prev = document.createElement('button'); prev.className = 'nav-arrow'; prev.textContent = '‹';
+  prev.onclick = () => { const d = new Date(selDate + 'T12:00:00'); d.setDate(d.getDate() - 7); selDate = d.toISOString().split('T')[0]; renderWeekNav(); render(); };
+  nav.appendChild(prev);
+
+  dates.forEach(ds => {
+    const d = new Date(ds + 'T12:00:00');
+    const isWE = d.getDay() === 0 || d.getDay() === 6;
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (ds === today ? ' today' : '') + (ds === selDate ? ' active' : '') + (isWE ? ' weekend' : '');
+    btn.innerHTML = `<span class="dn">${JOURS_C[d.getDay()]}</span><span class="dd">${d.getDate()}</span>`;
+    const dv = days[ds];
+    if (dv) {
+      const hasMod = (dv.morning && ((dv.morning.absents || []).length || (dv.morning.extras || []).length)) ||
+                     (dv.evening && ((dv.evening.absents || []).length || (dv.evening.extras || []).length)) ||
+                     (dv.occasional && dv.occasional.passengers.length);
+      if (hasMod) btn.classList.add('has-mod');
+    }
+    btn.onclick = () => { selDate = ds; renderWeekNav(); render(); };
+    nav.appendChild(btn);
+  });
+
+  const next = document.createElement('button'); next.className = 'nav-arrow'; next.textContent = '›';
+  next.onclick = () => { const d = new Date(selDate + 'T12:00:00'); d.setDate(d.getDate() + 7); selDate = d.toISOString().split('T')[0]; renderWeekNav(); render(); };
+  nav.appendChild(next);
+}
+
+// ══════════════════════════════════════════════════
 // RENDER
-// ══════════════════════════════════════════
-function render(){
-  renderTournee('morning');
-  renderTournee('evening');
-  renderOccasional();
-  renderStats();
-}
+// ══════════════════════════════════════════════════
+function render() { renderTournee('morning'); renderTournee('evening'); renderOcc(); renderStats(); }
 
-function renderTournee(tournee){
-  const eff=getEffectiveTournee(selectedDate,tournee);
-  const cls=tournee==='morning'?'time-morning':'time-evening';
-  const bodyEl=document.getElementById(tournee+'Body');
-  const metaEl=document.getElementById(tournee+'Meta');
-  const durEl=document.getElementById(tournee+'Duration');
-  const activeDepots=eff.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-  const{h:dH,m:dM}=splitTime(eff.depart);
-  const{h:aH,m:aM}=splitTime(eff.arrivee||'');
+function renderTournee(t) {
+  const eff = getEff(selDate, t);
+  const cls = t === 'morning' ? 'ct-m' : 'ct-e';
+  const body = document.getElementById(t + 'Body');
+  const meta = document.getElementById(t + 'Meta');
+  const dur = document.getElementById(t + 'Dur');
+  const activeDepots = eff.depots.filter(d => d.active).sort((a, b) => t2m(a.time) - t2m(b.time));
+  const { h: dH, m: dM } = splitT(eff.depart);
+  const { h: aH, m: aM } = splitT(eff.arrivee || '');
 
-  metaEl.innerHTML=`
-    <span>🚩 <input class="meta-time-edit" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepartChange('${tournee}','h',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepartChange('${tournee}','m',this.value)"></span>
-    ${eff.arrivee?`<span>🏁 <input class="meta-time-edit" type="text" value="${aH}" maxlength="2" inputmode="numeric" onchange="updateArriveeH('${tournee}',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${aM}" maxlength="2" inputmode="numeric" onchange="updateArriveeM('${tournee}',this.value)"></span>`:''}
-    <span>👥 <strong>${eff.passengers.length-eff.absents.length+eff.extras.length}</strong> actifs</span>
-    <span>📍 <strong>${activeDepots.length}</strong> dépôt${activeDepots.length!==1?'s':''}</span>
-    ${eff.absents.length?`<span style="color:var(--danger)">❌ ${eff.absents.length} absent${eff.absents.length>1?'s':''}</span>`:''}
-    ${eff.extras.length?`<span style="color:var(--accent2)">➕ ${eff.extras.length} extra${eff.extras.length>1?'s':''}</span>`:''}`;
+  meta.innerHTML = `
+    <span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepart('${t}','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepart('${t}','m',this.value)"></span>
+    ${eff.arrivee ? `<span>🏁 <input class="te" type="text" value="${aH}" maxlength="2" inputmode="numeric" onchange="onArrivee('${t}','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${aM}" maxlength="2" inputmode="numeric" onchange="onArrivee('${t}','m',this.value)"></span>` : ''}
+    <span>👥 <strong>${eff.passengers.length - eff.absents.length + eff.extras.length}</strong></span>
+    <span>📍 <strong>${activeDepots.length}</strong></span>
+    ${eff.absents.length ? `<span style="color:var(--danger)">❌ ${eff.absents.length}</span>` : ''}
+    ${eff.extras.length ? `<span style="color:var(--accent2)">➕ ${eff.extras.length}</span>` : ''}`;
 
-  bodyEl.innerHTML='';
+  body.innerHTML = '';
 
-  // Départ
-  const dc=document.createElement('div');
-  dc.className='passenger-card depart-card';
-  const da=[eff.departAdresse,eff.departCP,eff.departVille].filter(Boolean).join(', ');
-  dc.innerHTML=`<div class="card-time time-green">${eff.depart}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div><div class="card-address">${da||'Non renseigné'}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('${tournee}')">✏️</button></div>`;
-  bodyEl.appendChild(dc);
+  // Carte départ
+  const da = [eff.departAdresse, eff.departCP, eff.departVille].filter(Boolean).join(', ');
+  body.appendChild(makeCard({ cls: 'ct-g', time: eff.depart, badge: '🏠 Domicile', badgeCls: 'tb-depart', name: da || 'Non renseigné', editBtn: `openDepartModal('${t}')` }));
 
-  // Dépôts en prise (soir) + carte départ circuit
-  if(tournee==='evening'){
-    activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Prise',tournee,cls)));
-    if(eff.departCircuit){
-      const{h:dcH,m:dcM}=splitTime(eff.departCircuit);
-      const dcc=document.createElement('div');
-      dcc.className='passenger-card depart-card';
-      dcc.innerHTML=`<div class="card-time time-evening">${eff.departCircuit}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚌 Départ circuit</span></div><div class="card-address">On repart — début des descentes</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartCircuitModal()">✏️</button></div>`;
-      bodyEl.appendChild(dcc);
+  // Soir : dépôts de prise + carte départ circuit
+  if (t === 'evening') {
+    activeDepots.forEach(d => body.appendChild(makeDepotCard(d, 'Prise', t, cls)));
+    if (eff.departCircuit) {
+      body.appendChild(makeCard({ cls: 'ct-e', time: eff.departCircuit, badge: '🚌 Départ circuit', badgeCls: 'tb-depart', name: 'Début des descentes', editBtn: `openDCModal()` }));
     }
   }
 
-  // Passagers de base (avec absents barrés)
-  eff.passengers.forEach(p=>{
-    const isAbsent=eff.absents.includes(p.id);
-    const div=document.createElement('div');
-    div.className='passenger-card'+(isAbsent?' absent-card':'');
-    const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
-    div.innerHTML=`
-      <div class="card-time ${cls}">${p.time}</div>
-      <div class="card-body">
-        <div class="card-top">
-          <span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span>
-          ${isAbsent?'<span class="type-badge type-absent">❌ Absent</span>':''}
-          <span class="card-name">${p.nom} ${p.prenom}</span>
+  // Passagers de base
+  eff.passengers.forEach(p => {
+    const isAbs = eff.absents.includes(p.id);
+    const div = document.createElement('div');
+    div.className = 'card' + (isAbs ? ' absent-card' : '');
+    const addr = [p.adresse, p.cp, p.ville].filter(Boolean).join(', ');
+    div.innerHTML = `
+      <div class="ct ${cls}">${p.time}</div>
+      <div class="cb">
+        <div class="ctop">
+          <span class="tbadge ${p.type === 'Montée' ? 'tb-up' : 'tb-down'}">${p.type === 'Montée' ? '⬆' : '⬇'} ${p.type}</span>
+          ${isAbs ? '<span class="tbadge tb-absent">❌ Absent</span>' : ''}
+          <span class="cname">${p.nom} ${p.prenom}</span>
         </div>
-        <div class="card-address">${addr||'—'}</div>
-        ${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}
-        <div class="card-contact">${p.lien}: ${p.tel}</div>
+        <div class="caddr">${addr || '—'}</div>
+        ${p.note ? `<div class="cnote">💬 ${p.note}</div>` : ''}
+        <div class="ctel">${p.lien}: ${p.tel}</div>
       </div>
-      <div class="card-actions">
-        <button class="icon-btn edit-btn" onclick="openEditBasePassenger('${tournee}',${p.id})">✏️</button>
-        ${isAbsent
-          ?`<button class="icon-btn restore-btn" title="Remettre" onclick="toggleAbsent('${tournee}',${p.id})">↩️</button>`
-          :`<button class="icon-btn delete-btn" title="Marquer absent" onclick="toggleAbsent('${tournee}',${p.id})">❌</button>`
-        }
-        <button class="icon-btn delete-btn" title="Supprimer définitivement" onclick="deleteBasePassenger('${tournee}',${p.id})">🗑</button>
+      <div class="cact">
+        <button class="ib" onclick="openEditBasePass('${t}',${p.id})">✏️</button>
+        ${isAbs
+          ? `<button class="ib restore" onclick="toggleAbsent('${t}',${p.id})">↩️</button>`
+          : `<button class="ib del" onclick="toggleAbsent('${t}',${p.id})">❌</button>`}
+        <button class="ib del" onclick="deleteBasePass('${t}',${p.id})">🗑</button>
       </div>`;
-    bodyEl.appendChild(div);
+    body.appendChild(div);
   });
 
   // Extras du jour
-  eff.extras.forEach(p=>{
-    const div=document.createElement('div');
-    div.className='passenger-card extra-card';
-    const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
-    div.innerHTML=`
-      <div class="card-time ${cls}">${p.time}</div>
-      <div class="card-body">
-        <div class="card-top">
-          <span class="type-badge type-extra">➕ Extra</span>
-          <span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span>
-          <span class="card-name">${p.nom} ${p.prenom}</span>
+  eff.extras.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card extra-card';
+    const addr = [p.adresse, p.cp, p.ville].filter(Boolean).join(', ');
+    div.innerHTML = `
+      <div class="ct ${cls}">${p.time}</div>
+      <div class="cb">
+        <div class="ctop">
+          <span class="tbadge tb-extra">➕ Extra</span>
+          <span class="tbadge ${p.type === 'Montée' ? 'tb-up' : 'tb-down'}">${p.type === 'Montée' ? '⬆' : '⬇'} ${p.type}</span>
+          <span class="cname">${p.nom} ${p.prenom}</span>
         </div>
-        <div class="card-address">${addr||'—'}</div>
-        ${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}
-        <div class="card-contact">${p.lien}: ${p.tel}</div>
+        <div class="caddr">${addr || '—'}</div>
+        ${p.note ? `<div class="cnote">💬 ${p.note}</div>` : ''}
+        <div class="ctel">${p.lien}: ${p.tel}</div>
       </div>
-      <div class="card-actions">
-        <button class="icon-btn edit-btn" onclick="openEditExtra('${tournee}',${p.id})">✏️</button>
-        <button class="icon-btn delete-btn" onclick="deleteExtra('${tournee}',${p.id})">✕</button>
+      <div class="cact">
+        <button class="ib" onclick="openEditExtra('${t}',${p.id})">✏️</button>
+        <button class="ib del" onclick="deleteExtra('${t}',${p.id})">✕</button>
       </div>`;
-    bodyEl.appendChild(div);
+    body.appendChild(div);
   });
 
-  // Dépôts matin
-  if(tournee==='morning') activeDepots.forEach(d=>bodyEl.appendChild(makeDepotCard(d,'Dépôt',tournee,cls)));
+  // Matin : dépôts
+  if (t === 'morning') activeDepots.forEach(d => body.appendChild(makeDepotCard(d, 'Dépôt', t, cls)));
 
-  const actifs=eff.passengers.filter(p=>!eff.absents.includes(p.id));
-  if(actifs.length+eff.extras.length===0){const e=document.createElement('div');e.className='empty-state';e.textContent='Aucun passager';bodyEl.appendChild(e);}
+  const actifs = [...eff.passengers.filter(p => !eff.absents.includes(p.id)), ...eff.extras];
+  if (actifs.length === 0) { const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'Aucun passager'; body.appendChild(e); }
 
-  const allTimes=[...actifs,...eff.extras].map(p=>timeToMin(p.time)).filter(Boolean);
-  if(allTimes.length>0){
-    const first=Math.min(...allTimes),last=Math.max(...allTimes);
-    durEl.innerHTML=`<span>Durée ~<strong>${last-timeToMin(eff.depart)+20} min</strong></span><span>1er→dernier: <strong>${last-first} min</strong></span>`;
-  }else durEl.innerHTML='';
+  if (actifs.length > 0) {
+    const times = actifs.map(p => t2m(p.time));
+    const first = Math.min(...times), last = Math.max(...times);
+    dur.innerHTML = `<span>Durée ~<strong>${last - t2m(eff.depart) + 20} min</strong></span><span>1er→dernier: <strong>${last - first} min</strong></span>`;
+  } else dur.innerHTML = '';
 }
 
-function makeDepotCard(d,label,tournee,cls){
-  const div=document.createElement('div');
-  div.className='passenger-card depot-card';
-  div.innerHTML=`<div class="card-time ${cls}">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 ${label}</span><span class="card-name">${d.nom}</span></div>${d.adresse?`<div class="card-address">${d.adresse}</div>`:''}</div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openEditDepot('${tournee}',${d.id})">✏️</button><button class="icon-btn delete-btn" onclick="deactivateDepot('${tournee}',${d.id})">✕</button></div>`;
+function makeCard({ cls, time, badge, badgeCls, name, addr, editBtn }) {
+  const div = document.createElement('div');
+  div.className = 'card depart-card';
+  div.innerHTML = `
+    <div class="ct ${cls}">${time}</div>
+    <div class="cb">
+      <div class="ctop"><span class="tbadge ${badgeCls}">${badge}</span></div>
+      <div class="caddr">${name}</div>
+      ${addr ? `<div class="caddr">${addr}</div>` : ''}
+    </div>
+    <div class="cact"><button class="ib" onclick="${editBtn}">✏️</button></div>`;
   return div;
 }
 
-function renderOccasional(){
-  const d=getDayData(selectedDate);
-  const occ=d&&d.occasional?d.occasional:null;
-  const has=occ&&occ.passengers.length>0;
-  document.getElementById('btnResetOcc').style.display=has?'':'none';
-  document.getElementById('btnRecalcOcc').style.display=has?'':'none';
-  document.getElementById('btnDepotOcc').style.display=has?'':'none';
-  document.getElementById('occasionalBlock').style.display=has?'':'none';
-  if(!has)return;
-
-  const metaEl=document.getElementById('occasionalMeta');
-  const bodyEl=document.getElementById('occasionalBody');
-  const durEl=document.getElementById('occasionalDuration');
-  const activeDepots=occ.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-  const{h:dH,m:dM}=splitTime(occ.depart);
-  metaEl.innerHTML=`<span>🚩 <input class="meta-time-edit" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepartChange('occasional','h',this.value)"><b style="color:var(--accent)">:</b><input class="meta-time-edit" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepartChange('occasional','m',this.value)"></span><span>👥 <strong>${occ.passengers.length}</strong> pass.</span>`;
-  bodyEl.innerHTML='';
-  const da=[occ.departAdresse,occ.departCP,occ.departVille].filter(Boolean).join(', ');
-  const dc=document.createElement('div');dc.className='passenger-card depart-card';
-  dc.innerHTML=`<div class="card-time time-green">${occ.depart}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depart">🚩 Départ</span></div><div class="card-address">${da||'Non renseigné'}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openDepartModal('occasional')">✏️</button></div>`;
-  bodyEl.appendChild(dc);
-  activeDepots.forEach(d=>{const div=document.createElement('div');div.className='passenger-card depot-card';div.innerHTML=`<div class="card-time time-occasional">${d.time}</div><div class="card-body"><div class="card-top"><span class="type-badge type-depot">📍 Prise</span><span class="card-name">${d.nom}</span></div></div><div class="card-actions"><button class="icon-btn delete-btn" onclick="deactivateDepot('occasional',${d.id})">✕</button></div>`;bodyEl.appendChild(div);});
-  occ.passengers.forEach(p=>{
-    const div=document.createElement('div');div.className='passenger-card occasional-pass';
-    const addr=[p.adresse,p.codePostal,p.ville].filter(Boolean).join(', ');
-    div.innerHTML=`<div class="card-time time-occasional">${p.time}</div><div class="card-body"><div class="card-top"><span class="type-badge ${p.type==='Montée'?'type-montee':'type-descente'}">${p.type==='Montée'?'⬆':'⬇'} ${p.type}</span><span class="card-name">${p.nom} ${p.prenom}</span></div><div class="card-address">${addr||'—'}</div>${p.note?`<div class="card-note">💬 ${p.note}</div>`:''}<div class="card-contact">${p.lien}: ${p.tel}</div></div><div class="card-actions"><button class="icon-btn edit-btn" onclick="openEditExtra('occasional',${p.id})">✏️</button><button class="icon-btn delete-btn" onclick="deleteExtra('occasional',${p.id})">✕</button></div>`;
-    bodyEl.appendChild(div);
-  });
-  const times=occ.passengers.map(p=>timeToMin(p.time));
-  if(times.length>0){const first=Math.min(...times),last=Math.max(...times);durEl.innerHTML=`<span>Durée ~<strong>${last-timeToMin(occ.depart)+20} min</strong></span>`;}
-  else durEl.innerHTML='';
-}
-
-function renderStats(){
-  const d=getDayData(selectedDate);
-  const mAbs=d&&d.morning?d.morning.absents.length:0;
-  const eAbs=d&&d.evening?d.evening.absents.length:0;
-  const mExt=d&&d.morning?d.morning.extras.length:0;
-  const eExt=d&&d.evening?d.evening.extras.length:0;
-  const occ=d&&d.occasional?d.occasional.passengers.length:0;
-  const mTotal=base.morning.passengers.length-mAbs+mExt;
-  const eTotal=base.evening.passengers.length-eAbs+eExt;
-  document.getElementById('statsBar').innerHTML=`
-    <div class="stat"><div class="stat-num">${mTotal}</div><div class="stat-label">☀️ Matin</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--evening)">${eTotal}</div><div class="stat-label">🌙 Soir</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--muted);font-size:16px">${carnet.length}</div><div class="stat-label">📒 Carnet</div></div>
-    ${occ?`<div class="stat"><div class="stat-num" style="color:var(--occasional)">${occ}</div><div class="stat-label">⚡ Occas.</div></div>`:''}
-    ${mAbs+eAbs?`<div class="stat"><div class="stat-num" style="color:var(--danger)">${mAbs+eAbs}</div><div class="stat-label">❌ Absents</div></div>`:''}`;
-}
-
-// ══════════════════════════════════════════
-// ABSENT / EXTRA
-// ══════════════════════════════════════════
-function toggleAbsent(tournee,id){
-  const ov=ensureDayData(selectedDate,tournee);
-  const idx=ov.absents.indexOf(id);
-  if(idx>=0)ov.absents.splice(idx,1);
-  else ov.absents.push(id);
-  saveData();render();renderWeekNav();
-}
-function deleteExtra(tournee,id){
-  if(tournee==='occasional'){
-    const occ=days[selectedDate]&&days[selectedDate].occasional;
-    if(occ)occ.passengers=occ.passengers.filter(p=>p.id!==id);
-  }else{
-    const ov=ensureDayData(selectedDate,tournee);
-    ov.extras=ov.extras.filter(p=>p.id!==id);
-  }
-  saveData();render();renderWeekNav();
-}
-
-// ══════════════════════════════════════════
-// DÉPART → RECALC AUTO
-// ══════════════════════════════════════════
-function onDepartChange(tournee,part,val){
-  let ov;
-  if(tournee==='occasional'){ov=ensureOccasional(selectedDate);}
-  else{ov=ensureDayData(selectedDate,tournee);}
-  const cur=ov.depart||'00:00';
-  const{h,m}=splitTime(cur);
-  const newTime=part==='h'?parseHM(val,m):parseHM(h,val);
-  if(!newTime)return;
-  const diff=timeToMin(newTime)-timeToMin(cur);
-  ov.depart=newTime;
-  if(diff===0){saveData();render();return;}
-  if(tournee==='occasional'){
-    ov.passengers.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
-    ov.depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
-  }else{
-    base[tournee].passengers.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
-    base[tournee].depots.forEach(d=>{d.time=minToTime(timeToMin(d.time)+diff);});
-    ov.extras.forEach(p=>{p.time=minToTime(timeToMin(p.time)+diff);});
-    // Sync les dépôts du jour avec la base (éviter double décalage)
-    ov.depots.forEach(d=>{const bd=base[tournee].depots.find(x=>x.id===d.id);if(bd)d.time=bd.time;else d.time=minToTime(timeToMin(d.time)+diff);});
-    if(ov.arrivee)ov.arrivee=minToTime(timeToMin(ov.arrivee)+diff);
-    if(base[tournee].arrivee)base[tournee].arrivee=minToTime(timeToMin(base[tournee].arrivee)+diff);
-    if(base[tournee].departCircuit)base[tournee].departCircuit=minToTime(timeToMin(base[tournee].departCircuit)+diff);
-    if(ov.departCircuit)ov.departCircuit=minToTime(timeToMin(ov.departCircuit)+diff);
-  }
-  saveData();render();
-}
-function updateArriveeH(t,v){const ov=ensureDayData(selectedDate,t);const{m}=splitTime(ov.arrivee||'09:00');const r=parseHM(v,m);if(r){ov.arrivee=r;saveData();render();}}
-function updateArriveeM(t,v){const ov=ensureDayData(selectedDate,t);const{h}=splitTime(ov.arrivee||'09:00');const r=parseHM(h,v);if(r){ov.arrivee=r;saveData();render();}}
-
-function openDepartCircuitModal(){
-  const eff=getEffectiveTournee(selectedDate,'evening');
-  const{h,m}=splitTime(eff.departCircuit||'16:30');
-  const html=`<div class="modal-overlay open" id="modalDeptCircuit"><div class="modal"><div class="modal-handle"></div><h2>🚌 Heure de départ du circuit</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px">Heure à laquelle tu repars de l'IME pour commencer les descentes.</p><div class="form-group"><label>Heure de départ circuit</label><div class="time-inputs"><input type="text" id="dcH" value="${h}" maxlength="2" inputmode="numeric" placeholder="16"><span class="time-sep">:</span><input type="text" id="dcM" value="${m}" maxlength="2" inputmode="numeric" placeholder="30"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('modalDeptCircuit').remove()">Annuler</button><button class="btn-save" onclick="saveDepartCircuit()">Enregistrer</button></div></div></div>`;
-  document.body.insertAdjacentHTML('beforeend',html);
-  setupTimeField('dcH','dcM');
-  document.getElementById('modalDeptCircuit').addEventListener('click',function(e){if(e.target===this)this.remove();});
-}
-function saveDepartCircuit(){
-  const heure=parseHM(document.getElementById('dcH').value,document.getElementById('dcM').value);
-  if(!heure){alert('Heure invalide');return;}
-  const ov=ensureDayData(selectedDate,'evening');
-  ov.departCircuit=heure;
-  base['evening'].departCircuit=heure;
-  document.getElementById('modalDeptCircuit').remove();
-  saveData();render();
-}
-function resetOccasional(){
-  if(!confirm('Effacer le circuit occasionnel de ce jour ?'))return;
-  if(days[selectedDate])delete days[selectedDate].occasional;
-  saveData();render();renderWeekNav();
-}
-
-// ══════════════════════════════════════════
-// MODAL DÉPART
-// ══════════════════════════════════════════
-function openDepartModal(tournee){
-  editingDepartTournee=tournee;
-  let eff;
-  if(tournee==='occasional'){eff=ensureOccasional(selectedDate);}
-  else{eff=getEffectiveTournee(selectedDate,tournee);}
-  const{h,m}=splitTime(eff.depart);
-  const html=`
-    <div class="modal-overlay open" id="modalDepart">
-      <div class="modal">
-        <div class="modal-handle"></div>
-        <h2>🚩 Point de départ — ${tournee==='morning'?'Matin':tournee==='evening'?'Soir':'Occasionnel'}</h2>
-        <div class="form-group"><label>Adresse</label>
-          <div class="ac-wrap">
-            <input type="text" id="dpAdresse" value="${eff.departAdresse||''}" placeholder="12 rue du Dépôt" oninput="searchDpAddr(this.value)">
-            <div class="ac-list" id="dpAdresseList"></div>
-          </div>
-        </div>
-        <div class="cp-row">
-          <div class="form-group">
-            <label>Code postal</label>
-            <input type="text" id="dpCP" value="${eff.departCP||''}" placeholder="85190" inputmode="numeric" maxlength="5" oninput="autoFillCity(this.value,'dpVille','dpCpStatus','dpVilleList')">
-            <div class="cp-loading" id="dpCpStatus"></div>
-          </div>
-          <div class="form-group"><label>Ville</label>
-            <div class="ac-wrap">
-              <input type="text" id="dpVille" value="${eff.departVille||''}" placeholder="Rempli auto…" oninput="searchDpVille(this.value)">
-              <div class="ac-list" id="dpVilleList"></div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group"><label>Heure de départ</label>
-          <div class="time-inputs">
-            <input type="text" id="dpH" value="${h}" maxlength="2" inputmode="numeric">
-            <span class="time-sep">:</span>
-            <input type="text" id="dpM" value="${m}" maxlength="2" inputmode="numeric">
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn-cancel" onclick="document.getElementById('modalDepart').remove()">Annuler</button>
-          <button class="btn-save" onclick="saveDepartModal()">Enregistrer</button>
-        </div>
-      </div>
+function makeDepotCard(d, label, t, cls) {
+  const div = document.createElement('div');
+  div.className = 'card depot-card';
+  div.innerHTML = `
+    <div class="ct ${cls}">${d.time}</div>
+    <div class="cb">
+      <div class="ctop"><span class="tbadge tb-depot">📍 ${label}</span><span class="cname">${d.nom}</span></div>
+      ${d.adresse ? `<div class="caddr">${d.adresse}</div>` : ''}
+    </div>
+    <div class="cact">
+      <button class="ib" onclick="openEditDepot('${t}',${d.id})">✏️</button>
+      <button class="ib del" onclick="deactivDepot('${t}',${d.id})">✕</button>
     </div>`;
-  document.body.insertAdjacentHTML('beforeend',html);
-  setupTimeField('dpH','dpM');
-  document.getElementById('modalDepart').addEventListener('click',function(e){if(e.target===this)this.remove();});
-}
-function searchDpAddr(val){
-  const list=document.getElementById('dpAdresseList');if(!list)return;
-  if(!val||val.length<3){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const addrs=[...new Set(carnet.map(c=>c.adresse).filter(Boolean))].filter(a=>normalizeStr(a).includes(q)).slice(0,5);
-  if(!addrs.length){list.classList.remove('open');return;}
-  list.innerHTML=addrs.map(a=>`<div class="ac-item" onclick="document.getElementById('dpAdresse').value='${a.replace(/'/g,"\\'")}';this.closest('.ac-list').classList.remove('open')"><div class="ac-name">${a}</div></div>`).join('');
-  list.classList.add('open');
-}
-function searchDpVille(val){
-  const list=document.getElementById('dpVilleList');if(!list)return;
-  if(!val||val.length<2){list.classList.remove('open');return;}
-  const q=normalizeStr(val);
-  const villes=[...new Set(carnet.map(c=>c.ville).filter(Boolean))].filter(v=>normalizeStr(v).includes(q)).slice(0,5);
-  if(!villes.length){list.classList.remove('open');return;}
-  list.innerHTML=villes.map(v=>`<div class="ac-item" onclick="document.getElementById('dpVille').value='${v.replace(/'/g,"\\'")}';this.closest('.ac-list').classList.remove('open')"><div class="ac-name">${v}</div></div>`).join('');
-  list.classList.add('open');
-}
-async function saveDepartModal(){
-  let ov;
-  if(editingDepartTournee==='occasional'){ov=ensureOccasional(selectedDate);}
-  else{ov=ensureDayData(selectedDate,editingDepartTournee);}
-  ov.departAdresse=document.getElementById('dpAdresse').value.trim();
-  ov.departCP=document.getElementById('dpCP').value.trim();
-  ov.departVille=document.getElementById('dpVille').value.trim();
-  const heure=parseHM(document.getElementById('dpH').value,document.getElementById('dpM').value);
-  if(heure)ov.depart=heure;
-  document.getElementById('modalDepart').remove();
-  saveData();render();
-  if(heure) await recalcWithRouting(editingDepartTournee);
+  return div;
 }
 
-// ══════════════════════════════════════════
-// ORS ROUTING
-// ══════════════════════════════════════════
-function getFullAddress(p){return`${p.adresse||''} ${p.codePostal||''} ${p.ville||''}`.trim();}
-async function geocodeAddress(address){
-  try{const res=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${ORS_KEY}&text=${encodeURIComponent(address)}&boundary.country=FR&size=1`);const json=await res.json();if(json.features&&json.features.length>0)return json.features[0].geometry.coordinates;}catch(e){}return null;
-}
-async function getRouteDuration(a,b){
-  try{const res=await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${a[0]},${a[1]}&end=${b[0]},${b[1]}`);const json=await res.json();if(json.features&&json.features[0])return json.features[0].properties.segments[0].duration;}catch(e){}return null;
-}
-function showRoutingStatus(msg,type=''){const el=document.getElementById('routingStatus');if(!msg){el.innerHTML='';return;}el.innerHTML=`<div class="routing-banner ${type}">${msg}</div>`;}
+function renderOcc() {
+  const occ = days[selDate] && days[selDate].occasional ? days[selDate].occasional : null;
+  const has = occ && occ.passengers.length > 0;
+  document.getElementById('btnResetOcc').style.display = has ? '' : 'none';
+  document.getElementById('btnRecalcOcc').style.display = has ? '' : 'none';
+  document.getElementById('btnDepotOcc').style.display = has ? '' : 'none';
+  document.getElementById('occBlock').style.display = has ? '' : 'none';
+  if (!has) return;
 
-async function recalcWithRouting(tournee){
-  let passengers,ov,depart;
-  if(tournee==='occasional'){
-    const occ=ensureOccasional(selectedDate);
-    passengers=[...occ.passengers];
-    ov=occ;depart=occ.depart;
-  }else{
-    const eff=getEffectiveTournee(selectedDate,tournee);
-    ov=ensureDayData(selectedDate,tournee);
-    passengers=[...eff.passengers.filter(p=>!eff.absents.includes(p.id)),...eff.extras];
-    depart=eff.depart;
+  const meta = document.getElementById('occasionalMeta');
+  const body = document.getElementById('occasionalBody');
+  const dur = document.getElementById('occasionalDur');
+  const { h: dH, m: dM } = splitT(occ.depart);
+  const activeDepots = occ.depots.filter(d => d.active).sort((a, b) => t2m(a.time) - t2m(b.time));
+
+  meta.innerHTML = `<span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepart('occasional','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepart('occasional','m',this.value)"></span><span>👥 <strong>${occ.passengers.length}</strong></span>`;
+
+  body.innerHTML = '';
+  const da = [occ.departAdresse, occ.departCP, occ.departVille].filter(Boolean).join(', ');
+  body.appendChild(makeCard({ cls: 'ct-g', time: occ.depart, badge: '🏠 Domicile', badgeCls: 'tb-depart', name: da || 'Non renseigné', editBtn: "openDepartModal('occasional')" }));
+  activeDepots.forEach(d => {
+    const div = document.createElement('div'); div.className = 'card depot-card';
+    div.innerHTML = `<div class="ct ct-o">${d.time}</div><div class="cb"><div class="ctop"><span class="tbadge tb-depot">📍 Prise</span><span class="cname">${d.nom}</span></div></div><div class="cact"><button class="ib del" onclick="deactivDepot('occasional',${d.id})">✕</button></div>`;
+    body.appendChild(div);
+  });
+  occ.passengers.forEach(p => {
+    const div = document.createElement('div'); div.className = 'card occ-card';
+    const addr = [p.adresse, p.cp, p.ville].filter(Boolean).join(', ');
+    div.innerHTML = `<div class="ct ct-o">${p.time}</div><div class="cb"><div class="ctop"><span class="tbadge ${p.type === 'Montée' ? 'tb-up' : 'tb-down'}">${p.type === 'Montée' ? '⬆' : '⬇'} ${p.type}</span><span class="cname">${p.nom} ${p.prenom}</span></div><div class="caddr">${addr || '—'}</div>${p.note ? `<div class="cnote">💬 ${p.note}</div>` : ''}<div class="ctel">${p.lien}: ${p.tel}</div></div><div class="cact"><button class="ib" onclick="openEditExtra('occasional',${p.id})">✏️</button><button class="ib del" onclick="deleteExtra('occasional',${p.id})">✕</button></div>`;
+    body.appendChild(div);
+  });
+  if (occ.passengers.length > 0) { const times = occ.passengers.map(p => t2m(p.time)); dur.innerHTML = `<span>Durée ~<strong>${Math.max(...times) - t2m(occ.depart) + 15} min</strong></span>`; }
+  else dur.innerHTML = '';
+}
+
+function renderStats() {
+  const dv = days[selDate];
+  const mAbs = dv && dv.morning ? (dv.morning.absents || []).length : 0;
+  const eAbs = dv && dv.evening ? (dv.evening.absents || []).length : 0;
+  const mExt = dv && dv.morning ? (dv.morning.extras || []).length : 0;
+  const eExt = dv && dv.evening ? (dv.evening.extras || []).length : 0;
+  const occ = dv && dv.occasional ? dv.occasional.passengers.length : 0;
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><div class="stat-num">${base.morning.passengers.length - mAbs + mExt}</div><div class="stat-label">☀️ Matin</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--blue)">${base.evening.passengers.length - eAbs + eExt}</div><div class="stat-label">🌙 Soir</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--muted);font-size:16px">${carnet.length}</div><div class="stat-label">📒 Carnet</div></div>
+    ${occ ? `<div class="stat"><div class="stat-num" style="color:var(--occasional)">${occ}</div><div class="stat-label">⚡ Occas.</div></div>` : ''}
+    ${mAbs + eAbs ? `<div class="stat"><div class="stat-num" style="color:var(--danger)">${mAbs + eAbs}</div><div class="stat-label">❌ Absents</div></div>` : ''}`;
+}
+
+// ══════════════════════════════════════════════════
+// HORAIRES — DÉCALAGE
+// ══════════════════════════════════════════════════
+function onDepart(tournee, part, val) {
+  let ov, cur;
+  if (tournee === 'occasional') { ov = ensureOcc(selDate); cur = ov.depart || '00:00'; }
+  else { ov = ensureOv(selDate, tournee); cur = ov.depart || '00:00'; }
+  const { h, m } = splitT(cur);
+  const newT = part === 'h' ? parseHM(val, m) : parseHM(h, val);
+  if (!newT) return;
+  const diff = t2m(newT) - t2m(cur);
+  ov.depart = newT;
+  if (diff === 0) { saveData(); render(); return; }
+  if (tournee === 'occasional') {
+    ov.passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    ov.depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
+  } else {
+    // Décaler la base
+    base[tournee].passengers.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    base[tournee].depots.forEach(d => { d.time = m2t(t2m(d.time) + diff); });
+    if (base[tournee].arrivee) base[tournee].arrivee = m2t(t2m(base[tournee].arrivee) + diff);
+    if (base[tournee].departCircuit) base[tournee].departCircuit = m2t(t2m(base[tournee].departCircuit) + diff);
+    // Décaler les extras du jour
+    ov.extras.forEach(p => { p.time = m2t(t2m(p.time) + diff); });
+    if (ov.arrivee) ov.arrivee = m2t(t2m(ov.arrivee) + diff);
+    if (ov.departCircuit) ov.departCircuit = m2t(t2m(ov.departCircuit) + diff);
   }
-  if(!passengers.length){showRoutingStatus('Aucun passager actif.','error');setTimeout(()=>showRoutingStatus(''),3000);return;}
-  showRoutingStatus(`<span class="spinner"></span> Recalcul en cours…`,'loading');
-  try{
-    passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-    const coords=[];
-    for(const p of passengers){coords.push(await geocodeAddress(getFullAddress(p)));await sleep(150);}
-    const durations=[];
-    for(let i=0;i<coords.length-1;i++){
-      if(coords[i]&&coords[i+1]){const s=await getRouteDuration(coords[i],coords[i+1]);durations.push(s!==null?Math.ceil(s/60)+2:8);await sleep(150);}
-      else durations.push(8);
+  saveData(); render();
+}
+
+function onArrivee(t, part, val) {
+  const ov = ensureOv(selDate, t);
+  const cur = ov.arrivee || base[t].arrivee || '09:00';
+  const { h, m } = splitT(cur);
+  const newT = part === 'h' ? parseHM(val, m) : parseHM(h, val);
+  if (newT) { ov.arrivee = newT; saveData(); render(); }
+}
+
+// ══════════════════════════════════════════════════
+// ABSENTS / EXTRAS
+// ══════════════════════════════════════════════════
+function toggleAbsent(t, id) {
+  const ov = ensureOv(selDate, t);
+  const idx = ov.absents.indexOf(id);
+  if (idx >= 0) ov.absents.splice(idx, 1); else ov.absents.push(id);
+  saveData(); render(); renderWeekNav();
+}
+
+function deleteBasePass(t, id) {
+  if (!confirm('Supprimer définitivement pour tous les jours ?')) return;
+  base[t].passengers = base[t].passengers.filter(p => p.id !== id);
+  saveData(); render(); renderWeekNav();
+}
+
+function deleteExtra(t, id) {
+  if (t === 'occasional') { const occ = days[selDate] && days[selDate].occasional; if (occ) occ.passengers = occ.passengers.filter(p => p.id !== id); }
+  else { const ov = ensureOv(selDate, t); ov.extras = ov.extras.filter(p => p.id !== id); }
+  saveData(); render(); renderWeekNav();
+}
+
+function resetOcc() {
+  if (!confirm('Effacer le circuit occasionnel de ce jour ?')) return;
+  if (days[selDate]) delete days[selDate].occasional;
+  saveData(); render(); renderWeekNav();
+}
+
+// ══════════════════════════════════════════════════
+// MODAL DÉPART DOMICILE
+// ══════════════════════════════════════════════════
+function openDepartModal(tournee) {
+  let eff;
+  if (tournee === 'occasional') eff = ensureOcc(selDate);
+  else eff = getEff(selDate, tournee);
+  const { h, m } = splitT(eff.depart);
+  showDynModal('modalDepart', `
+    <h2>🏠 Point de départ — ${tournee === 'morning' ? 'Matin' : tournee === 'evening' ? 'Soir' : 'Occasionnel'}</h2>
+    <div class="fg"><label>Adresse</label><input type="text" id="dpA" value="${eff.departAdresse || ''}" placeholder="12 rue..."></div>
+    <div class="cprow">
+      <div class="fg"><label>Code postal</label><input type="text" id="dpCP" value="${eff.departCP || ''}" placeholder="85190" maxlength="5" inputmode="numeric" oninput="autoCP(this.value,'dpV','dpSt',null)"><div class="cpst" id="dpSt"></div></div>
+      <div class="fg"><label>Ville</label><input type="text" id="dpV" value="${eff.departVille || ''}" placeholder="Aizenay"></div>
+    </div>
+    <div class="fg"><label>Heure</label><div class="ti"><input type="text" id="dpH" value="${h}" maxlength="2" inputmode="numeric"><span class="tsep">:</span><input type="text" id="dpM" value="${m}" maxlength="2" inputmode="numeric"></div></div>
+    <div class="mact"><button class="mbtn-c" onclick="closeDyn('modalDepart')">Annuler</button><button class="mbtn-s yellow" onclick="saveDeparModal('${tournee}')">Enregistrer</button></div>
+  `);
+  setupTF('dpH', 'dpM');
+}
+
+function saveDeparModal(tournee) {
+  let ov;
+  if (tournee === 'occasional') ov = ensureOcc(selDate);
+  else ov = ensureOv(selDate, tournee);
+  ov.departAdresse = document.getElementById('dpA').value.trim();
+  ov.departCP = document.getElementById('dpCP').value.trim();
+  ov.departVille = document.getElementById('dpV').value.trim();
+  const h = parseHM(document.getElementById('dpH').value, document.getElementById('dpM').value);
+  if (h) ov.depart = h;
+  closeDyn('modalDepart');
+  saveData(); render();
+}
+
+// MODAL DÉPART CIRCUIT (soir)
+function openDCModal() {
+  const eff = getEff(selDate, 'evening');
+  const { h, m } = splitT(eff.departCircuit || '16:30');
+  showDynModal('modalDC', `
+    <h2>🚌 Départ circuit soir</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Heure à laquelle tu repars de l'IME.</p>
+    <div class="fg"><label>Heure</label><div class="ti"><input type="text" id="dcH" value="${h}" maxlength="2" inputmode="numeric"><span class="tsep">:</span><input type="text" id="dcM" value="${m}" maxlength="2" inputmode="numeric"></div></div>
+    <div class="mact"><button class="mbtn-c" onclick="closeDyn('modalDC')">Annuler</button><button class="mbtn-s yellow" onclick="saveDC()">Enregistrer</button></div>
+  `);
+  setupTF('dcH', 'dcM');
+}
+
+function saveDC() {
+  const h = parseHM(document.getElementById('dcH').value, document.getElementById('dcM').value);
+  if (!h) { alert('Heure invalide'); return; }
+  base.evening.departCircuit = h;
+  const ov = ensureOv(selDate, 'evening');
+  ov.departCircuit = h;
+  closeDyn('modalDC');
+  saveData(); render();
+}
+
+// ══════════════════════════════════════════════════
+// MODAL PASSAGER
+// ══════════════════════════════════════════════════
+function openPassModal(tournee, id = null, isBase = false) {
+  curTournee = tournee; editPassId = id; editBasePassId = isBase ? id : null;
+  const isOcc = tournee === 'occasional';
+  document.getElementById('mPassTitle').textContent = id ? '✏️ Modifier' : '➕ Nouveau passager' + (isOcc ? ' (⚡)' : '');
+  document.getElementById('mPassSave').className = 'mbtn-s ' + (isOcc ? 'purple' : 'yellow');
+  document.getElementById('pCPSt').textContent = '';
+  document.getElementById('pSearch').value = '';
+  document.getElementById('pSearchList').classList.remove('open');
+
+  let p = null;
+  if (id && isBase) p = base[tournee].passengers.find(x => x.id === id);
+  else if (id && !isBase && tournee === 'occasional') { const occ = days[selDate] && days[selDate].occasional; p = occ && occ.passengers.find(x => x.id === id); }
+  else if (id) { const ov = days[selDate] && days[selDate][tournee]; p = ov && ov.extras.find(x => x.id === id); }
+
+  if (p) {
+    document.getElementById('pNom').value = p.nom || '';
+    document.getElementById('pPrenom').value = p.prenom || '';
+    document.getElementById('pAdresse').value = p.adresse || '';
+    document.getElementById('pCP').value = p.cp || p.codePostal || '';
+    document.getElementById('pVille').value = p.ville || '';
+    document.getElementById('pNote').value = p.note || '';
+    document.getElementById('pLien').value = p.lien || 'Mère';
+    document.getElementById('pTel').value = p.tel || '';
+    document.getElementById('pType').value = p.type || 'Montée';
+    const { h, m } = splitT(p.time || '07:00');
+    document.getElementById('pH').value = h; document.getElementById('pMin').value = m;
+  } else {
+    document.getElementById('pType').value = tournee === 'morning' ? 'Montée' : 'Descente';
+    ['pNom', 'pPrenom', 'pAdresse', 'pCP', 'pVille', 'pNote', 'pTel'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('pH').value = tournee === 'morning' ? '07' : tournee === 'evening' ? '17' : '08';
+    document.getElementById('pMin').value = '00';
+  }
+  document.getElementById('modalPass').classList.add('open');
+}
+
+function openEditBasePass(t, id) { openPassModal(t, id, true); }
+function openEditExtra(t, id) { openPassModal(t, id, false); }
+function closePassModal() { document.getElementById('modalPass').classList.remove('open'); editPassId = null; editBasePassId = null; document.querySelectorAll('.acl').forEach(l => l.classList.remove('open')); }
+
+function savePass() {
+  const nom = document.getElementById('pNom').value.trim();
+  if (!nom) { alert('Veuillez saisir un nom.'); return; }
+  const heure = parseHM(document.getElementById('pH').value, document.getElementById('pMin').value);
+  if (!heure) { alert('Heure invalide.'); return; }
+  const obj = {
+    nom: nom.toUpperCase(), prenom: document.getElementById('pPrenom').value.trim(),
+    adresse: document.getElementById('pAdresse').value.trim(),
+    cp: document.getElementById('pCP').value.trim(),
+    ville: document.getElementById('pVille').value.trim(),
+    note: document.getElementById('pNote').value.trim(),
+    lien: document.getElementById('pLien').value,
+    tel: document.getElementById('pTel').value.trim() || '—',
+    type: document.getElementById('pType').value, time: heure
+  };
+  upsertCarnet(obj);
+
+  if (editBasePassId) {
+    // Modifier ce passager uniquement pour ce jour (override)
+    const ov = ensureOv(selDate, curTournee);
+    if (!ov.overrides) ov.overrides = {};
+    ov.overrides[editBasePassId] = obj;
+  } else if (curTournee === 'occasional') {
+    const occ = ensureOcc(selDate);
+    if (editPassId) Object.assign(occ.passengers.find(x => x.id === editPassId), obj);
+    else occ.passengers.push({ id: nextId++, ...obj });
+    occ.passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
+  } else {
+    const ov = ensureOv(selDate, curTournee);
+    if (editPassId) Object.assign(ov.extras.find(x => x.id === editPassId), obj);
+    else { ov.extras.push({ id: nextId++, ...obj }); ov.extras.sort((a, b) => t2m(a.time) - t2m(b.time)); }
+  }
+  saveData(); render(); renderWeekNav(); closePassModal();
+}
+
+// ══════════════════════════════════════════════════
+// MODAL DÉPÔTS
+// ══════════════════════════════════════════════════
+function deactivDepot(t, id) {
+  if (t === 'occasional') { const occ = ensureOcc(selDate); const d = occ.depots.find(x => x.id === id); if (d) d.active = false; }
+  else { const ov = ensureOv(selDate, t); if (!ov.depotsState) ov.depotsState = {}; ov.depotsState[id] = false; base[t].depots.find(x => x.id === id).active = false; }
+  saveData(); render();
+}
+
+function openDepotModal(t) {
+  editDepotTournee = t;
+  const labels = { morning: 'Matin', evening: 'Soir', occasional: 'Occasionnel' };
+  document.getElementById('mDepotTitle').textContent = `📍 Dépôts — ${labels[t]}`;
+  renderDepotsList();
+  document.getElementById('modalDepots').classList.add('open');
+}
+
+function closeDepotModal() { document.getElementById('modalDepots').classList.remove('open'); }
+
+function getDepots() {
+  if (editDepotTournee === 'occasional') return ensureOcc(selDate).depots;
+  const ov = ensureOv(selDate, editDepotTournee);
+  const st = ov.depotsState || {};
+  return base[editDepotTournee].depots.map(d => ({ ...d, active: st[d.id] !== undefined ? st[d.id] : d.active }));
+}
+
+function renderDepotsList() {
+  const depots = getDepots();
+  const c = document.getElementById('depotsList');
+  if (!depots.length) { c.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:8px 0">Aucun dépôt.</p>'; return; }
+  c.innerHTML = depots.map(d => {
+    const { h, m } = splitT(d.time);
+    return `<div class="dep-item">
+      <input type="checkbox" class="dep-cb" ${d.active ? 'checked' : ''} onchange="setDepotActive(${d.id},this.checked)">
+      <div class="dep-lbl" style="font-weight:${d.active ? 600 : 400};color:${d.active ? 'var(--text)' : 'var(--muted)'}">${d.nom}${d.adresse ? ` <span style="font-size:11px;color:var(--muted)">(${d.adresse})</span>` : ''}</div>
+      <input type="text" class="dep-th" value="${h}" maxlength="2" inputmode="numeric" onchange="updateDepotTime(${d.id},'h',this.value)">
+      <span style="color:var(--accent);font-weight:800">:</span>
+      <input type="text" class="dep-tm" value="${m}" maxlength="2" inputmode="numeric" onchange="updateDepotTime(${d.id},'m',this.value)">
+      <button class="ib del" onclick="removeDepot(${d.id})">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function setDepotActive(id, val) {
+  if (editDepotTournee === 'occasional') { const d = ensureOcc(selDate).depots.find(x => x.id === id); if (d) d.active = val; }
+  else { const ov = ensureOv(selDate, editDepotTournee); if (!ov.depotsState) ov.depotsState = {}; ov.depotsState[id] = val; const bd = base[editDepotTournee].depots.find(x => x.id === id); if (bd) bd.active = val; }
+  saveData(); renderDepotsList(); render();
+}
+
+function updateDepotTime(id, part, val) {
+  let d;
+  if (editDepotTournee === 'occasional') d = ensureOcc(selDate).depots.find(x => x.id === id);
+  else d = base[editDepotTournee].depots.find(x => x.id === id);
+  if (!d) return;
+  const { h, m } = splitT(d.time);
+  const newT = part === 'h' ? parseHM(val, m) : parseHM(h, val);
+  if (newT) { d.time = newT; saveData(); renderDepotsList(); render(); }
+}
+
+function removeDepot(id) {
+  if (editDepotTournee === 'occasional') { const occ = ensureOcc(selDate); occ.depots = occ.depots.filter(x => x.id !== id); }
+  else { base[editDepotTournee].depots = base[editDepotTournee].depots.filter(x => x.id !== id); }
+  saveData(); renderDepotsList(); render();
+}
+
+function addDepot() {
+  const nom = document.getElementById('dNom').value.trim(); if (!nom) { alert('Saisir le nom.'); return; }
+  const heure = parseHM(document.getElementById('dH').value, document.getElementById('dMin').value) || '08:35';
+  const depot = { id: nextId++, time: heure, nom, adresse: document.getElementById('dAdresse').value.trim(), active: true };
+  if (editDepotTournee === 'occasional') ensureOcc(selDate).depots.push(depot);
+  else base[editDepotTournee].depots.push(depot);
+  document.getElementById('dNom').value = ''; document.getElementById('dAdresse').value = '';
+  document.getElementById('dH').value = ''; document.getElementById('dMin').value = '';
+  saveData(); renderDepotsList(); render();
+}
+
+function openEditDepot(t, id) {
+  let d;
+  if (t === 'occasional') d = (days[selDate] && days[selDate].occasional) ? days[selDate].occasional.depots.find(x => x.id === id) : null;
+  else d = base[t].depots.find(x => x.id === id);
+  if (!d) return;
+  const { h, m } = splitT(d.time);
+  showDynModal('modalEditDepot', `
+    <h2>✏️ Modifier le dépôt</h2>
+    <div class="fg"><label>Nom</label><input type="text" id="edN" value="${d.nom}"></div>
+    <div class="fg"><label>Adresse</label><input type="text" id="edA" value="${d.adresse || ''}"></div>
+    <div class="fg"><label>Heure</label><div class="ti"><input type="text" id="edH" value="${h}" maxlength="2" inputmode="numeric"><span class="tsep">:</span><input type="text" id="edM" value="${m}" maxlength="2" inputmode="numeric"></div></div>
+    <div class="mact"><button class="mbtn-c" onclick="closeDyn('modalEditDepot')">Annuler</button><button class="mbtn-s yellow" onclick="saveEditDepot('${t}',${id})">Enregistrer</button></div>
+  `);
+  setupTF('edH', 'edM');
+}
+
+function saveEditDepot(t, id) {
+  const nom = document.getElementById('edN').value.trim(); if (!nom) return;
+  const heure = parseHM(document.getElementById('edH').value, document.getElementById('edM').value);
+  if (!heure) { alert('Heure invalide'); return; }
+  const adresse = document.getElementById('edA').value.trim();
+  let d;
+  if (t === 'occasional') d = (days[selDate] && days[selDate].occasional) ? days[selDate].occasional.depots.find(x => x.id === id) : null;
+  else d = base[t].depots.find(x => x.id === id);
+  if (d) { d.nom = nom; d.adresse = adresse; d.time = heure; }
+  closeDyn('modalEditDepot');
+  saveData(); render();
+}
+
+// ══════════════════════════════════════════════════
+// DYNAMIC MODALS
+// ══════════════════════════════════════════════════
+function showDynModal(id, html) {
+  document.getElementById(id) && document.getElementById(id).remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'overlay open'; wrap.id = id;
+  wrap.innerHTML = `<div class="modal"><div class="mhandle"></div>${html}</div>`;
+  wrap.addEventListener('click', e => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+
+function closeDyn(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+// ══════════════════════════════════════════════════
+// ORS ROUTING
+// ══════════════════════════════════════════════════
+function getAddr(p) { return `${p.adresse || ''} ${p.cp || ''} ${p.ville || ''}`.trim(); }
+
+async function geocode(address) {
+  try { const r = await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${ORS_KEY}&text=${encodeURIComponent(address)}&boundary.country=FR&size=1`); const j = await r.json(); if (j.features && j.features[0]) return j.features[0].geometry.coordinates; } catch (e) {} return null;
+}
+
+async function routeDur(a, b) {
+  try { const r = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${a[0]},${a[1]}&end=${b[0]},${b[1]}`); const j = await r.json(); if (j.features && j.features[0]) return j.features[0].properties.segments[0].duration; } catch (e) {} return null;
+}
+
+function showRS(msg, type = '') { const el = document.getElementById('routingStatus'); if (!msg) { el.innerHTML = ''; return; } el.innerHTML = `<div class="rbanner ${type}">${msg}</div>`; }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function recalc(tournee) {
+  let passengers, ov, depart;
+  if (tournee === 'occasional') { const occ = ensureOcc(selDate); passengers = [...occ.passengers]; ov = occ; depart = occ.depart; }
+  else { const eff = getEff(selDate, tournee); ov = ensureOv(selDate, tournee); passengers = [...eff.passengers.filter(p => !eff.absents.includes(p.id)), ...eff.extras]; depart = eff.depart; }
+  if (!passengers.length) { showRS('Aucun passager actif.', 'error'); setTimeout(() => showRS(''), 3000); return; }
+  showRS(`<span class="spin"></span> Recalcul en cours…`, 'loading');
+  try {
+    passengers.sort((a, b) => t2m(a.time) - t2m(b.time));
+    const coords = [];
+    for (const p of passengers) { coords.push(await geocode(getAddr(p))); await sleep(150); }
+    const durs = [];
+    for (let i = 0; i < coords.length - 1; i++) {
+      if (coords[i] && coords[i + 1]) { const s = await routeDur(coords[i], coords[i + 1]); durs.push(s !== null ? Math.ceil(s / 60) + 2 : 8); await sleep(150); }
+      else durs.push(8);
     }
-    if(tournee==='morning'){
-      const ad=ov.depots.filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-      const dt=ad.length?timeToMin(ad[0].time):timeToMin("08:35");
-      let cur=dt-20-durations.reduce((a,b)=>a+b,0);
-      passengers.forEach((p,i)=>{p.time=minToTime(cur);if(i<durations.length)cur+=durations[i];});
-      ov.arrivee=minToTime((ad.length?timeToMin(ad[ad.length-1].time):dt+10)+15);
-    }else{
-      const ad=(tournee==='occasional'?ov.depots:ov.depots).filter(d=>d.active).sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-      let cur=ad.length?timeToMin(ad[ad.length-1].time)+15:timeToMin(depart)+5;
-      passengers.forEach((p,i)=>{p.time=minToTime(cur);if(i<durations.length)cur+=durations[i];});
+    if (tournee === 'morning') {
+      const ad = base.morning.depots.filter(d => d.active).sort((a, b) => t2m(a.time) - t2m(b.time));
+      const dt = ad.length ? t2m(ad[0].time) : t2m("08:35");
+      let cur = dt - 20 - durs.reduce((a, b) => a + b, 0);
+      passengers.forEach((p, i) => { p.time = m2t(cur); if (i < durs.length) cur += durs[i]; });
+      base.morning.arrivee = m2t((ad.length ? t2m(ad[ad.length - 1].time) : dt + 10) + 15);
+    } else {
+      const dc = ov.departCircuit || base[tournee].departCircuit || depart;
+      let cur = t2m(dc) + 5;
+      passengers.forEach((p, i) => { p.time = m2t(cur); if (i < durs.length) cur += durs[i]; });
     }
-    // Réécrire les temps dans les vraies structures
-    if(tournee==='occasional'){
-      passengers.forEach(p=>{const orig=ov.passengers.find(x=>x.id===p.id);if(orig)orig.time=p.time;});
-    }else{
-      const eff=getEffectiveTournee(selectedDate,tournee);
-      passengers.forEach(p=>{
-        const base_p=base[tournee].passengers.find(x=>x.id===p.id);
-        if(base_p)base_p.time=p.time;
-        else{const ex=ov.extras.find(x=>x.id===p.id);if(ex)ex.time=p.time;}
+    // Réécrire les temps
+    if (tournee === 'occasional') { passengers.forEach(p => { const o = ov.passengers.find(x => x.id === p.id); if (o) o.time = p.time; }); }
+    else {
+      passengers.forEach(p => {
+        const bp = base[tournee].passengers.find(x => x.id === p.id);
+        if (bp) bp.time = p.time;
+        else { const ex = ov.extras.find(x => x.id === p.id); if (ex) ex.time = p.time; }
       });
     }
-    saveData();render();
-    showRoutingStatus(`✓ Horaires recalculés — ${coords.filter(Boolean).length}/${passengers.length} adresses trouvées`,'');
-    setTimeout(()=>showRoutingStatus(''),5000);
-  }catch(e){showRoutingStatus('⚠ Erreur de calcul.','error');saveData();render();}
-}
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
-// ══════════════════════════════════════════
-// PASSAGERS
-// ══════════════════════════════════════════
-function deleteBasePassenger(tournee,id){
-  if(!confirm("Supprimer ce passager définitivement de tous les jours ?"))return;
-  base[tournee].passengers=base[tournee].passengers.filter(x=>x.id!==id);
-  saveData();render();renderWeekNav();
-}
-function openEditBasePassenger(tournee,id){
-  currentTournee=tournee;
-  editingPassengerId=null;
-  editingBasePassengerId=id;
-  const p=base[tournee].passengers.find(x=>x.id===id);
-  if(!p)return;
-  document.getElementById('modalPassagerTitle').textContent='✏️ Modifier passager';
-  document.getElementById('btnSavePassager').className='btn-save';
-  document.getElementById('pCpStatus').textContent='';
-  document.getElementById('pSearch').value='';
-  document.getElementById('pNom').value=p.nom||'';
-  document.getElementById('pPrenom').value=p.prenom||'';
-  document.getElementById('pAdresse').value=p.adresse||'';
-  document.getElementById('pCodePostal').value=p.codePostal||'';
-  document.getElementById('pVille').value=p.ville||'';
-  document.getElementById('pNote').value=p.note||'';
-  document.getElementById('pLien').value=p.lien||'Mère';
-  document.getElementById('pTel').value=p.tel||'';
-  document.getElementById('pType').value=p.type||'Montée';
-  const{h,m}=splitTime(p.time||'07:00');
-  document.getElementById('pH').value=h;
-  document.getElementById('pM').value=m;
-  document.getElementById('modalPassager').classList.add('open');
-}
-function openPassengerModal(tournee,id=null){
-  currentTournee=tournee;editingPassengerId=id;
-  const isOcc=tournee==='occasional';
-  document.getElementById('modalPassagerTitle').textContent=id?'✏️ Modifier':'➕ Ajouter pour ce jour'+(isOcc?' (⚡)':'');
-  document.getElementById('btnSavePassager').className='btn-save'+(isOcc?' btn-save-purple':'');
-  document.getElementById('pCpStatus').textContent='';
-  document.getElementById('pSearch').value='';
-  document.getElementById('pSearchList').classList.remove('open');
-  if(id){
-    let p;
-    if(isOcc){const occ=days[selectedDate]&&days[selectedDate].occasional;p=occ&&occ.passengers.find(x=>x.id===id);}
-    else{const ov=days[selectedDate]&&days[selectedDate][tournee];p=ov&&ov.extras.find(x=>x.id===id);}
-    if(p){
-      document.getElementById('pNom').value=p.nom||'';document.getElementById('pPrenom').value=p.prenom||'';
-      document.getElementById('pAdresse').value=p.adresse||'';document.getElementById('pCodePostal').value=p.codePostal||'';
-      document.getElementById('pVille').value=p.ville||'';document.getElementById('pNote').value=p.note||'';
-      document.getElementById('pLien').value=p.lien||'Mère';document.getElementById('pTel').value=p.tel||'';
-      document.getElementById('pType').value=p.type||'Montée';
-      const{h,m}=splitTime(p.time||'07:00');document.getElementById('pH').value=h;document.getElementById('pM').value=m;
-    }
-  }else{
-    document.getElementById('pType').value=tournee==='morning'?'Montée':'Descente';
-    ['pNom','pPrenom','pAdresse','pCodePostal','pVille','pNote','pTel'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('pH').value=tournee==='morning'?'07':tournee==='evening'?'17':'08';
-    document.getElementById('pM').value='00';
-  }
-  document.getElementById('modalPassager').classList.add('open');
-}
-function openEditExtra(tournee,id){openPassengerModal(tournee,id);}
-function closePassengerModal(){document.getElementById('modalPassager').classList.remove('open');editingPassengerId=null;editingBasePassengerId=null;document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('open'));}
-function savePassenger(){
-  const nom=document.getElementById('pNom').value.trim();
-  if(!nom){alert('Veuillez saisir un nom.');return;}
-  const heure=parseHM(document.getElementById('pH').value,document.getElementById('pM').value);
-  if(!heure){alert('Heure invalide.');return;}
-  const obj={
-    nom:nom.toUpperCase(),prenom:document.getElementById('pPrenom').value.trim(),
-    adresse:document.getElementById('pAdresse').value.trim(),
-    codePostal:document.getElementById('pCodePostal').value.trim(),
-    ville:document.getElementById('pVille').value.trim(),
-    note:document.getElementById('pNote').value.trim(),
-    lien:document.getElementById('pLien').value,
-    tel:document.getElementById('pTel').value.trim()||'—',
-    type:document.getElementById('pType').value,time:heure
-  };
-  addOrUpdateCarnet(obj);
-  if(editingBasePassengerId){
-    // Stocker override pour ce jour uniquement
-    const ov=ensureDayData(selectedDate,currentTournee);
-    if(!ov.overrides)ov.overrides={};
-    ov.overrides[editingBasePassengerId]=obj;
-    editingBasePassengerId=null;
-  }else if(currentTournee==='occasional'){
-    const occ=ensureOccasional(selectedDate);
-    if(editingPassengerId){Object.assign(occ.passengers.find(x=>x.id===editingPassengerId),obj);}
-    else{occ.passengers.push({id:nextId++,...obj});}
-    occ.passengers.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-  }else{
-    const ov=ensureDayData(selectedDate,currentTournee);
-    if(editingPassengerId){Object.assign(ov.extras.find(x=>x.id===editingPassengerId),obj);}
-    else{ov.extras.push({id:nextId++,...obj});}
-    ov.extras.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-  }
-  saveData();render();renderWeekNav();closePassengerModal();
+    saveData(); render();
+    showRS(`✓ Recalculé — ${coords.filter(Boolean).length}/${passengers.length} adresses trouvées`, 'ok');
+    setTimeout(() => showRS(''), 5000);
+  } catch (e) { showRS('⚠ Erreur de calcul.', 'error'); saveData(); render(); }
 }
 
-// ══════════════════════════════════════════
-// DÉPÔTS
-// ══════════════════════════════════════════
-function openEditDepot(tournee,id){
-  let depots;
-  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
-  else{depots=ensureDayData(selectedDate,tournee).depots;}
-  const d=depots.find(x=>x.id===id);
-  if(!d)return;
-  const{h,m}=splitTime(d.time);
-  const html=`<div class="modal-overlay open" id="modalEditDepot"><div class="modal"><div class="modal-handle"></div><h2>✏️ Modifier le dépôt</h2><div class="form-group"><label>Nom</label><input type="text" id="edNom" value="${d.nom}" placeholder="IME La Penière"></div><div class="form-group"><label>Adresse</label><input type="text" id="edAdresse" value="${d.adresse||''}" placeholder="Aizenay"></div><div class="form-group"><label>Heure</label><div class="time-inputs"><input type="text" id="edH" value="${h}" maxlength="2" inputmode="numeric"><span class="time-sep">:</span><input type="text" id="edM" value="${m}" maxlength="2" inputmode="numeric"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('modalEditDepot').remove()">Annuler</button><button class="btn-save" onclick="saveEditDepot('${tournee}',${id})">Enregistrer</button></div></div></div>`;
-  document.body.insertAdjacentHTML('beforeend',html);
-  setupTimeField('edH','edM');
-  document.getElementById('modalEditDepot').addEventListener('click',function(e){if(e.target===this)this.remove();});
-}
-function saveEditDepot(tournee,id){
-  const nom=document.getElementById('edNom').value.trim();
-  if(!nom){alert('Saisir un nom');return;}
-  const heure=parseHM(document.getElementById('edH').value,document.getElementById('edM').value);
-  if(!heure){alert('Heure invalide');return;}
-  let depots;
-  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
-  else{
-    depots=ensureDayData(selectedDate,tournee).depots;
-    // Aussi mettre à jour la base
-    const bd=base[tournee].depots.find(x=>x.id===id);
-    if(bd){bd.nom=nom;bd.adresse=document.getElementById('edAdresse').value.trim();bd.time=heure;}
-  }
-  const d=depots.find(x=>x.id===id);
-  if(d){d.nom=nom;d.adresse=document.getElementById('edAdresse').value.trim();d.time=heure;}
-  document.getElementById('modalEditDepot').remove();
-  saveData();render();
-}
-function deactivateDepot(tournee,id){
-  let depots;
-  if(tournee==='occasional'){depots=ensureOccasional(selectedDate).depots;}
-  else{depots=ensureDayData(selectedDate,tournee).depots;}
-  const d=depots.find(x=>x.id===id);if(d){d.active=false;saveData();render();}
-}
-function openDepotModal(tournee){
-  editingDepotTournee=tournee;
-  const labels={morning:'Matin',evening:'Soir',occasional:'Occasionnel'};
-  document.getElementById('depotsTitle').textContent=`📍 Dépôts — ${labels[tournee]}`;
-  renderDepotsList();document.getElementById('modalDepots').classList.add('open');
-}
-function closeDepotModal(){document.getElementById('modalDepots').classList.remove('open');}
-function getEditingDepots(){
-  if(editingDepotTournee==='occasional')return ensureOccasional(selectedDate).depots;
-  return ensureDayData(selectedDate,editingDepotTournee).depots;
-}
-function renderDepotsList(){
-  const depots=getEditingDepots();const c=document.getElementById('depotsList');
-  if(!depots.length){c.innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px 0">Aucun dépôt.</p>';return;}
-  c.innerHTML=depots.map(d=>{const{h,m}=splitTime(d.time);return`
-    <div class="depot-item">
-      <input type="checkbox" class="depot-checkbox" ${d.active?'checked':''} onchange="setDepotActive(${d.id},this.checked)">
-      <div class="depot-item-label" style="font-weight:${d.active?600:400};color:${d.active?'var(--text)':'var(--muted)'}">${d.nom}${d.adresse?` <span style="color:var(--muted);font-size:11px">(${d.adresse})</span>`:''}</div>
-      <input type="text" class="depot-time-h" value="${h}" maxlength="2" inputmode="numeric" onchange="updateDepotH(${d.id},this.value)">
-      <span style="color:var(--accent);font-weight:800">:</span>
-      <input type="text" class="depot-time-m" value="${m}" maxlength="2" inputmode="numeric" onchange="updateDepotM(${d.id},this.value)">
-      <button class="icon-btn delete-btn" onclick="removeDepot(${d.id})">🗑</button>
-    </div>`;}).join('');
-}
-function setDepotActive(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){d.active=val;saveData();renderDepotsList();render();}}
-function updateDepotH(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){const{m}=splitTime(d.time);const t=parseHM(val,m);if(t){d.time=t;saveData();render();}}}
-function updateDepotM(id,val){const d=getEditingDepots().find(x=>x.id===id);if(d){const{h}=splitTime(d.time);const t=parseHM(h,val);if(t){d.time=t;saveData();render();}}}
-function removeDepot(id){const arr=getEditingDepots();const idx=arr.findIndex(x=>x.id===id);if(idx>=0){arr.splice(idx,1);saveData();renderDepotsList();render();}}
-function addDepot(){
-  const nom=document.getElementById('dNom').value.trim();if(!nom){alert("Saisir le nom.");return;}
-  const heure=parseHM(document.getElementById('dH').value,document.getElementById('dM').value)||'08:35';
-  getEditingDepots().push({id:nextId++,time:heure,nom,adresse:document.getElementById('dAdresse').value.trim(),active:true});
-  document.getElementById('dNom').value='';document.getElementById('dAdresse').value='';
-  document.getElementById('dH').value='';document.getElementById('dM').value='';
-  saveData();renderDepotsList();render();
-}
+// ══════════════════════════════════════════════════
+// EVENTS
+// ══════════════════════════════════════════════════
+document.getElementById('modalPass').addEventListener('click', function (e) { if (e.target === this) closePassModal(); });
+document.getElementById('modalDepots').addEventListener('click', function (e) { if (e.target === this) closeDepotModal(); });
 
-['modalPassager','modalDepots'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){if(e.target===this){closePassengerModal();closeDepotModal();}});
-});
-
+// ══════════════════════════════════════════════════
 // INIT
+// ══════════════════════════════════════════════════
 loadData();
 renderWeekNav();
 render();
