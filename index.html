@@ -610,7 +610,7 @@ function renderTournee(t) {
   const { h: aH, m: aM } = splitT(eff.arrivee || '');
 
   meta.innerHTML = `
-    <span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepart('${t}','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepart('${t}','m',this.value)"></span>
+    <span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" id="${t}DH" onchange="onDepart('${t}','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" id="${t}DM" onchange="onDepart('${t}','m',this.value)"></span>
     ${eff.arrivee ? `<span>🏁 <input class="te" type="text" value="${aH}" maxlength="2" inputmode="numeric" onchange="onArrivee('${t}','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${aM}" maxlength="2" inputmode="numeric" onchange="onArrivee('${t}','m',this.value)"></span>` : ''}
     <span>👥 <strong>${eff.passengers.length - eff.absents.length + eff.extras.length}</strong></span>
     <span>📍 <strong>${activeDepots.length}</strong></span>
@@ -741,7 +741,7 @@ function renderOcc() {
   const { h: dH, m: dM } = splitT(occ.depart);
   const activeDepots = occ.depots.filter(d => d.active).sort((a, b) => t2m(a.time) - t2m(b.time));
 
-  meta.innerHTML = `<span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" onchange="onDepart('occasional','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" onchange="onDepart('occasional','m',this.value)"></span><span>👥 <strong>${occ.passengers.length}</strong></span>`;
+  meta.innerHTML = `<span>🏠 <input class="te" type="text" value="${dH}" maxlength="2" inputmode="numeric" id="occasionalDH" onchange="onDepart('occasional','h',this.value)"><b style="color:var(--accent)">:</b><input class="te" type="text" value="${dM}" maxlength="2" inputmode="numeric" id="occasionalDM" onchange="onDepart('occasional','m',this.value)"></span><span>👥 <strong>${occ.passengers.length}</strong></span>`;
 
   body.innerHTML = '';
   const da = [occ.departAdresse, occ.departCP, occ.departVille].filter(Boolean).join(', ');
@@ -783,8 +783,12 @@ function onDepart(tournee, part, val) {
   let ov, cur;
   if (tournee === 'occasional') { ov = ensureOcc(selDate); cur = ov.depart || '00:00'; }
   else { ov = ensureOv(selDate, tournee); cur = ov.depart || '00:00'; }
-  const { h, m } = splitT(cur);
-  const newT = part === 'h' ? parseHM(val, m) : parseHM(h, val);
+  // Lire l'autre champ depuis le DOM, utiliser val pour le champ modifié
+  const hEl = document.getElementById(tournee + 'DH');
+  const mEl = document.getElementById(tournee + 'DM');
+  const hVal = part === 'h' ? val : (hEl ? hEl.value : splitT(cur).h);
+  const mVal = part === 'm' ? val : (mEl ? mEl.value : splitT(cur).m);
+  const newT = parseHM(hVal, mVal);
   if (!newT) return;
   const diff = t2m(newT) - t2m(cur);
   ov.depart = newT;
