@@ -418,7 +418,9 @@ function getEff(dateStr, tournee) {
   const overrides = ov ? (ov.overrides || {}) : {};
   const depotsState = ov ? (ov.depotsState || {}) : {};
   // Décalage horaire du jour (ne modifie pas la base)
-  const shift = ov ? (ov.timeShift || 0) : 0;
+  // Shift = écart entre le départ du jour et le départ de base
+  const dayDepart = ov ? (ov.depart || b.depart) : b.depart;
+  const shift = t2m(dayDepart) - t2m(b.depart);
 
   return {
     depart: ov ? ov.depart : b.depart,
